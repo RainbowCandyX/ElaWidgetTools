@@ -1,3 +1,4 @@
+
 #include "ElaMessageBar.h"
 
 #include <QApplication>
@@ -25,7 +26,7 @@ ElaMessageBar::ElaMessageBar(ElaMessageBarType::PositionPolicy policy, ElaMessag
     setFixedHeight(60);
     setMouseTracking(true);
     d->_pOpacity = 1;
-    setFont(QFont("微软雅黑"));
+    setFont(qApp->font());
     parent->installEventFilter(this);
     d->_closeButton = new ElaIconButton(ElaIconType::Xmark, 17, d->_closeButtonWidth, 30, this);
     switch (d->_messageMode)

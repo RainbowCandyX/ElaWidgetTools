@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QCursor>
 #include <QFontDatabase>
+#include <QFontInfo>
 #include <QWidget>
 #include <utility>
 Q_SINGLETON_CREATE_CPP(ElaApplication)
@@ -92,10 +93,27 @@ void ElaApplication::init()
     Q_INIT_RESOURCE(ElaWidgetTools);
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
     QFontDatabase::addApplicationFont(":/include/Font/ElaAwesome.ttf");
-    //默认字体
+    //默认字体 - 根据平台设置
     QFont font = qApp->font();
     font.setPixelSize(13);
+#ifdef Q_OS_WIN
     font.setFamily("Microsoft YaHei");
+#elif defined(Q_OS_MACOS)
+    font.setFamily("PingFang SC");
+#else
+    // Linux 使用系统默认字体
+    QStringList fontFamilies;
+    fontFamilies << "Noto Sans CJK SC" << "Source Han Sans SC" << "WenQuanYi Micro Hei";
+    for (const QString& family : fontFamilies)
+    {
+        QFont testFont(family);
+        if (QFontInfo(testFont).family() == family)
+        {
+            font.setFamily(family);
+            break;
+        }
+    }
+#endif
     font.setHintingPreference(QFont::PreferNoHinting);
     qApp->setFont(font);
 #ifdef Q_OS_WIN
