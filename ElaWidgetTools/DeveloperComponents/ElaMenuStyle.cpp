@@ -211,17 +211,22 @@ QSize ElaMenuStyle::sizeFromContents(ContentsType type, const QStyleOption* opti
             }
             QSize menuItemSize = QProxyStyle::sizeFromContents(type, option, size, widget);
             const ElaMenu* menu = dynamic_cast<const ElaMenu*>(widget);
+            int extraWidth = 0;
             if (menu->isHasIcon() || mopt->menuHasCheckableItems)
             {
                 _isAnyoneItemHasIcon = true;
+                // 为图标、间距和内边距预留额外空间
+                int iconWidth = _pMenuItemHeight * 0.7;
+                int textLeftSpacing = 8;
+                extraWidth = iconWidth + textLeftSpacing;
             }
             if (menu->isHasChildMenu())
             {
-                return QSize(menuItemSize.width() + 20, _pMenuItemHeight);
+                return QSize(menuItemSize.width() + extraWidth + 20, _pMenuItemHeight);
             }
             else
             {
-                return QSize(menuItemSize.width(), _pMenuItemHeight);
+                return QSize(menuItemSize.width() + extraWidth, _pMenuItemHeight);
             }
         }
     }
