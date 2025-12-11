@@ -11,9 +11,9 @@ Linux为QT5.15以上)，推荐版本为QT5.15.2和QT6.6.2；
 
 ## 支持平台
 
-| [Windows][win-link] | [Ubuntu/Kylin][ubuntu-link] |
-|---------------------|-----------------------|
-| ![win-badge]        | ![ubuntu-badge]       |
+| [Windows][win-link] | [Ubuntu/Kylin][ubuntu-link] | [macOS][macos-link] |
+|---------------------|-----------------------|---------------------|
+| ![win-badge]        | ![ubuntu-badge]       | ![macos-badge]      |
 
 [win-link]: https://github.com/Liniyous/ElaWidgetTools/actions?query=workflow%3AWindows "WindowsAction"
 
@@ -22,6 +22,10 @@ Linux为QT5.15以上)，推荐版本为QT5.15.2和QT6.6.2；
 [ubuntu-link]: https://github.com/Liniyous/ElaWidgetTools/actions?query=workflow%3AUbuntu "UbuntuAction"
 
 [ubuntu-badge]: https://img.shields.io/badge/Ubuntu-Passing-61C263
+
+[macos-link]: https://github.com/RainbowCandyX/ElaWidgetTools "macOSSupport"
+
+[macos-badge]: https://img.shields.io/badge/macOS-Passing-61C263
 
 ## 主界面预览
 
