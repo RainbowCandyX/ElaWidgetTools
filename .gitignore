@@ -1,0 +1,17 @@
+build/
+*.user
+*.autosave
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.exe
+*.app
+.DS_Store
+.qtc_clangd/
+CMakeLists.txt.user*
+cmake-build-*/
+.idea/
+.vscode/
+*.qm
