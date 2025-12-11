@@ -140,14 +140,26 @@ void ElaNavigationBar::setUserInfoCardVisible(bool isVisible)
 {
     Q_D(ElaNavigationBar);
     d->_isShowUserCard = isVisible;
-    d->_userCard->setVisible(isVisible);
+    
     if (isVisible)
     {
         d->_userCardLayout->setContentsMargins(3, 10, 5, 5);
+        if (d->_currentDisplayMode == ElaNavigationType::Compact ||
+            d->_currentDisplayMode == ElaNavigationType::Minimal)
+        {
+            d->_userCard->setVisible(false);
+            d->_userButton->setVisible(true);
+        }
+        else
+        {
+            d->_userCard->setVisible(true);
+            d->_userButton->setVisible(false);
+        }
     }
     else
     {
         d->_userCardLayout->setContentsMargins(0, 0, 0, 0);
+        d->_userCard->setVisible(false);
         d->_userButton->setVisible(false);
     }
 }

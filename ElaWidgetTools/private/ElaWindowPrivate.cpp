@@ -107,6 +107,17 @@ void ElaWindowPrivate::onThemeReadyChange()
     case ElaApplicationType::Normal:
     case ElaApplicationType::ElaMica:
     {
+#ifdef Q_OS_MACOS
+        if (eTheme->getThemeMode() == ElaThemeType::Light)
+        {
+            eTheme->setThemeMode(ElaThemeType::Dark);
+        }
+        else
+        {
+            eTheme->setThemeMode(ElaThemeType::Light);
+        }
+        break;
+#endif
         _appBar->setIsOnlyAllowMinAndClose(true);
         if (!_animationWidget)
         {

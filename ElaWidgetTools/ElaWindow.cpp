@@ -70,6 +70,9 @@ ElaWindow::ElaWindow(QWidget* parent)
     // 导航中心堆栈窗口
     d->_navigationCenterStackedWidget = new ElaCentralStackedWidget(this);
     d->_navigationCenterStackedWidget->setContentsMargins(0, 0, 0, 0);
+#ifdef Q_OS_MACOS
+    d->_navigationCenterStackedWidget->installEventFilter(this);
+#endif
     QWidget* navigationCentralWidget = new QWidget(this);
     navigationCentralWidget->setObjectName("ElaWindowNavigationCentralWidget");
     navigationCentralWidget->setStyleSheet("#ElaWindowNavigationCentralWidget{background-color:transparent;}");
@@ -637,6 +640,41 @@ bool ElaWindow::eventFilter(QObject* watched, QEvent* event)
         d->_doNavigationDisplayModeChange();
         break;
     }
+#ifdef Q_OS_MACOS
+    case QEvent::MouseButtonRelease:
+    {
+        if (!ElaApplication::containsCursorToItem(d->_navigationBar))
+        {
+            if (d->_isNavigationBarExpanded)
+            {
+                QPropertyAnimation* navigationMoveAnimation = new QPropertyAnimation(d->_navigationBar, "pos");
+                connect(navigationMoveAnimation, &QPropertyAnimation::valueChanged, d, [=]() {
+                    if (d->_isNavigationDisplayModeChanged)
+                    {
+                        d->_isNavigationBarFloat = false;
+                        d->_resetWindowLayout(false);
+                        navigationMoveAnimation->deleteLater();
+                    }
+                });
+                connect(navigationMoveAnimation, &QPropertyAnimation::finished, d, [=]() {
+                    if (!d->_isNavigationDisplayModeChanged)
+                    {
+                        d->_navigationBar->setDisplayMode(ElaNavigationType::Minimal, false);
+                        d->_resetWindowLayout(false);
+                    }
+                    d->_isNavigationBarFloat = false;
+                });
+                navigationMoveAnimation->setEasingCurve(QEasingCurve::OutCubic);
+                navigationMoveAnimation->setDuration(225);
+                navigationMoveAnimation->setStartValue(d->_navigationBar->pos());
+                navigationMoveAnimation->setEndValue(QPoint(-d->_navigationBar->width(), 0));
+                navigationMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+                d->_isNavigationBarExpanded = false;
+            }
+        }
+        break;
+    }
+#endif
     default:
     {
         break;
