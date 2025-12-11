@@ -149,6 +149,7 @@ void ElaNavigationBar::setUserInfoCardVisible(bool isVisible)
         {
             d->_userCard->setVisible(false);
             d->_userButton->setVisible(true);
+            d->_handleUserButtonLayout(true);
         }
         else
         {
