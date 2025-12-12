@@ -210,7 +210,7 @@ void ElaMessageBarPrivate::onOtherMessageBarEnd(QVariantMap eventData)
             ElaMessageBarManager::getInstance()->requestMessageBarEvent(q);
         }
     });
-    closePosAnimation->setEasingCurve(QEasingCurve::InOutSine);
+    closePosAnimation->setEasingCurve(QEasingCurve::OutCubic);
     closePosAnimation->setDuration(200);
     closePosAnimation->setStartValue(q->pos().y());
     closePosAnimation->setEndValue(targetPosY);
@@ -322,6 +322,7 @@ void ElaMessageBarPrivate::_calculateInitialPos(int& startX, int& startY, int& e
     QList<int> resultList = _getOtherMessageBarTotalData();
     int minimumHeightTotal = resultList[0];
     int indexLessCount = resultList[1];
+    int lastEndY = endY;
     switch (_policy)
     {
     case ElaMessageBarType::Top:
@@ -389,6 +390,10 @@ void ElaMessageBarPrivate::_calculateInitialPos(int& startX, int& startY, int& e
         endY = startY;
         break;
     }
+    }
+    if (endY == lastEndY)
+    {
+        return;
     }
     if (endY < _messageBarVerticalTopMargin || endY > q->parentWidget()->height() - _messageBarVerticalBottomMargin - q->minimumHeight())
     {
