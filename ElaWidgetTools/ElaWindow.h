@@ -102,6 +102,9 @@ protected:
     virtual bool eventFilter(QObject* watched, QEvent* event) override;
     virtual QMenu* createPopupMenu() override;
     virtual void paintEvent(QPaintEvent* event) override;
+#ifdef Q_OS_MACOS
+    virtual void mousePressEvent(QMouseEvent* event) override;
+#endif
 };
 
 #endif // ELAWINDOW_H

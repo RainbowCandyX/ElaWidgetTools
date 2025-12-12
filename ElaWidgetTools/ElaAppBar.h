@@ -97,6 +97,12 @@ protected:
 #ifdef Q_OS_WIN
     virtual void paintEvent(QPaintEvent* event) override;
 #endif
+#ifdef Q_OS_MACOS
+    virtual void mousePressEvent(QMouseEvent* event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void mouseReleaseEvent(QMouseEvent* event) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
+#endif
 };
 
 #endif // ELAAPPBAR_H

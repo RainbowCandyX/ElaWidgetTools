@@ -641,35 +641,39 @@ bool ElaWindow::eventFilter(QObject* watched, QEvent* event)
         break;
     }
 #ifdef Q_OS_MACOS
+    case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     {
-        if (!ElaApplication::containsCursorToItem(d->_navigationBar))
+        if (event->type() == QEvent::MouseButtonPress)
         {
-            if (d->_isNavigationBarExpanded)
+            if (!ElaApplication::containsCursorToItem(d->_navigationBar))
             {
-                QPropertyAnimation* navigationMoveAnimation = new QPropertyAnimation(d->_navigationBar, "pos");
-                connect(navigationMoveAnimation, &QPropertyAnimation::valueChanged, d, [=]() {
-                    if (d->_isNavigationDisplayModeChanged)
-                    {
+                if (d->_isNavigationBarExpanded)
+                {
+                    QPropertyAnimation* navigationMoveAnimation = new QPropertyAnimation(d->_navigationBar, "pos");
+                    connect(navigationMoveAnimation, &QPropertyAnimation::valueChanged, d, [=]() {
+                        if (d->_isNavigationDisplayModeChanged)
+                        {
+                            d->_isNavigationBarFloat = false;
+                            d->_resetWindowLayout(false);
+                            navigationMoveAnimation->deleteLater();
+                        }
+                    });
+                    connect(navigationMoveAnimation, &QPropertyAnimation::finished, d, [=]() {
+                        if (!d->_isNavigationDisplayModeChanged)
+                        {
+                            d->_navigationBar->setDisplayMode(ElaNavigationType::Minimal, false);
+                            d->_resetWindowLayout(false);
+                        }
                         d->_isNavigationBarFloat = false;
-                        d->_resetWindowLayout(false);
-                        navigationMoveAnimation->deleteLater();
-                    }
-                });
-                connect(navigationMoveAnimation, &QPropertyAnimation::finished, d, [=]() {
-                    if (!d->_isNavigationDisplayModeChanged)
-                    {
-                        d->_navigationBar->setDisplayMode(ElaNavigationType::Minimal, false);
-                        d->_resetWindowLayout(false);
-                    }
-                    d->_isNavigationBarFloat = false;
-                });
-                navigationMoveAnimation->setEasingCurve(QEasingCurve::OutCubic);
-                navigationMoveAnimation->setDuration(225);
-                navigationMoveAnimation->setStartValue(d->_navigationBar->pos());
-                navigationMoveAnimation->setEndValue(QPoint(-d->_navigationBar->width(), 0));
-                navigationMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-                d->_isNavigationBarExpanded = false;
+                    });
+                    navigationMoveAnimation->setEasingCurve(QEasingCurve::OutCubic);
+                    navigationMoveAnimation->setDuration(225);
+                    navigationMoveAnimation->setStartValue(d->_navigationBar->pos());
+                    navigationMoveAnimation->setEndValue(QPoint(-d->_navigationBar->width(), 0));
+                    navigationMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+                    d->_isNavigationBarExpanded = false;
+                }
             }
         }
         break;
@@ -794,3 +798,41 @@ void ElaWindow::paintEvent(QPaintEvent* event)
     }
     painter.restore();
 }
+
+#ifdef Q_OS_MACOS
+void ElaWindow::mousePressEvent(QMouseEvent* event)
+{
+    Q_D(ElaWindow);
+    // 检查是否点击在导航栏外部
+    if (!ElaApplication::containsCursorToItem(d->_navigationBar))
+    {
+        if (d->_isNavigationBarExpanded)
+        {
+            QPropertyAnimation* navigationMoveAnimation = new QPropertyAnimation(d->_navigationBar, "pos");
+            connect(navigationMoveAnimation, &QPropertyAnimation::valueChanged, d, [=]() {
+                if (d->_isNavigationDisplayModeChanged)
+                {
+                    d->_isNavigationBarFloat = false;
+                    d->_resetWindowLayout(false);
+                    navigationMoveAnimation->deleteLater();
+                }
+            });
+            connect(navigationMoveAnimation, &QPropertyAnimation::finished, d, [=]() {
+                if (!d->_isNavigationDisplayModeChanged)
+                {
+                    d->_navigationBar->setDisplayMode(ElaNavigationType::Minimal, false);
+                    d->_resetWindowLayout(false);
+                }
+                d->_isNavigationBarFloat = false;
+            });
+            navigationMoveAnimation->setEasingCurve(QEasingCurve::OutCubic);
+            navigationMoveAnimation->setDuration(225);
+            navigationMoveAnimation->setStartValue(d->_navigationBar->pos());
+            navigationMoveAnimation->setEndValue(QPoint(-d->_navigationBar->width(), 0));
+            navigationMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+            d->_isNavigationBarExpanded = false;
+        }
+    }
+    QMainWindow::mousePressEvent(event);
+}
+#endif
