@@ -17,10 +17,7 @@
 #include "ElaToggleSwitch.h"
 
 #include <QButtonGroup>
-#include <QCheckBox>
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QRadioButton>
 #include <QVBoxLayout>
 
 T_BaseComponents::T_BaseComponents(QWidget* parent)
