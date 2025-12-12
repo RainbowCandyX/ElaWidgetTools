@@ -54,6 +54,7 @@ private:
     qint64 _currentWinID{0};
     int _lastMinTrackWidth{0};
     int _edges{0};
+    quint64 _clickTimer{0};
     int _margins{8};
 #ifndef Q_OS_WIN
     bool _isDragging{false};

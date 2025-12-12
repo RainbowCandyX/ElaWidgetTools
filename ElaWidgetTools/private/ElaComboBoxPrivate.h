@@ -20,8 +20,12 @@ public:
 
     Q_SLOT void onThemeChanged(ElaThemeType::ThemeMode themeMode);
 
+protected:
+    bool eventFilter(QObject* watched, QEvent* event) override;
+
 private:
     bool _isAllowHidePopup{false};
+    bool _isKeyEvent{false};
     ElaComboBoxStyle* _comboBoxStyle{nullptr};
     ElaThemeType::ThemeMode _themeMode;
 };

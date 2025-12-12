@@ -96,24 +96,32 @@ void ElaApplication::init()
     //默认字体 - 根据平台设置
     QFont font = qApp->font();
     font.setPixelSize(13);
-#ifdef Q_OS_WIN
-    font.setFamily("Microsoft YaHei");
-#elif defined(Q_OS_MACOS)
-    font.setFamily("PingFang SC");
-#else
-    // Linux 使用系统默认字体
+
     QStringList fontFamilies;
-    fontFamilies << "Noto Sans CJK SC" << "Source Han Sans SC" << "WenQuanYi Micro Hei";
+#ifdef Q_OS_WIN
+    fontFamilies << "Microsoft YaHei" << "SimSun" << "Arial";
+#elif defined(Q_OS_MACOS)
+    fontFamilies << "PingFang SC" << "Heiti SC" << "STHeiti" << "Helvetica";
+#else
+    fontFamilies << "Noto Sans CJK SC" << "Source Han Sans SC" << "WenQuanYi Micro Hei" << "DejaVu Sans";
+#endif
+
+    bool fontFound = false;
     for (const QString& family : fontFamilies)
     {
         QFont testFont(family);
         if (QFontInfo(testFont).family() == family)
         {
             font.setFamily(family);
+            fontFound = true;
             break;
         }
     }
-#endif
+
+    if (!fontFound)
+    {
+        qWarning() << "No preferred fonts found, using system default font";
+    }
     font.setHintingPreference(QFont::PreferNoHinting);
     qApp->setFont(font);
 #ifdef Q_OS_WIN

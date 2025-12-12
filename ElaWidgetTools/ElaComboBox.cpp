@@ -33,7 +33,16 @@ ElaComboBox::ElaComboBox(QWidget* parent)
     ElaScrollBar* floatVScrollBar = new ElaScrollBar(scrollBar, comboBoxView);
     floatVScrollBar->setIsAnimation(true);
     comboBoxView->setAutoScroll(false);
-    comboBoxView->setSelectionMode(QAbstractItemView::NoSelection);
+    comboBoxView->setSelectionMode(QAbstractItemView::SingleSelection);
+    comboBoxView->installEventFilter(d);
+    comboBoxView->viewport()->installEventFilter(d);
+    connect(comboBoxView->selectionModel(), &QItemSelectionModel::currentChanged, this, [=](const QModelIndex& current, const QModelIndex& previous) {
+        Q_UNUSED(previous)
+        if (current.isValid() && d->_isKeyEvent)
+        {
+            comboBoxView->scrollTo(current, QAbstractItemView::PositionAtCenter);
+        }
+    });
     comboBoxView->setObjectName("ElaComboBoxView");
     comboBoxView->setStyleSheet("#ElaComboBoxView{background-color:transparent;}");
     comboBoxView->setStyle(d->_comboBoxStyle);
@@ -100,6 +109,10 @@ void ElaComboBox::showPopup()
                 containerHeight = count() * 35 + 8;
             }
             view()->resize(view()->width(), containerHeight - 8);
+            if (currentIndex() >= 0)
+            {
+                view()->scrollTo(view()->model()->index(currentIndex(), 0), QAbstractItemView::PositionAtCenter);
+            }
             container->move(container->x(), container->y() + 3);
             QLayout* layout = container->layout();
             while (layout->count())

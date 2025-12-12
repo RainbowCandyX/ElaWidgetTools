@@ -107,7 +107,7 @@ void ElaWindowPrivate::onThemeReadyChange()
     case ElaApplicationType::Normal:
     case ElaApplicationType::ElaMica:
     {
-        if (_pThemeChangeTime <= 0)
+        if (_pThemeChangeTime <= 0 || _pThemeChangeTime > 3000)
         {
             if (eTheme->getThemeMode() == ElaThemeType::Light)
             {

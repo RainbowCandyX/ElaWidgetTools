@@ -1,10 +1,24 @@
 #include "ElaComboBoxPrivate.h"
 #include "ElaComboBox.h"
 #include "ElaTheme.h"
+#include <QEvent>
 #include <QLineEdit>
 ElaComboBoxPrivate::ElaComboBoxPrivate(QObject* parent)
     : QObject{parent}
 {
+}
+
+bool ElaComboBoxPrivate::eventFilter(QObject* watched, QEvent* event)
+{
+    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease)
+    {
+        _isKeyEvent = true;
+    }
+    else if (event->type() == QEvent::MouseMove || event->type() == QEvent::HoverMove)
+    {
+        _isKeyEvent = false;
+    }
+    return QObject::eventFilter(watched, event);
 }
 
 ElaComboBoxPrivate::~ElaComboBoxPrivate()

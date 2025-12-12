@@ -8,6 +8,7 @@
 #include "ElaWinShadowHelper.h"
 
 #ifndef Q_OS_WIN
+#include <QDateTime>
 #include <QWindow>
 #endif
 #include <QGuiApplication>
@@ -736,71 +737,6 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
 }
 #endif
 
-#ifndef Q_OS_WIN
-void ElaAppBar::mousePressEvent(QMouseEvent* event)
-{
-    Q_D(ElaAppBar);
-    if (event->button() == Qt::LeftButton)
-    {
-        // 检查是否点击在可拖动区域（不在按钮或自定义控件上）
-        if (d->_containsCursorToItem(this))
-        {
-            d->_isDragging = true;
-            d->_dragStartPos = event->globalPosition().toPoint() - window()->frameGeometry().topLeft();
-            event->accept();
-            return;
-        }
-    }
-    QWidget::mousePressEvent(event);
-}
-
-void ElaAppBar::mouseMoveEvent(QMouseEvent* event)
-{
-    Q_D(ElaAppBar);
-    if (d->_isDragging && !d->_pIsFixedSize && !window()->isMaximized() && !window()->isFullScreen())
-    {
-        window()->move(event->globalPosition().toPoint() - d->_dragStartPos);
-        event->accept();
-        return;
-    }
-    QWidget::mouseMoveEvent(event);
-}
-
-void ElaAppBar::mouseReleaseEvent(QMouseEvent* event)
-{
-    Q_D(ElaAppBar);
-    if (event->button() == Qt::LeftButton)
-    {
-        d->_isDragging = false;
-        event->accept();
-        return;
-    }
-    QWidget::mouseReleaseEvent(event);
-}
-
-void ElaAppBar::mouseDoubleClickEvent(QMouseEvent* event)
-{
-    Q_D(ElaAppBar);
-    if (event->button() == Qt::LeftButton && !d->_pIsFixedSize)
-    {
-        if (d->_containsCursorToItem(this))
-        {
-            if (window()->isMaximized())
-            {
-                window()->showNormal();
-            }
-            else
-            {
-                window()->showMaximized();
-            }
-            event->accept();
-            return;
-        }
-    }
-    QWidget::mouseDoubleClickEvent(event);
-}
-#endif
-
 bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
 {
     Q_D(ElaAppBar);
@@ -871,29 +807,33 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
 #ifndef Q_OS_WIN
     case QEvent::MouseButtonPress:
     {
-        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-        if (mouseEvent->button() != Qt::LeftButton)
-        {
-            break;
-        }
-
         if (d->_edges != 0)
         {
-            d->_updateCursor(d->_edges);
-            window()->windowHandle()->startSystemResize(Qt::Edges(d->_edges));
+            QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+            if (mouseEvent->button() == Qt::LeftButton)
+            {
+                d->_updateCursor(d->_edges);
+                window()->windowHandle()->startSystemResize(Qt::Edges(d->_edges));
+            }
         }
         else
         {
-            if (d->_containsCursorToItem(this) && !d->_pIsFixedSize)
+            if (d->_containsCursorToItem(this))
             {
-                window()->windowHandle()->startSystemMove();
+                qint64 clickTimer = QDateTime::currentMSecsSinceEpoch();
+                qint64 offset = clickTimer - d->_clickTimer;
+                d->_clickTimer = clickTimer;
+                if (offset > 300)
+                {
+                    window()->windowHandle()->startSystemMove();
+                }
             }
         }
         break;
     }
     case QEvent::MouseButtonDblClick:
     {
-        if (d->_containsCursorToItem(this) && !d->_pIsFixedSize)
+        if (d->_containsCursorToItem(this))
         {
             if (window()->isMaximized())
             {

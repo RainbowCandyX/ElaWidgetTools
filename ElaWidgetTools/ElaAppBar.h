@@ -96,11 +96,6 @@ protected:
     virtual bool eventFilter(QObject* obj, QEvent* event) override;
 #ifdef Q_OS_WIN
     virtual void paintEvent(QPaintEvent* event) override;
-#else
-    virtual void mousePressEvent(QMouseEvent* event) override;
-    virtual void mouseMoveEvent(QMouseEvent* event) override;
-    virtual void mouseReleaseEvent(QMouseEvent* event) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 #endif
 };
 

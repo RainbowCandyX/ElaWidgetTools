@@ -10,6 +10,9 @@
 ElaMenuBar::ElaMenuBar(QWidget* parent)
     : QMenuBar(parent)
 {
+#ifdef Q_OS_MAC
+    setNativeMenuBar(false);
+#endif
     setMouseTracking(true);
     setObjectName("ElaMenuBar");
     setStyle(new ElaMenuBarStyle(style()));
