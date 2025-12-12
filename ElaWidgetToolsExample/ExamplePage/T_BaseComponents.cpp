@@ -2,6 +2,7 @@
 
 #include "ElaCheckBox.h"
 #include "ElaComboBox.h"
+#include "ElaGroupBox.h"
 #include "ElaMessageButton.h"
 #include "ElaMultiSelectComboBox.h"
 #include "ElaPlainTextEdit.h"
@@ -16,7 +17,10 @@
 #include "ElaToggleSwitch.h"
 
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QHBoxLayout>
+#include <QLabel>
+#include <QRadioButton>
 #include <QVBoxLayout>
 
 T_BaseComponents::T_BaseComponents(QWidget* parent)
@@ -268,6 +272,49 @@ T_BaseComponents::T_BaseComponents(QWidget* parent)
     progressRingLayout->addWidget(_progressBusyTransparentRing);
     progressRingLayout->addStretch();
 
+    _groupBox = new ElaGroupBox("ElaGroupBox", this);
+    _groupBox->setFixedSize(350, 220);
+    _groupBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+    QVBoxLayout* groupBoxLayout = new QVBoxLayout(_groupBox);
+    groupBoxLayout->setSpacing(8);
+    groupBoxLayout->setContentsMargins(15, 25, 15, 15);
+
+    ElaText* label1 = new ElaText("这是一个 ElaGroupBox 示例", _groupBox);
+    ElaText* label2 = new ElaText("可以在其中放置各种控件", _groupBox);
+    ElaCheckBox* checkbox = new ElaCheckBox("GroupBox 内的复选框", _groupBox);
+    ElaRadioButton* radio1 = new ElaRadioButton("选项 1", _groupBox);
+    ElaRadioButton* radio2 = new ElaRadioButton("选项 2", _groupBox);
+    ElaRadioButton* radio3 = new ElaRadioButton("选项 3", _groupBox);
+    checkbox->setChecked(true);
+    radio1->setChecked(true);
+
+    groupBoxLayout->addWidget(label1);
+    groupBoxLayout->addWidget(label2);
+    groupBoxLayout->addWidget(checkbox);
+    groupBoxLayout->addWidget(radio1);
+    groupBoxLayout->addWidget(radio2);
+    groupBoxLayout->addWidget(radio3);
+    groupBoxLayout->addStretch();
+
+    ElaScrollPageArea* groupBoxArea = new ElaScrollPageArea(this);
+    groupBoxArea->setFixedHeight(240);
+    QHBoxLayout* groupBoxAreaLayout = new QHBoxLayout(groupBoxArea);
+    ElaText* groupBoxLabel = new ElaText("ElaGroupBox", this);
+    groupBoxLabel->setTextPixelSize(12);
+    groupBoxAreaLayout->addWidget(groupBoxLabel);
+    groupBoxAreaLayout->addWidget(_groupBox);
+    groupBoxAreaLayout->addStretch();
+    ElaToggleSwitch* groupBoxDisableSwitch = new ElaToggleSwitch(this);
+    ElaText* groupBoxDisableText = new ElaText("禁用", this);
+    groupBoxDisableText->setTextPixelSize(15);
+    connect(groupBoxDisableSwitch, &ElaToggleSwitch::toggled, this, [=](bool checked) {
+        _groupBox->setDisabled(checked);
+    });
+    groupBoxAreaLayout->addWidget(groupBoxDisableSwitch);
+    groupBoxAreaLayout->addWidget(groupBoxDisableText);
+    groupBoxAreaLayout->addSpacing(10);
+
     ElaPlainTextEdit* edit = new ElaPlainTextEdit(this);
     edit->setPlainText("这是一个ElaPlainTextEdit  暂时放在这里");
 
@@ -285,6 +332,7 @@ T_BaseComponents::T_BaseComponents(QWidget* parent)
     centerLayout->addWidget(radioButtonArea);
     centerLayout->addWidget(progressBarArea);
     centerLayout->addWidget(progressRingArea);
+    centerLayout->addWidget(groupBoxArea);
     centerLayout->addWidget(edit);
     centerLayout->addStretch();
     centerLayout->setContentsMargins(0, 0, 0, 0);
