@@ -24,6 +24,7 @@ public:
 
 protected:
     virtual void wheelEvent(QWheelEvent* event) override;
+    virtual void resizeEvent(QResizeEvent* event) override;
     virtual void paintEvent(QPaintEvent* event) override;
 };
 
