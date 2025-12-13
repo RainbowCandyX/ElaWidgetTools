@@ -29,7 +29,7 @@ void T_BasePage::createCustomWidget(QString desText)
     // 顶部元素
     QWidget* customWidget = new QWidget(this);
     ElaText* subTitleText = new ElaText(this);
-    subTitleText->setText("https://github.com/Liniyous/ElaWidgetTools");
+    subTitleText->setText("https://github.com/RainbowCandyX/ElaWidgetTools");
     subTitleText->setTextInteractionFlags(Qt::TextSelectableByMouse);
     subTitleText->setTextPixelSize(11);
 

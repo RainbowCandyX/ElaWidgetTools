@@ -96,7 +96,7 @@ void MainWindow::initWindow()
     // setWindowButtonFlag(ElaAppBarType::MinimizeButtonHint, false);
     setUserInfoCardPixmap(QPixmap(":/Resource/Image/Cirno.jpg"));
     setUserInfoCardTitle("Ela Tool");
-    setUserInfoCardSubTitle("Liniyous@gmail.com");
+    setUserInfoCardSubTitle("魔改版");
     setWindowTitle("ElaWidgetTool");
     // setIsStayTop(true);
     // setUserInfoCardVisible(false);
