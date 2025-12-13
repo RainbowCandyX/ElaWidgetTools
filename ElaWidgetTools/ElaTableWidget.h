@@ -17,6 +17,8 @@ public:
     explicit ElaTableWidget(QWidget* parent = nullptr);
     ~ElaTableWidget();
 
+    void removeRows(int row, int count);
+
 Q_SIGNALS:
     Q_SIGNAL void tableWidgetShow();
     Q_SIGNAL void tableWidgetHide();

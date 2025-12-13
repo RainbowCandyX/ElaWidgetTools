@@ -34,6 +34,21 @@ ElaTableWidget::~ElaTableWidget()
     delete d->_tableWidgetStyle;
 }
 
+void ElaTableWidget::removeRows(int row, int count)
+{
+    if (row < 0 || count <= 0 || row >= rowCount())
+    {
+        return;
+    }
+
+    int actualCount = qMin(count, rowCount() - row);
+
+    for (int i = row + actualCount - 1; i >= row; --i)
+    {
+        removeRow(i);
+    }
+}
+
 void ElaTableWidget::setItemHeight(int itemHeight)
 {
     Q_D(ElaTableWidget);
