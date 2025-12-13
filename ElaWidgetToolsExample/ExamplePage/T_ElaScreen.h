@@ -2,10 +2,15 @@
 #define T_ELASCREEN_H
 #include <QWidget>
 
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
 #include "T_BasePage.h"
 
+#ifdef Q_OS_WIN
 class ElaDxgiScreen;
+#endif
+#ifdef Q_OS_MAC
+class ElaScreenCaptureScreen;
+#endif
 class ElaComboBox;
 #if defined(Q_OS_WIN) && defined(BUILD_WITH_ELAPACKETIO)
 class T_ElaPacketIO;
@@ -19,9 +24,15 @@ public:
     ~T_ElaScreen() override;
 
 private:
+#ifdef Q_OS_WIN
     ElaDxgiScreen* _dxgiScreen{nullptr};
     ElaComboBox* _dxComboBox{nullptr};
     ElaComboBox* _outputComboBox{nullptr};
+#endif
+#ifdef Q_OS_MAC
+    ElaScreenCaptureScreen* _captureScreen{nullptr};
+    ElaComboBox* _displayComboBox{nullptr};
+#endif
 #if defined(Q_OS_WIN) && defined(BUILD_WITH_ELAPACKETIO)
     T_ElaPacketIO* _packetSendIO{nullptr};
     T_ElaPacketIO* _packetRecvIO{nullptr};

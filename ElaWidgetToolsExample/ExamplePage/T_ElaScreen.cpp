@@ -1,24 +1,31 @@
 ﻿#include "T_ElaScreen.h"
 
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
 #include "ElaComboBox.h"
-#include "ElaDxgiManager.h"
-#include "ElaLineEdit.h"
 #include "ElaScrollPageArea.h"
 #include "ElaText.h"
 #include "ElaToggleButton.h"
-#include "T_ElaPacketIO.h"
-#include "T_RecvScreen.h"
 #include <QThread>
 #include <QTimer>
 #include <QVBoxLayout>
+
+#ifdef Q_OS_WIN
+#include "ElaDxgiManager.h"
+#include "ElaLineEdit.h"
+#include "T_ElaPacketIO.h"
+#include "T_RecvScreen.h"
+#endif
+
+#ifdef Q_OS_MAC
+#include "ElaScreenCaptureManager.h"
+#endif
+
 T_ElaScreen::T_ElaScreen(QWidget* parent)
     : T_BasePage(parent)
 {
-    // 预览窗口标题
     setWindowTitle("ElaScreen");
 
-    // 顶部元素
+#ifdef Q_OS_WIN
     createCustomWidget("DXGI录制组件被放置于此，可在此界面预览录制效果");
 
     ElaDxgiManager* dxgiManager = ElaDxgiManager::getInstance();
@@ -86,7 +93,7 @@ T_ElaScreen::T_ElaScreen(QWidget* parent)
     centerLayout->addLayout(comboBoxLayout);
     centerLayout->addWidget(dxgiScreenArea);
 
-#if defined(Q_OS_WIN) && defined(BUILD_WITH_ELAPACKETIO)
+#if defined(BUILD_WITH_ELAPACKETIO)
     QHBoxLayout* packetLayout = new QHBoxLayout();
     ElaText* packetIOText = new ElaText("网络视图 (需要先进行屏幕捕获 若接口IP不正确或不可用 程序可能会崩溃)", this);
     packetIOText->setTextPixelSize(17);
@@ -99,8 +106,8 @@ T_ElaScreen::T_ElaScreen(QWidget* parent)
     interfaceIPEdit->setPlaceholderText("接口IP");
     interfaceIPEdit->setText("192.168.1");
 
-    ElaToggleButton* sendButton = new ElaToggleButton("初始发送", this);
-    connect(sendButton, &ElaToggleButton::toggled, this, [=](bool isToggled) {
+    ElaToggleButton* sendButton2 = new ElaToggleButton("初始发送", this);
+    connect(sendButton2, &ElaToggleButton::toggled, this, [=](bool isToggled) {
         if (isToggled)
         {
             _initSendThread(interfaceIPEdit->text().trimmed());
@@ -123,7 +130,7 @@ T_ElaScreen::T_ElaScreen(QWidget* parent)
     });
     packetLayout->addWidget(interfaceIPText);
     packetLayout->addWidget(interfaceIPEdit);
-    packetLayout->addWidget(sendButton);
+    packetLayout->addWidget(sendButton2);
     packetLayout->addWidget(recvButton);
     packetLayout->addStretch();
     _recvScreen = new T_RecvScreen(this);
@@ -138,6 +145,60 @@ T_ElaScreen::T_ElaScreen(QWidget* parent)
 #endif
 
     addCentralWidget(centralWidget, false, true);
+#endif
+
+#ifdef Q_OS_MAC
+    createCustomWidget("屏幕录制组件被放置于此，可在此界面预览录制效果");
+
+    ElaScreenCaptureManager* captureManager = ElaScreenCaptureManager::getInstance();
+    captureManager->setGrabArea(1920, 1080);
+
+    ElaScrollPageArea* captureScreenArea = new ElaScrollPageArea(this);
+    captureScreenArea->setFixedHeight(700);
+    QHBoxLayout* captureScreenLayout = new QHBoxLayout(captureScreenArea);
+    _captureScreen = new ElaScreenCaptureScreen(this);
+    _captureScreen->setFixedSize(1200, 678);
+    captureScreenLayout->addWidget(_captureScreen);
+
+    ElaText* displayText = new ElaText("显示器选择", this);
+    displayText->setTextPixelSize(15);
+    _displayComboBox = new ElaComboBox(this);
+    _displayComboBox->addItems(captureManager->getDisplayList());
+    _displayComboBox->setCurrentIndex(captureManager->getDisplayID());
+
+    connect(_displayComboBox, QOverload<int>::of(&ElaComboBox::currentIndexChanged), this, [=](int index) {
+        captureManager->setDisplayID(index);
+        _captureScreen->update();
+    });
+
+    ElaToggleButton* startButton = new ElaToggleButton("捕获", this);
+    connect(startButton, &ElaToggleButton::toggled, this, [=](bool isToggled) {
+        if (isToggled)
+        {
+            captureManager->startGrabScreen();
+        }
+        else
+        {
+            captureManager->stopGrabScreen();
+            _captureScreen->update();
+        }
+    });
+
+    QHBoxLayout* comboBoxLayout = new QHBoxLayout();
+    comboBoxLayout->addWidget(displayText);
+    comboBoxLayout->addWidget(_displayComboBox);
+    comboBoxLayout->addWidget(startButton);
+    comboBoxLayout->addStretch();
+
+    QWidget* centralWidget = new QWidget(this);
+    centralWidget->setWindowTitle("ElaScreen");
+    QVBoxLayout* centerLayout = new QVBoxLayout(centralWidget);
+    centerLayout->setContentsMargins(0, 0, 0, 0);
+    centerLayout->addLayout(comboBoxLayout);
+    centerLayout->addWidget(captureScreenArea);
+
+    addCentralWidget(centralWidget, false, true);
+#endif
 }
 
 T_ElaScreen::~T_ElaScreen()

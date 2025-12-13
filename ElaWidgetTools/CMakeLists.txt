@@ -60,6 +60,12 @@ if (WIN32)
         DXGI
     )
 endif ()
+if (APPLE)
+    find_library(APPLICATION_SERVICES_FRAMEWORK ApplicationServices)
+    target_link_libraries(${PROJECT_NAME} PUBLIC
+        ${APPLICATION_SERVICES_FRAMEWORK}
+    )
+endif ()
 
 
 install(
