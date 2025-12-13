@@ -179,6 +179,14 @@ void ElaWindowPrivate::onThemeReadyChange()
 void ElaWindowPrivate::onDisplayModeChanged()
 {
     _currentNavigationBarDisplayMode = _pNavigationBarDisplayMode;
+    if (_isNavigationBarFloat)
+    {
+        _isNavigationDisplayModeChanged = true;
+        _isNavigationBarFloat = false;
+        _isNavigationBarExpanded = false;
+        _navigationBar->setIsTransparent(true);
+        _resetWindowLayout(false);
+    }
     switch (_pNavigationBarDisplayMode)
     {
     case ElaNavigationType::Auto:
