@@ -99,6 +99,7 @@
 | ElaWindow              | 带导航栏的无边框窗口   |                            |
 | ElaWidget              | 无边框模态窗口      |                            |
 | ElaGroupBox            | 分组框      |                            |
+| ElaInputDialog         | 输入框      |                            |
 
 ## 许可证
 ElaWidgetTools 使用 MIT 许可证授权所有类型项目，但要求所有分发的软件中必须保留本项目的MIT授权许可；所有未保留授权分发的商业行为均将被视为侵权行为
