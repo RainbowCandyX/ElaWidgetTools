@@ -85,137 +85,60 @@ T_Popup::T_Popup(QWidget* parent)
     colorDialogLayout->addWidget(colorText);
     colorDialogLayout->addStretch();
 
-    // ElaInputDialog - 文本输入示例
-    ElaText* inputResultText = new ElaText("未输入", this);
-    inputResultText->setTextPixelSize(15);
-    ElaPushButton* inputDialogButton = new ElaPushButton("打开输入对话框", this);
-    inputDialogButton->setFixedHeight(38);
-    connect(inputDialogButton, &ElaPushButton::clicked, this, [=]() {
-        bool ok;
-        QString text = ElaInputDialog::getText(
-            this,
-            "输入对话框",            // 标题
-            "请输入您的信息",        // 副标题
-            "名称:",                 // 标签
-            "",                     // 默认文本
-            &ok,
-            "确定",                 // 确定按钮文本
-            "取消"                  // 取消按钮文本
-        );
-        if (ok && !text.isEmpty())
-        {
-            inputResultText->setText(QString("您输入的内容: %1").arg(text));
-        }
-    });
-
     ElaScrollPageArea* inputDialogArea = new ElaScrollPageArea(this);
     QHBoxLayout* inputDialogLayout = new QHBoxLayout(inputDialogArea);
     ElaText* inputDialogText = new ElaText("ElaInputDialog", this);
     inputDialogText->setTextPixelSize(15);
     inputDialogLayout->addWidget(inputDialogText);
-    inputDialogLayout->addWidget(inputDialogButton);
-    inputDialogLayout->addWidget(inputResultText);
-    inputDialogLayout->addStretch();
 
-    // ElaInputDialog - 整数输入示例
-    ElaText* intResultText = new ElaText("未输入", this);
-    intResultText->setTextPixelSize(15);
-    ElaPushButton* intInputButton = new ElaPushButton("打开整数输入对话框", this);
-    intInputButton->setFixedHeight(38);
-    connect(intInputButton, &ElaPushButton::clicked, this, [=]() {
+    ElaPushButton* textInputButton = new ElaPushButton("文本", this);
+    textInputButton->setFixedSize(80, 38);
+    connect(textInputButton, &ElaPushButton::clicked, this, [=]() {
         bool ok;
-        int value = ElaInputDialog::getInt(
-            this,
-            "输入年龄",              // 标题
-            "请提供您的个人信息",    // 副标题
-            "年龄:",                 // 标签
-            18,                     // 默认值
-            0, 150, 1,             // 最小值, 最大值, 步长
-            &ok,
-            "确定",                 // 确定按钮文本
-            "取消"                  // 取消按钮文本
-        );
-        if (ok)
-        {
-            intResultText->setText(QString("您输入的年龄: %1").arg(value));
-        }
-    });
-
-    ElaScrollPageArea* intInputDialogArea = new ElaScrollPageArea(this);
-    QHBoxLayout* intInputDialogLayout = new QHBoxLayout(intInputDialogArea);
-    ElaText* intInputDialogText = new ElaText("ElaInputDialog (Int)", this);
-    intInputDialogText->setTextPixelSize(15);
-    intInputDialogLayout->addWidget(intInputDialogText);
-    intInputDialogLayout->addWidget(intInputButton);
-    intInputDialogLayout->addWidget(intResultText);
-    intInputDialogLayout->addStretch();
-
-    // ElaInputDialog - 双精度浮点数输入
-    ElaText* doubleResultText = new ElaText("未输入", this);
-    doubleResultText->setTextPixelSize(15);
-    ElaPushButton* doubleInputButton = new ElaPushButton("打开小数输入对话框", this);
-    doubleInputButton->setFixedHeight(38);
-    connect(doubleInputButton, &ElaPushButton::clicked, this, [=]() {
-        bool ok;
-        double value = ElaInputDialog::getDouble(
-            this,
-            "输入价格",              // 标题
-            "商品定价系统",          // 副标题
-            "价格:",                 // 标签
-            99.99,                  // 默认值
-            0.0, 9999.99, 2,       // 最小值, 最大值, 小数位数
-            &ok,
-            "确定",                 // 确定按钮文本
-            "取消"                  // 取消按钮文本
-        );
-        if (ok)
-        {
-            doubleResultText->setText(QString("您输入的价格: ¥%1").arg(value, 0, 'f', 2));
-        }
-    });
-
-    ElaScrollPageArea* doubleInputDialogArea = new ElaScrollPageArea(this);
-    QHBoxLayout* doubleInputDialogLayout = new QHBoxLayout(doubleInputDialogArea);
-    ElaText* doubleInputDialogText = new ElaText("ElaInputDialog (Double)", this);
-    doubleInputDialogText->setTextPixelSize(15);
-    doubleInputDialogLayout->addWidget(doubleInputDialogText);
-    doubleInputDialogLayout->addWidget(doubleInputButton);
-    doubleInputDialogLayout->addWidget(doubleResultText);
-    doubleInputDialogLayout->addStretch();
-
-    // ElaInputDialog - 多行文本输入示例
-    ElaText* multiLineResultText = new ElaText("未输入", this);
-    multiLineResultText->setTextPixelSize(15);
-    multiLineResultText->setWordWrap(true);
-    ElaPushButton* multiLineInputButton = new ElaPushButton("打开多行文本对话框", this);
-    multiLineInputButton->setFixedHeight(38);
-    connect(multiLineInputButton, &ElaPushButton::clicked, this, [=]() {
-        bool ok;
-        QString text = ElaInputDialog::getMultiLineText(
-            this,
-            "输入备注",              // 标题
-            "请详细描述您的需求",    // 副标题
-            "详细描述:",            // 标签
-            "",                     // 默认文本
-            &ok,
-            "提交",                 // 确定按钮文本
-            "取消"                  // 取消按钮文本
-        );
+        QString text = ElaInputDialog::getText(this, "输入对话框", "请输入您的信息", "名称:", "", &ok);
         if (ok && !text.isEmpty())
         {
-            QString displayText = text.length() > 30 ? text.left(30) + "..." : text;
-            multiLineResultText->setText(QString("您输入的内容: %1").arg(displayText));
+            qDebug() << "文本输入:" << text;
         }
     });
+    inputDialogLayout->addWidget(textInputButton);
 
-    ElaScrollPageArea* multiLineInputDialogArea = new ElaScrollPageArea(this);
-    QHBoxLayout* multiLineInputDialogLayout = new QHBoxLayout(multiLineInputDialogArea);
-    ElaText* multiLineInputDialogText = new ElaText("ElaInputDialog (MultiLine)", this);
-    multiLineInputDialogText->setTextPixelSize(15);
-    multiLineInputDialogLayout->addWidget(multiLineInputDialogText);
-    multiLineInputDialogLayout->addWidget(multiLineInputButton);
-    multiLineInputDialogLayout->addWidget(multiLineResultText);
-    multiLineInputDialogLayout->addStretch();
+    ElaPushButton* intInputButton = new ElaPushButton("整数", this);
+    intInputButton->setFixedSize(80, 38);
+    connect(intInputButton, &ElaPushButton::clicked, this, [=]() {
+        bool ok;
+        int value = ElaInputDialog::getInt(this, "输入年龄", "请提供您的个人信息", "年龄:", 18, 0, 150, 1, &ok);
+        if (ok)
+        {
+            qDebug() << "整数输入:" << value;
+        }
+    });
+    inputDialogLayout->addWidget(intInputButton);
+
+    ElaPushButton* doubleInputButton = new ElaPushButton("小数", this);
+    doubleInputButton->setFixedSize(80, 38);
+    connect(doubleInputButton, &ElaPushButton::clicked, this, [=]() {
+        bool ok;
+        double value = ElaInputDialog::getDouble(this, "输入价格", "商品定价系统", "价格:", 99.99, 0.0, 9999.99, 2, &ok);
+        if (ok)
+        {
+            qDebug() << "小数输入:" << value;
+        }
+    });
+    inputDialogLayout->addWidget(doubleInputButton);
+
+    ElaPushButton* multiLineInputButton = new ElaPushButton("多行", this);
+    multiLineInputButton->setFixedSize(80, 38);
+    connect(multiLineInputButton, &ElaPushButton::clicked, this, [=]() {
+        bool ok;
+        QString text = ElaInputDialog::getMultiLineText(this, "输入备注", "请详细描述您的需求", "详细描述:", "", &ok);
+        if (ok && !text.isEmpty())
+        {
+            qDebug() << "多行输入:" << text;
+        }
+    });
+    inputDialogLayout->addWidget(multiLineInputButton);
+    inputDialogLayout->addStretch();
 
     _calendar = new ElaCalendar(this);
 
@@ -358,9 +281,6 @@ T_Popup::T_Popup(QWidget* parent)
     centerVLayout->addWidget(toolButtonArea);
     centerVLayout->addWidget(colorDialogArea);
     centerVLayout->addWidget(inputDialogArea);
-    centerVLayout->addWidget(intInputDialogArea);
-    centerVLayout->addWidget(doubleInputDialogArea);
-    centerVLayout->addWidget(multiLineInputDialogArea);
     centerVLayout->addWidget(calendarPickerArea);
     centerVLayout->addWidget(_calendar);
     centerVLayout->addWidget(keyBinderArea);

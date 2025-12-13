@@ -22,6 +22,7 @@
 #include "T_ListView.h"
 #include "T_Setting.h"
 #include "T_TableView.h"
+#include "T_TableWidget.h"
 #include "T_TreeView.h"
 #include <QDebug>
 #include <QGraphicsView>
@@ -332,6 +333,7 @@ void MainWindow::initContent()
     _cardPage = new T_Card(this);
     _listViewPage = new T_ListView(this);
     _tableViewPage = new T_TableView(this);
+    _tableWidgetPage = new T_TableWidget(this);
     _treeViewPage = new T_TreeView(this);
     _settingPage = new T_Setting(this);
 
@@ -348,6 +350,7 @@ void MainWindow::initContent()
     addExpanderNode("ElaView", _viewKey, ElaIconType::CameraViewfinder);
     addPageNode("ElaListView", _listViewPage, _viewKey, 9, ElaIconType::List);
     addPageNode("ElaTableView", _tableViewPage, _viewKey, ElaIconType::Table);
+    addPageNode("ElaTableWidget", _tableWidgetPage, _viewKey, ElaIconType::TableCells);
     addPageNode("ElaTreeView", _treeViewPage, _viewKey, ElaIconType::ListTree);
     expandNavigationNode(_viewKey);
 
