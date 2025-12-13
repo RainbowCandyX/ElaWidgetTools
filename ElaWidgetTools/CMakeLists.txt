@@ -1,13 +1,23 @@
 ﻿cmake_minimum_required(VERSION 3.5)
 
-project(ElaWidgetTools VERSION 2.0.0 LANGUAGES CXX OBJCXX)
+if (APPLE)
+    project(ElaWidgetTools VERSION 2.0.0 LANGUAGES CXX OBJCXX)
+else()
+    project(ElaWidgetTools VERSION 2.0.0 LANGUAGES CXX)
+endif()
 
 add_definitions(-DELAWIDGETTOOLS_LIBRARY)
 option(ELAWIDGETTOOLS_BUILD_STATIC_LIB "Build static library." OFF)
 
-FILE(GLOB ORIGIN *.h *.cpp *.mm)
-FILE(GLOB PRIVATE private/*.h private/*.cpp private/*.mm)
-FILE(GLOB DEVELOPER DeveloperComponents/*.h DeveloperComponents/*.cpp DeveloperComponents/*.mm)
+if (APPLE)
+    FILE(GLOB ORIGIN *.h *.cpp *.mm)
+    FILE(GLOB PRIVATE private/*.h private/*.cpp private/*.mm)
+    FILE(GLOB DEVELOPER DeveloperComponents/*.h DeveloperComponents/*.cpp DeveloperComponents/*.mm)
+else()
+    FILE(GLOB ORIGIN *.h *.cpp)
+    FILE(GLOB PRIVATE private/*.h private/*.cpp)
+    FILE(GLOB DEVELOPER DeveloperComponents/*.h DeveloperComponents/*.cpp)
+endif()
 
 source_group(include FILES ${INCLUDE})
 source_group(private FILES ${PRIVATE})
