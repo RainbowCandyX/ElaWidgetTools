@@ -34,6 +34,19 @@ ElaTableWidget::~ElaTableWidget()
     delete d->_tableWidgetStyle;
 }
 
+void ElaTableWidget::insertRows(int row, int count)
+{
+    if (row < 0 || count <= 0 || row > rowCount())
+    {
+        return;
+    }
+
+    for (int i = 0; i < count; ++i)
+    {
+        insertRow(row);
+    }
+}
+
 void ElaTableWidget::removeRows(int row, int count)
 {
     if (row < 0 || count <= 0 || row >= rowCount())
@@ -47,6 +60,93 @@ void ElaTableWidget::removeRows(int row, int count)
     {
         removeRow(i);
     }
+}
+
+void ElaTableWidget::insertColumns(int column, int count)
+{
+    if (column < 0 || count <= 0 || column > columnCount())
+    {
+        return;
+    }
+
+    for (int i = 0; i < count; ++i)
+    {
+        insertColumn(column);
+    }
+}
+
+void ElaTableWidget::removeColumns(int column, int count)
+{
+    if (column < 0 || count <= 0 || column >= columnCount())
+    {
+        return;
+    }
+
+    int actualCount = qMin(count, columnCount() - column);
+
+    for (int i = column + actualCount - 1; i >= column; --i)
+    {
+        removeColumn(i);
+    }
+}
+
+void ElaTableWidget::setItemText(int row, int column, const QString& text)
+{
+    if (row < 0 || row >= rowCount() || column < 0 || column >= columnCount())
+    {
+        return;
+    }
+
+    QTableWidgetItem* currentItem = item(row, column);
+    if (currentItem)
+    {
+        currentItem->setText(text);
+    }
+    else
+    {
+        QTableWidgetItem* newItem = new QTableWidgetItem(text);
+        setItem(row, column, newItem);
+    }
+}
+
+QString ElaTableWidget::getItemText(int row, int column) const
+{
+    if (row < 0 || row >= rowCount() || column < 0 || column >= columnCount())
+    {
+        return QString();
+    }
+
+    QTableWidgetItem* currentItem = item(row, column);
+    return currentItem ? currentItem->text() : QString();
+}
+
+void ElaTableWidget::setRowData(int row, const QStringList& data)
+{
+    if (row < 0 || row >= rowCount())
+    {
+        return;
+    }
+
+    int maxCol = qMin(data.size(), columnCount());
+    for (int col = 0; col < maxCol; ++col)
+    {
+        setItemText(row, col, data[col]);
+    }
+}
+
+QStringList ElaTableWidget::getRowData(int row) const
+{
+    QStringList data;
+    if (row < 0 || row >= rowCount())
+    {
+        return data;
+    }
+
+    for (int col = 0; col < columnCount(); ++col)
+    {
+        data.append(getItemText(row, col));
+    }
+    return data;
 }
 
 void ElaTableWidget::setItemHeight(int itemHeight)

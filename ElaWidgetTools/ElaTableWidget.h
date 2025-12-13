@@ -17,7 +17,15 @@ public:
     explicit ElaTableWidget(QWidget* parent = nullptr);
     ~ElaTableWidget();
 
+    void insertRows(int row, int count);
     void removeRows(int row, int count);
+    void insertColumns(int column, int count);
+    void removeColumns(int column, int count);
+
+    void setItemText(int row, int column, const QString& text);
+    QString getItemText(int row, int column) const;
+    void setRowData(int row, const QStringList& data);
+    QStringList getRowData(int row) const;
 
 Q_SIGNALS:
     Q_SIGNAL void tableWidgetShow();
