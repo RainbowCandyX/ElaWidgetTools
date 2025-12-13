@@ -5,6 +5,7 @@
 
 class ElaToolButton;
 class ElaColorDialog;
+class ElaInputDialog;
 class ElaCalendar;
 class ElaCalendarPicker;
 class ElaKeyBinder;
