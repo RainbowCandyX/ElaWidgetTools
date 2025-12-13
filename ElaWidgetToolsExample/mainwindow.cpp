@@ -30,8 +30,10 @@
 #include <QMouseEvent>
 #ifdef Q_OS_WIN
 #include "ElaApplication.h"
-#include "ExamplePage/T_ElaScreen.h"
 #include <QTimer>
+#endif
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+#include "ExamplePage/T_ElaScreen.h"
 #endif
 
 #include "ExamplePage/T_Home.h"
@@ -322,7 +324,7 @@ void MainWindow::initEdgeLayout()
 void MainWindow::initContent()
 {
     _homePage = new T_Home(this);
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     _elaScreenPage = new T_ElaScreen(this);
 #endif
     _iconPage = new T_Icon(this);
@@ -340,8 +342,12 @@ void MainWindow::initContent()
     QString testKey_1;
     QString testKey_2;
     addPageNode("HOME", _homePage, ElaIconType::House);
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
 #ifdef Q_OS_WIN
     addExpanderNode("ElaDxgi", _elaDxgiKey, ElaIconType::TvMusic);
+#else
+    addExpanderNode("ElaScreenCapture", _elaDxgiKey, ElaIconType::TvMusic);
+#endif
     addPageNode("ElaScreen", _elaScreenPage, _elaDxgiKey, 3, ElaIconType::ObjectGroup);
 #endif
     // navigation(elaScreenWidget->property("ElaPageKey").toString());

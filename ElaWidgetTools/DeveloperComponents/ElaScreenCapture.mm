@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <mach/mach_time.h>
 
+#include <ScreenCaptureKit/ScreenCaptureKit.h>
+#include <Foundation/Foundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 
 class ElaScreenCapture::Private
@@ -10,6 +12,8 @@ class ElaScreenCapture::Private
 public:
     CGDirectDisplayID displayId{0};
     QVector<CGDirectDisplayID> displayIds;
+    SCDisplay* scDisplay{nil};
+    NSArray<SCDisplay*>* scDisplays{nil};
 };
 
 ElaScreenCapture::ElaScreenCapture(QObject* parent)
@@ -35,43 +39,58 @@ bool ElaScreenCapture::initialize(int displayID)
     _pDisplayID = displayID;
     releaseInterface();
 
-    // Get all displays
-    uint32_t displayCount = 0;
-    CGGetActiveDisplayList(0, nullptr, &displayCount);
-    if (displayCount == 0)
-    {
-        _pLastError = "No active displays found";
+    __block bool success = false;
+    __block NSError* error = nil;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+
+    [SCShareableContent getShareableContentWithCompletionHandler:^(SCShareableContent* content, NSError* err) {
+        if (err) {
+            error = err;
+            dispatch_semaphore_signal(semaphore);
+            return;
+        }
+
+        if (content.displays.count == 0) {
+            dispatch_semaphore_signal(semaphore);
+            return;
+        }
+
+        d->scDisplays = [content.displays retain];
+        success = true;
+        dispatch_semaphore_signal(semaphore);
+    }];
+
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    dispatch_release(semaphore);
+
+    if (!success || d->scDisplays == nil || d->scDisplays.count == 0) {
+        _pLastError = error ? QString::fromNSString(error.localizedDescription) : "No active displays found";
         qDebug() << _pLastError;
         return false;
     }
 
-    d->displayIds.resize(displayCount);
-    CGGetActiveDisplayList(displayCount, d->displayIds.data(), &displayCount);
-
     _pDisplayList.clear();
-    for (uint32_t i = 0; i < displayCount; i++)
-    {
-        CGDirectDisplayID display = d->displayIds[i];
+    for (NSUInteger i = 0; i < d->scDisplays.count; i++) {
+        SCDisplay* display = d->scDisplays[i];
         QString displayName = QString("Display %1 (%2x%3)")
                                   .arg(i + 1)
-                                  .arg(CGDisplayPixelsWide(display))
-                                  .arg(CGDisplayPixelsHigh(display));
-        if (!_pDisplayList.contains(displayName))
-        {
+                                  .arg(display.width)
+                                  .arg(display.height);
+        if (!_pDisplayList.contains(displayName)) {
             _pDisplayList.append(displayName);
         }
     }
 
-    if (displayID < 0 || displayID >= static_cast<int>(displayCount))
-    {
+    if (displayID < 0 || displayID >= static_cast<int>(d->scDisplays.count)) {
         _pLastError = "Invalid display ID";
         qDebug() << _pLastError;
         return false;
     }
 
-    d->displayId = d->displayIds[displayID];
-    _displayWidth = static_cast<int>(CGDisplayPixelsWide(d->displayId));
-    _displayHeight = static_cast<int>(CGDisplayPixelsHigh(d->displayId));
+    d->scDisplay = d->scDisplays[displayID];
+    d->displayId = d->scDisplay.displayID;
+    _displayWidth = static_cast<int>(d->scDisplay.width);
+    _displayHeight = static_cast<int>(d->scDisplay.height);
 
     _pIsInitSuccess = true;
     return true;
@@ -107,14 +126,44 @@ static QImage cgImageToQImage(CGImageRef cgImage)
     return image;
 }
 
+static CGImageRef captureDisplayUsingScreenCaptureKit(SCDisplay* display)
+{
+    if (!display) {
+        return nullptr;
+    }
+
+    __block CGImageRef capturedImage = nullptr;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+
+    SCContentFilter* filter = [[SCContentFilter alloc] initWithDisplay:display excludingWindows:@[]];
+    SCStreamConfiguration* config = [[SCStreamConfiguration alloc] init];
+
+    [SCScreenshotManager captureImageWithFilter:filter
+                                  configuration:config
+                              completionHandler:^(CGImageRef sampleBuffer, NSError* error) {
+        if (sampleBuffer && !error) {
+            capturedImage = CGImageRetain(sampleBuffer);
+        }
+        dispatch_semaphore_signal(semaphore);
+    }];
+
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    dispatch_release(semaphore);
+
+    [filter release];
+    [config release];
+
+    return capturedImage;
+}
+
 QImage ElaScreenCapture::getGrabImage() const
 {
-    if (!_pIsInitSuccess)
+    if (!_pIsInitSuccess || !d->scDisplay)
     {
         return QImage();
     }
 
-    CGImageRef cgImage = CGDisplayCreateImage(d->displayId);
+    CGImageRef cgImage = captureDisplayUsingScreenCaptureKit(d->scDisplay);
     if (!cgImage)
     {
         return QImage();
@@ -139,7 +188,7 @@ QImage ElaScreenCapture::getGrabImage() const
 
 void ElaScreenCapture::onGrabScreen()
 {
-    if (!_pIsInitSuccess || d->displayId == 0)
+    if (!_pIsInitSuccess || !d->scDisplay)
     {
         setIsGrabStoped(true);
         return;
@@ -151,8 +200,7 @@ void ElaScreenCapture::onGrabScreen()
     {
         _grabTimer.start();
 
-        // Capture screen using CGDisplayCreateImage
-        CGImageRef cgImage = CGDisplayCreateImage(d->displayId);
+        CGImageRef cgImage = captureDisplayUsingScreenCaptureKit(d->scDisplay);
         if (cgImage)
         {
             _lastImage = cgImageToQImage(cgImage);
@@ -198,6 +246,11 @@ void ElaScreenCapture::onGrabScreen()
 
 void ElaScreenCapture::releaseInterface()
 {
+    if (d->scDisplays) {
+        [d->scDisplays release];
+        d->scDisplays = nil;
+    }
+    d->scDisplay = nil;
     d->displayId = 0;
     d->displayIds.clear();
 }

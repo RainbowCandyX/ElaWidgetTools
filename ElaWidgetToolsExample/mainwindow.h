@@ -39,7 +39,7 @@ private:
     ElaContentDialog* _closeDialog{nullptr};
     ElaSuggestBox* _windowSuggestBox{nullptr};
     T_Home* _homePage{nullptr};
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     T_ElaScreen* _elaScreenPage{nullptr};
 #endif
     T_Icon* _iconPage{nullptr};
