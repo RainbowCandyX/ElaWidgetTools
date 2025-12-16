@@ -33,7 +33,9 @@ private:
     ElaPushButton* _leftButton{nullptr};
     ElaPushButton* _middleButton{nullptr};
     ElaPushButton* _rightButton{nullptr};
+    bool _isLeftButtonVisible{true};
     bool _isMiddleButtonVisible{true};
+    bool _isRightButtonVisible{true};
     void _doCloseAnimation(bool isAccept);
 };
 

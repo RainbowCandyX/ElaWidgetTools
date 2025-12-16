@@ -23,7 +23,9 @@ public:
     void setMiddleButtonText(QString text);
     void setRightButtonText(QString text);
 
+    void setLeftButtonVisible(bool visible);
     void setMiddleButtonVisible(bool visible);
+    void setRightButtonVisible(bool visible);
 
     void close();
 Q_SIGNALS:

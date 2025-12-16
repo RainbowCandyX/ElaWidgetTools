@@ -152,6 +152,26 @@ void ElaContentDialog::setRightButtonText(QString text)
     d->_rightButton->setText(text);
 }
 
+void ElaContentDialog::setLeftButtonVisible(bool visible)
+{
+    Q_D(ElaContentDialog);
+    if (d->_isLeftButtonVisible == visible)
+    {
+        return;
+    }
+    d->_isLeftButtonVisible = visible;
+    if (visible)
+    {
+        d->_buttonLayout->insertWidget(0, d->_leftButton);
+        d->_leftButton->show();
+    }
+    else
+    {
+        d->_buttonLayout->removeWidget(d->_leftButton);
+        d->_leftButton->hide();
+    }
+}
+
 void ElaContentDialog::setMiddleButtonVisible(bool visible)
 {
     Q_D(ElaContentDialog);
@@ -169,6 +189,26 @@ void ElaContentDialog::setMiddleButtonVisible(bool visible)
     {
         d->_buttonLayout->removeWidget(d->_middleButton);
         d->_middleButton->hide();
+    }
+}
+
+void ElaContentDialog::setRightButtonVisible(bool visible)
+{
+    Q_D(ElaContentDialog);
+    if (d->_isRightButtonVisible == visible)
+    {
+        return;
+    }
+    d->_isRightButtonVisible = visible;
+    if (visible)
+    {
+        d->_buttonLayout->addWidget(d->_rightButton);
+        d->_rightButton->show();
+    }
+    else
+    {
+        d->_buttonLayout->removeWidget(d->_rightButton);
+        d->_rightButton->hide();
     }
 }
 
