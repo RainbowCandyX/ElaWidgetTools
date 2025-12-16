@@ -5,6 +5,7 @@
 
 #include "ElaDef.h"
 class QVBoxLayout;
+class QHBoxLayout;
 class ElaPushButton;
 class ElaContentDialog;
 class ElaMaskWidget;
@@ -25,12 +26,14 @@ private:
     QWidget* _centralWidget{nullptr};
     QWidget* _buttonWidget{nullptr};
     QVBoxLayout* _mainLayout{nullptr};
+    QHBoxLayout* _buttonLayout{nullptr};
     QString _leftButtonText{"cancel"};
     QString _middleButtonText{"minimum"};
     QString _rightButtonText{"exit"};
     ElaPushButton* _leftButton{nullptr};
     ElaPushButton* _middleButton{nullptr};
     ElaPushButton* _rightButton{nullptr};
+    bool _isMiddleButtonVisible{true};
     void _doCloseAnimation(bool isAccept);
 };
 

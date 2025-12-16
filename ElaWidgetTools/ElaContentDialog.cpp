@@ -92,10 +92,10 @@ ElaContentDialog::ElaContentDialog(QWidget* parent)
     d->_mainLayout->setContentsMargins(0, 0, 0, 0);
     d->_buttonWidget = new QWidget(this);
     d->_buttonWidget->setFixedHeight(60);
-    QHBoxLayout* buttonLayout = new QHBoxLayout(d->_buttonWidget);
-    buttonLayout->addWidget(d->_leftButton);
-    buttonLayout->addWidget(d->_middleButton);
-    buttonLayout->addWidget(d->_rightButton);
+    d->_buttonLayout = new QHBoxLayout(d->_buttonWidget);
+    d->_buttonLayout->addWidget(d->_leftButton);
+    d->_buttonLayout->addWidget(d->_middleButton);
+    d->_buttonLayout->addWidget(d->_rightButton);
     d->_mainLayout->addWidget(d->_centralWidget);
     d->_mainLayout->addWidget(d->_buttonWidget);
 
@@ -150,6 +150,26 @@ void ElaContentDialog::setRightButtonText(QString text)
 {
     Q_D(ElaContentDialog);
     d->_rightButton->setText(text);
+}
+
+void ElaContentDialog::setMiddleButtonVisible(bool visible)
+{
+    Q_D(ElaContentDialog);
+    if (d->_isMiddleButtonVisible == visible)
+    {
+        return;
+    }
+    d->_isMiddleButtonVisible = visible;
+    if (visible)
+    {
+        d->_buttonLayout->insertWidget(1, d->_middleButton);
+        d->_middleButton->show();
+    }
+    else
+    {
+        d->_buttonLayout->removeWidget(d->_middleButton);
+        d->_middleButton->hide();
+    }
 }
 
 void ElaContentDialog::close()

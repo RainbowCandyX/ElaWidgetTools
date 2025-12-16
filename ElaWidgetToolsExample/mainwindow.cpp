@@ -60,6 +60,8 @@ MainWindow::MainWindow(QWidget* parent)
         _closeDialog->close();
         showMinimized();
     });
+    // 如果不需要最小化功能，可以隐藏中间按钮
+    _closeDialog->setMiddleButtonVisible(false);
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, [=]() {
         _closeDialog->exec();
