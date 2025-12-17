@@ -35,7 +35,7 @@ public:
                           const QString& text = QString(),
                           bool* ok = nullptr, const QString& okButtonText = "确定",
                           const QString& cancelButtonText = "取消",
-                          int inputMinWidth = 50, int inputMaxWidth = QWIDGETSIZE_MAX);
+                          int inputMinWidth = 100, int inputMaxWidth = QWIDGETSIZE_MAX);
 
     static int getInt(QWidget* parent, const QString& title,
                      const QString& subtitle, const QString& label,
@@ -44,7 +44,7 @@ public:
                      int step = 1, bool* ok = nullptr,
                      const QString& okButtonText = "确定",
                      const QString& cancelButtonText = "取消",
-                     int inputMinWidth = 50, int inputMaxWidth = QWIDGETSIZE_MAX);
+                     int inputMinWidth = 100, int inputMaxWidth = QWIDGETSIZE_MAX);
 
     static double getDouble(QWidget* parent, const QString& title,
                            const QString& subtitle, const QString& label,
@@ -53,14 +53,14 @@ public:
                            int decimals = 2, bool* ok = nullptr,
                            const QString& okButtonText = "确定",
                            const QString& cancelButtonText = "取消",
-                           int inputMinWidth = 50, int inputMaxWidth = QWIDGETSIZE_MAX);
+                           int inputMinWidth = 100, int inputMaxWidth = QWIDGETSIZE_MAX);
 
     static QString getMultiLineText(QWidget* parent, const QString& title,
                                    const QString& subtitle, const QString& label,
                                    const QString& text = QString(),
                                    bool* ok = nullptr, const QString& okButtonText = "确定",
                                    const QString& cancelButtonText = "取消",
-                                   int inputMinWidth = 50, int inputMaxWidth = QWIDGETSIZE_MAX);
+                                   int inputMinWidth = 100, int inputMaxWidth = QWIDGETSIZE_MAX);
 
     void setTextEchoMode(QLineEdit::EchoMode mode);
     QLineEdit::EchoMode textEchoMode() const;
