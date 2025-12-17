@@ -6,11 +6,12 @@
 #include <QPainterPath>
 #include <QPropertyAnimation>
 #include <QTimer>
+#include <QPointer>
 
 #include "ElaIconButton.h"
 #include "ElaMessageBar.h"
 Q_SINGLETON_CREATE_CPP(ElaMessageBarManager)
-QMap<ElaMessageBarType::PositionPolicy, QList<ElaMessageBar*>*> _messageBarActiveMap;
+QMap<ElaMessageBarType::PositionPolicy, QList<QPointer<ElaMessageBar>>*> _messageBarActiveMap;
 ElaMessageBarManager::ElaMessageBarManager(QObject* parent)
 {
 }
@@ -73,6 +74,10 @@ void ElaMessageBarManager::postMessageBarEndEvent(ElaMessageBar* messageBar)
     ElaMessageBarType::PositionPolicy policy = messageBar->d_ptr->_policy;
     foreach (auto otherMessageBar, *_messageBarActiveMap.value(policy))
     {
+        if (!otherMessageBar)
+        {
+            continue;
+        }
         if (otherMessageBar->d_ptr->_judgeCreateOrder(messageBar))
         {
             QList<QVariantMap> eventList = _messageBarEventMap[otherMessageBar];
@@ -138,7 +143,7 @@ void ElaMessageBarManager::updateActiveMap(ElaMessageBar* messageBar, bool isAct
         }
         else
         {
-            QList<ElaMessageBar*>* messageBarList = new QList<ElaMessageBar*>();
+            QList<QPointer<ElaMessageBar>>* messageBarList = new QList<QPointer<ElaMessageBar>>();
             messageBarList->append(messageBar);
             _messageBarActiveMap.insert(policy, messageBarList);
         }
@@ -397,7 +402,14 @@ void ElaMessageBarPrivate::_calculateInitialPos(int& startX, int& startY, int& e
     }
     if (endY < _messageBarVerticalTopMargin || endY > q->parentWidget()->height() - _messageBarVerticalBottomMargin - q->minimumHeight())
     {
-        (*_messageBarActiveMap[_policy])[0]->d_ptr->onCloseButtonClicked();
+        if (_messageBarActiveMap[_policy] && !_messageBarActiveMap[_policy]->isEmpty())
+        {
+            auto firstMessageBar = (*_messageBarActiveMap[_policy])[0];
+            if (firstMessageBar)
+            {
+                firstMessageBar->d_ptr->onCloseButtonClicked();
+            }
+        }
         _calculateInitialPos(startX, startY, endX, endY);
     }
 }
@@ -408,14 +420,14 @@ QList<int> ElaMessageBarPrivate::_getOtherMessageBarTotalData(bool isJudgeCreate
     QList<int> resultList;
     int minimumHeightTotal = 0;
     int indexLessCount = 0;
-    QList<ElaMessageBar*>* messageBarList = _messageBarActiveMap[_policy];
+    QList<QPointer<ElaMessageBar>>* messageBarList = _messageBarActiveMap[_policy];
     for (auto messageBar: *messageBarList)
     {
-        if (messageBar == q)
+        if (!messageBar || messageBar == q)
         {
             continue;
         }
-        if (!isJudgeCreateOrder || (isJudgeCreateOrder && _judgeCreateOrder(messageBar)))
+        if (!isJudgeCreateOrder || (isJudgeCreateOrder && _judgeCreateOrder(messageBar.data())))
         {
             indexLessCount++;
             minimumHeightTotal += messageBar->minimumHeight();
