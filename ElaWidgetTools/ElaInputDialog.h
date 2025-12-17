@@ -23,6 +23,8 @@ class ELA_EXPORT ElaInputDialog : public QDialog
     Q_PROPERTY_CREATE_Q_H(QString, OkButtonText)
     Q_PROPERTY_CREATE_Q_H(QString, CancelButtonText)
     Q_PROPERTY_CREATE_Q_H(QString, PlaceholderText)
+    Q_PROPERTY_CREATE_Q_H(int, InputMinimumWidth)
+    Q_PROPERTY_CREATE_Q_H(int, InputMaximumWidth)
 
 public:
     explicit ElaInputDialog(QWidget* parent = nullptr);
@@ -32,7 +34,8 @@ public:
                           const QString& subtitle, const QString& label,
                           const QString& text = QString(),
                           bool* ok = nullptr, const QString& okButtonText = "确定",
-                          const QString& cancelButtonText = "取消");
+                          const QString& cancelButtonText = "取消",
+                          int inputMinWidth = 50, int inputMaxWidth = QWIDGETSIZE_MAX);
 
     static int getInt(QWidget* parent, const QString& title,
                      const QString& subtitle, const QString& label,
@@ -40,7 +43,8 @@ public:
                      int minValue = -2147483647, int maxValue = 2147483647,
                      int step = 1, bool* ok = nullptr,
                      const QString& okButtonText = "确定",
-                     const QString& cancelButtonText = "取消");
+                     const QString& cancelButtonText = "取消",
+                     int inputMinWidth = 50, int inputMaxWidth = QWIDGETSIZE_MAX);
 
     static double getDouble(QWidget* parent, const QString& title,
                            const QString& subtitle, const QString& label,
@@ -48,13 +52,15 @@ public:
                            double minValue = -2147483647.0, double maxValue = 2147483647.0,
                            int decimals = 2, bool* ok = nullptr,
                            const QString& okButtonText = "确定",
-                           const QString& cancelButtonText = "取消");
+                           const QString& cancelButtonText = "取消",
+                           int inputMinWidth = 50, int inputMaxWidth = QWIDGETSIZE_MAX);
 
     static QString getMultiLineText(QWidget* parent, const QString& title,
                                    const QString& subtitle, const QString& label,
                                    const QString& text = QString(),
                                    bool* ok = nullptr, const QString& okButtonText = "确定",
-                                   const QString& cancelButtonText = "取消");
+                                   const QString& cancelButtonText = "取消",
+                                   int inputMinWidth = 50, int inputMaxWidth = QWIDGETSIZE_MAX);
 
     void setTextEchoMode(QLineEdit::EchoMode mode);
     QLineEdit::EchoMode textEchoMode() const;

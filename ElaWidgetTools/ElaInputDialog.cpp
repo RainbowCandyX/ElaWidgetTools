@@ -31,6 +31,8 @@ Q_PROPERTY_CREATE_Q_CPP(ElaInputDialog, double, DoubleValue)
 Q_PROPERTY_CREATE_Q_CPP(ElaInputDialog, QString, OkButtonText)
 Q_PROPERTY_CREATE_Q_CPP(ElaInputDialog, QString, CancelButtonText)
 Q_PROPERTY_CREATE_Q_CPP(ElaInputDialog, QString, PlaceholderText)
+Q_PROPERTY_CREATE_Q_CPP(ElaInputDialog, int, InputMinimumWidth)
+Q_PROPERTY_CREATE_Q_CPP(ElaInputDialog, int, InputMaximumWidth)
 
 ElaInputDialog::ElaInputDialog(QWidget* parent)
     : QDialog{parent}, d_ptr(new ElaInputDialogPrivate())
@@ -63,6 +65,8 @@ ElaInputDialog::ElaInputDialog(QWidget* parent)
     d->_pOkButtonText = "确定";
     d->_pCancelButtonText = "取消";
     d->_pPlaceholderText = "";
+    d->_pInputMinimumWidth = 100;
+    d->_pInputMaximumWidth = QWIDGETSIZE_MAX;
 
     d->_titleLabel = new ElaText(d->_pTitleText, this);
     d->_titleLabel->setTextStyle(ElaTextType::Title);
@@ -160,7 +164,8 @@ QString ElaInputDialog::getText(QWidget* parent, const QString& title,
                                 const QString& subtitle, const QString& label,
                                 const QString& text,
                                 bool* ok, const QString& okButtonText,
-                                const QString& cancelButtonText)
+                                const QString& cancelButtonText,
+                                int inputMinWidth, int inputMaxWidth)
 {
     ElaInputDialog dialog(parent);
     dialog.setTitleText(title);
@@ -169,6 +174,8 @@ QString ElaInputDialog::getText(QWidget* parent, const QString& title,
     dialog.setTextValue(text);
     dialog.setOkButtonText(okButtonText);
     dialog.setCancelButtonText(cancelButtonText);
+    dialog.setInputMinimumWidth(inputMinWidth);
+    dialog.setInputMaximumWidth(inputMaxWidth);
     dialog.updateLabels();
 
     bool accepted = (dialog.exec() == QDialog::Accepted);
@@ -183,7 +190,8 @@ int ElaInputDialog::getInt(QWidget* parent, const QString& title,
                            int value,
                            int minValue, int maxValue, int step,
                            bool* ok, const QString& okButtonText,
-                           const QString& cancelButtonText)
+                           const QString& cancelButtonText,
+                           int inputMinWidth, int inputMaxWidth)
 {
     ElaInputDialog dialog(parent);
     dialog.setTitleText(title);
@@ -193,6 +201,8 @@ int ElaInputDialog::getInt(QWidget* parent, const QString& title,
     dialog.setTextValue(QString::number(value));
     dialog.setOkButtonText(okButtonText);
     dialog.setCancelButtonText(cancelButtonText);
+    dialog.setInputMinimumWidth(inputMinWidth);
+    dialog.setInputMaximumWidth(inputMaxWidth);
     dialog.updateLabels();
     dialog.setIntRange(minValue, maxValue, step);
 
@@ -208,7 +218,8 @@ double ElaInputDialog::getDouble(QWidget* parent, const QString& title,
                                  double value,
                                  double minValue, double maxValue, int decimals,
                                  bool* ok, const QString& okButtonText,
-                                 const QString& cancelButtonText)
+                                 const QString& cancelButtonText,
+                                 int inputMinWidth, int inputMaxWidth)
 {
     ElaInputDialog dialog(parent);
     dialog.setTitleText(title);
@@ -218,6 +229,8 @@ double ElaInputDialog::getDouble(QWidget* parent, const QString& title,
     dialog.setTextValue(QString::number(value, 'f', decimals));
     dialog.setOkButtonText(okButtonText);
     dialog.setCancelButtonText(cancelButtonText);
+    dialog.setInputMinimumWidth(inputMinWidth);
+    dialog.setInputMaximumWidth(inputMaxWidth);
     dialog.updateLabels();
     dialog.setDoubleRange(minValue, maxValue, decimals);
 
@@ -232,7 +245,8 @@ QString ElaInputDialog::getMultiLineText(QWidget* parent, const QString& title,
                                          const QString& subtitle, const QString& label,
                                          const QString& text,
                                          bool* ok, const QString& okButtonText,
-                                         const QString& cancelButtonText)
+                                         const QString& cancelButtonText,
+                                         int inputMinWidth, int inputMaxWidth)
 {
     ElaInputDialog dialog(parent);
     dialog.setTitleText(title);
@@ -241,6 +255,8 @@ QString ElaInputDialog::getMultiLineText(QWidget* parent, const QString& title,
     dialog.setTextValue(text);
     dialog.setOkButtonText(okButtonText);
     dialog.setCancelButtonText(cancelButtonText);
+    dialog.setInputMinimumWidth(inputMinWidth);
+    dialog.setInputMaximumWidth(inputMaxWidth);
     dialog.updateLabels();
     dialog.setMultiLine(true);
 
@@ -276,6 +292,8 @@ void ElaInputDialog::setIntRange(int minValue, int maxValue, int step)
     {
         d->_spinBox = new ElaSpinBox(this);
         d->_spinBox->setButtonMode(ElaSpinBoxType::PMSide);
+        d->_spinBox->setMinimumWidth(d->_pInputMinimumWidth);
+        d->_spinBox->setMaximumWidth(d->_pInputMaximumWidth);
         d->_spinBox->setMinimum(minValue);
         d->_spinBox->setMaximum(maxValue);
         d->_spinBox->setSingleStep(step);
@@ -316,6 +334,8 @@ void ElaInputDialog::setDoubleRange(double minValue, double maxValue, int decima
     {
         d->_doubleSpinBox = new ElaDoubleSpinBox(this);
         d->_doubleSpinBox->setButtonMode(ElaSpinBoxType::PMSide);
+        d->_doubleSpinBox->setMinimumWidth(d->_pInputMinimumWidth);
+        d->_doubleSpinBox->setMaximumWidth(d->_pInputMaximumWidth);
         d->_doubleSpinBox->setMinimum(minValue);
         d->_doubleSpinBox->setMaximum(maxValue);
         d->_doubleSpinBox->setDecimals(decimals);

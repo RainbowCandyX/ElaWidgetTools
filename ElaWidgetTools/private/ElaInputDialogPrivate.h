@@ -30,6 +30,8 @@ class ElaInputDialogPrivate : public QObject
     Q_PROPERTY_CREATE_D(QString, OkButtonText)
     Q_PROPERTY_CREATE_D(QString, CancelButtonText)
     Q_PROPERTY_CREATE_D(QString, PlaceholderText)
+    Q_PROPERTY_CREATE_D(int, InputMinimumWidth)
+    Q_PROPERTY_CREATE_D(int, InputMaximumWidth)
 
 public:
     explicit ElaInputDialogPrivate(QObject* parent = nullptr);
