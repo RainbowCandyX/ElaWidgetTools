@@ -74,7 +74,18 @@ void ElaAppBarPrivate::onStayTopButtonClicked()
     }
 #endif
     _stayTopButton->setIsSelected(_pIsStayTop);
-    _stayTopButton->update();
+
+    int currentRotate = _stayTopButton->property("ElaIconRotate").toInt();
+    int targetRotate = _pIsStayTop ? 0 : 45;
+    QPropertyAnimation* rotateAnimation = new QPropertyAnimation(_stayTopButton, "ElaIconRotate");
+    rotateAnimation->setDuration(300);
+    rotateAnimation->setEasingCurve(QEasingCurve::InOutSine);
+    rotateAnimation->setStartValue(currentRotate);
+    rotateAnimation->setEndValue(targetRotate);
+    connect(rotateAnimation, &QPropertyAnimation::valueChanged, _stayTopButton, [=]() {
+        _stayTopButton->update();
+    });
+    rotateAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 void ElaAppBarPrivate::_changeMaxButtonAwesome(bool isMaximized)
