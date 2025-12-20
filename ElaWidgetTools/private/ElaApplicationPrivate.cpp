@@ -11,10 +11,12 @@
 
 #include "ElaApplication.h"
 #include "ElaMicaBaseInitObject.h"
+#include "ElaTheme.h"
 #include "ElaWinShadowHelper.h"
 ElaApplicationPrivate::ElaApplicationPrivate(QObject* parent)
     : QObject{parent}
 {
+    connect(qApp, &QApplication::paletteChanged, this, &ElaApplicationPrivate::onSystemPaletteChanged);
 }
 
 ElaApplicationPrivate::~ElaApplicationPrivate()
@@ -191,4 +193,37 @@ void ElaApplicationPrivate::_resetAllMicaWidget()
         palette.setBrush(QPalette::Window, Qt::transparent);
         widget->setPalette(palette);
     }
+}
+
+void ElaApplicationPrivate::onSystemPaletteChanged()
+{
+    syncSystemTheme();
+}
+
+void ElaApplicationPrivate::syncSystemTheme()
+{
+    bool systemIsDark = _isSystemDarkMode();
+    ElaThemeType::ThemeMode currentMode = eTheme->getThemeMode();
+    ElaThemeType::ThemeMode targetMode = systemIsDark ? ElaThemeType::Dark : ElaThemeType::Light;
+
+    if (currentMode != targetMode)
+    {
+        eTheme->setThemeMode(targetMode);
+    }
+}
+
+bool ElaApplicationPrivate::_isSystemDarkMode() const
+{
+    QPalette palette = qApp->palette();
+    QColor windowColor = palette.color(QPalette::Window);
+    QColor textColor = palette.color(QPalette::WindowText);
+
+    qreal windowLuminance = 0.299 * windowColor.red() +
+                            0.587 * windowColor.green() +
+                            0.114 * windowColor.blue();
+
+    qreal textLuminance = 0.299 * textColor.red() +
+                          0.587 * textColor.green() +
+                          0.114 * textColor.blue();
+    return windowLuminance < textLuminance;
 }

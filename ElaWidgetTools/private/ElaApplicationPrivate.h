@@ -18,6 +18,8 @@ public:
     explicit ElaApplicationPrivate(QObject* parent = nullptr);
     ~ElaApplicationPrivate() override;
     Q_SLOT void onThemeModeChanged(ElaThemeType::ThemeMode themeMode);
+    Q_SLOT void onSystemPaletteChanged();
+    void syncSystemTheme();
 Q_SIGNALS:
     Q_SIGNAL void initMicaBase(QImage img);
 
@@ -35,6 +37,7 @@ private:
     void _updateMica(QWidget* widget, bool isProcessEvent = true);
     void _updateAllMicaWidget();
     void _resetAllMicaWidget();
+    bool _isSystemDarkMode() const;
 };
 
 #endif // ELAAPPLICATIONPRIVATE_H

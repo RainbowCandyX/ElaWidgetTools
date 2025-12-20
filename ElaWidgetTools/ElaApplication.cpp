@@ -90,6 +90,7 @@ QString ElaApplication::getElaMicaImagePath() const
 
 void ElaApplication::init()
 {
+    Q_D(ElaApplication);
     Q_INIT_RESOURCE(ElaWidgetTools);
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
     QFontDatabase::addApplicationFont(":/include/Font/ElaAwesome.ttf");
@@ -127,6 +128,7 @@ void ElaApplication::init()
 #ifdef Q_OS_WIN
     eWinHelper->initWinAPI();
 #endif
+    d->syncSystemTheme();
 }
 
 void ElaApplication::syncWindowDisplayMode(QWidget* widget, bool isSync)
