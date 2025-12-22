@@ -4,15 +4,15 @@ project(ElaWidgetToolsExample VERSION 0.1 LANGUAGES CXX)
 
 FILE(GLOB ORIGIN *.cpp *.h)
 FILE(GLOB MODELVIEW ModelView/*.h ModelView/*.cpp)
-FILE(GLOB EAXMPLEPAGE ExamplePage/*.h ExamplePage/*.cpp)
+FILE(GLOB EXAMPLEPAGE ExamplePage/*.h ExamplePage/*.cpp)
 
 source_group(ModelView FILES ${MODELVIEW})
-source_group(ExamplePage FILES ${EAXMPLEPAGE})
+source_group(ExamplePage FILES ${EXAMPLEPAGE})
 
 set(PROJECT_SOURCES
     ${ORIGIN}
     ${MODELVIEW}
-    ${EAXMPLEPAGE}
+    ${EXAMPLEPAGE}
 )
 
 if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
