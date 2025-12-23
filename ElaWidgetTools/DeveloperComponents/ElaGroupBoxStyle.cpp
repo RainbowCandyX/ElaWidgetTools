@@ -61,7 +61,7 @@ void ElaGroupBoxStyle::drawComplexControl(ComplexControl control, const QStyleOp
                 int textRight = textRect.center().x() + textWidth / 2;
 
                 QRect titleBgRect(textLeft - 4, borderTop - 2, textWidth + 8, 2);
-                painter->fillRect(titleBgRect, groupBox->palette.color(QPalette::Window));
+                //painter->fillRect(titleBgRect, ElaThemeColor(_themeMode, WindowBase));
 
                 QColor textColor = ElaThemeColor(_themeMode, BasicText);
                 if (option->state & State_HasFocus)
