@@ -11,6 +11,7 @@
 #include <QListView>
 #include <QMouseEvent>
 #include <QPropertyAnimation>
+
 Q_PROPERTY_CREATE_Q_CPP(ElaComboBox, int, BorderRadius)
 ElaComboBox::ElaComboBox(QWidget* parent)
     : QComboBox(parent), d_ptr(new ElaComboBoxPrivate())
@@ -108,12 +109,29 @@ void ElaComboBox::showPopup()
             {
                 containerHeight = count() * 35 + 8;
             }
+
+            QPoint globalPos = mapToGlobal(QPoint(0, 0));
+            QRect screenGeometry = QApplication::primaryScreen()->availableGeometry();
+
+            bool showAbove = (globalPos.y() + height() + containerHeight > screenGeometry.bottom()) &&
+                            (globalPos.y() - containerHeight >= screenGeometry.top());
+
+            QPoint containerPos;
+            if (showAbove)
+            {
+                containerPos = QPoint(globalPos.x(), globalPos.y() - containerHeight - 3);
+            }
+            else
+            {
+                containerPos = QPoint(globalPos.x(), globalPos.y() + height() + 3);
+            }
+            container->move(containerPos);
+
             view()->resize(view()->width(), containerHeight - 8);
             if (currentIndex() >= 0)
             {
                 view()->scrollTo(view()->model()->index(currentIndex(), 0), QAbstractItemView::PositionAtCenter);
             }
-            container->move(container->x(), container->y() + 3);
             QLayout* layout = container->layout();
             while (layout->count())
             {
