@@ -25,7 +25,7 @@ public:
 
 private:
     ElaThemeType::ThemeMode _themeMode;
-    int _horizontalPadding{11};
+    int _horizontalPadding{8};
 };
 
 #endif // ELATABLEWIDGETSTYLE_H
