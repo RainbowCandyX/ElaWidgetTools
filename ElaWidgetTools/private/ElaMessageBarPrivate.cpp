@@ -166,6 +166,7 @@ ElaMessageBarPrivate::ElaMessageBarPrivate(QObject* parent)
     setProperty("MessageBarClosedY", 0);
     setProperty("MessageBarFinishY", 0);
     _createTime = QDateTime::currentMSecsSinceEpoch();
+    _pProgressValue = 1.0;
 }
 
 ElaMessageBarPrivate::~ElaMessageBarPrivate()
@@ -319,6 +320,17 @@ void ElaMessageBarPrivate::_messageBarCreate(int displayMsec)
     barPosAnimation->setEndValue(QPoint(endX, endY));
     barPosAnimation->setEasingCurve(QEasingCurve::InOutSine);
     barPosAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+
+    QPropertyAnimation* progressAnimation = new QPropertyAnimation(this, "pProgressValue");
+    connect(progressAnimation, &QPropertyAnimation::valueChanged, this, [=]()
+    {
+        q->update();
+    });
+    progressAnimation->setDuration(displayMsec + 300);
+    progressAnimation->setStartValue(1.0);
+    progressAnimation->setEndValue(0.0);
+    progressAnimation->setEasingCurve(QEasingCurve::Linear);
+    progressAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 void ElaMessageBarPrivate::_calculateInitialPos(int& startX, int& startY, int& endX, int& endY)
