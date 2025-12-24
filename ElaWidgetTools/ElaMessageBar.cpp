@@ -73,6 +73,7 @@ ElaMessageBar::ElaMessageBar(ElaMessageBarType::PositionPolicy policy, ElaMessag
     mainLayout->addWidget(d->_closeButton);
     setObjectName("ElaMessageBar");
     setStyleSheet("#ElaMessageBar{background-color:transparent;}");
+    connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaMessageBarPrivate::onThemeChanged);
     d->_messageBarCreate(displayMsec);
 }
 

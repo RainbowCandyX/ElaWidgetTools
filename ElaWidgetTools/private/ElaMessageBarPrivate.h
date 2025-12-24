@@ -59,6 +59,7 @@ public:
     Q_INVOKABLE void onOtherMessageBarEnd(QVariantMap eventData);
     Q_INVOKABLE void messageBarEnd(QVariantMap eventData);
     Q_SLOT void onCloseButtonClicked();
+    Q_SLOT void onThemeChanged(ElaThemeType::ThemeMode themeMode);
 
 private:
     friend class ElaMessageBarManager;

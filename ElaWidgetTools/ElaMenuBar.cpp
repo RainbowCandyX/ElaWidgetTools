@@ -17,8 +17,9 @@ ElaMenuBar::ElaMenuBar(QWidget* parent)
     setObjectName("ElaMenuBar");
     setStyle(new ElaMenuBarStyle(style()));
     QToolButton* tool = this->findChild<QToolButton*>();
-    if (tool->objectName() == "qt_menubar_ext_button")
+    if (tool && tool->objectName() == "qt_menubar_ext_button")
     {
+        tool->setStyleSheet("QToolButton{background-color:transparent; border:none;}");
         QMenu* oldMenu = tool->menu();
         ElaMenu* menu = new ElaMenu(this);
         menu->setObjectName("ElaExtendMenu");
