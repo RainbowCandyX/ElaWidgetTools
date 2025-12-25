@@ -1,4 +1,3 @@
-
 #include "ElaMessageBar.h"
 
 #include <QApplication>
@@ -219,46 +218,13 @@ void ElaMessageBar::paintEvent(QPaintEvent* event)
     font.setWeight(QFont::Light);
     font.setPixelSize(15);
     painter.setFont(font);
-    painter.drawText(QRect(d->_leftPadding + d->_titleLeftSpacing + titleTextWidth + d->_textLeftSpacing, 0, width() - (d->_leftPadding + d->_titleLeftSpacing + titleTextWidth + d->_textLeftSpacing + d->_closeButtonWidth + d->_closeButtonLeftRightMargin / 2), height()), textFlags, d->_text);
+    painter.drawText(QRect(d->_leftPadding + d->_titleLeftSpacing + titleTextWidth + d->_textLeftSpacing, 0, width() - (d->_leftPadding + d->_titleLeftSpacing + titleTextWidth + d->_textLeftSpacing + d->_closeButtonWidth + d->_closeButtonLeftRightMargin / 2), height() - d->_timePercentHeight), textFlags, d->_text);
     int textHeight = painter.fontMetrics().boundingRect(QRect(d->_leftPadding + d->_titleLeftSpacing + titleTextWidth + d->_textLeftSpacing, 0, width() - (d->_leftPadding + d->_titleLeftSpacing + titleTextWidth + d->_textLeftSpacing + d->_closeButtonWidth + d->_closeButtonLeftRightMargin), height()), textFlags, d->_text).height();
     if (textHeight >= minimumHeight() - 20)
     {
         setMinimumHeight(textHeight + 20);
     }
     painter.restore();
-
-    if (d->_pProgressValue > 0)
-    {
-        painter.save();
-        int progressBarHeight = 3;
-        int progressBarY = height() - d->_shadowBorderWidth - progressBarHeight;
-        int progressBarWidth = (width() - 2 * d->_shadowBorderWidth) * d->_pProgressValue;
-
-        QColor progressColor;
-        switch (d->_messageMode)
-        {
-        case ElaMessageBarType::Success:
-            progressColor = QColor(0x11, 0x77, 0x10);
-            break;
-        case ElaMessageBarType::Warning:
-            progressColor = QColor(0xF8, 0xE2, 0x23);
-            break;
-        case ElaMessageBarType::Information:
-            progressColor = QColor(0x00, 0x66, 0xB4);
-            break;
-        case ElaMessageBarType::Error:
-            progressColor = QColor(0xBA, 0x2D, 0x20);
-            break;
-        }
-
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(progressColor);
-        QPainterPath progressPath;
-        progressPath.addRoundedRect(QRectF(d->_shadowBorderWidth, progressBarY, progressBarWidth, progressBarHeight),
-                                    d->_borderRadius, d->_borderRadius);
-        painter.drawPath(progressPath);
-        painter.restore();
-    }
 }
 
 bool ElaMessageBar::eventFilter(QObject* watched, QEvent* event)

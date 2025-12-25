@@ -165,8 +165,8 @@ ElaMessageBarPrivate::ElaMessageBarPrivate(QObject* parent)
 {
     setProperty("MessageBarClosedY", 0);
     setProperty("MessageBarFinishY", 0);
+    _pTimePercent = 100;
     _createTime = QDateTime::currentMSecsSinceEpoch();
-    _pProgressValue = 1.0;
 }
 
 ElaMessageBarPrivate::~ElaMessageBarPrivate()
@@ -297,6 +297,11 @@ void ElaMessageBarPrivate::_messageBarCreate(int displayMsec)
     _calculateInitialPos(startX, startY, endX, endY);
     // 滑入动画
     QPropertyAnimation* barPosAnimation = new QPropertyAnimation(q, "pos");
+    QPropertyAnimation* timePercentAnimation = new QPropertyAnimation(this, "pTimePercent");
+    connect(timePercentAnimation, &QPropertyAnimation::valueChanged, this, [=]()
+    {
+        q->update();
+    });
     connect(barPosAnimation, &QPropertyAnimation::finished, q, [=]() {
         _isNormalDisplay = true;
         _isMessageBarCreateAnimationFinished = true;
@@ -304,7 +309,14 @@ void ElaMessageBarPrivate::_messageBarCreate(int displayMsec)
         {
             ElaMessageBarManager::getInstance()->requestMessageBarEvent(q);
         }
-        QTimer::singleShot(displayMsec, q, [=]() {
+        timePercentAnimation->setStartValue(100);
+        timePercentAnimation->setEndValue(0);
+        timePercentAnimation->setEasingCurve(QEasingCurve::Linear);
+        timePercentAnimation->setDuration(displayMsec);
+        timePercentAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+
+        QTimer::singleShot(displayMsec, q, [=]()
+        {
             _isReadyToEnd = true;
             ElaMessageBarManager::getInstance()->requestMessageBarEvent(q);
         });
@@ -327,17 +339,6 @@ void ElaMessageBarPrivate::_messageBarCreate(int displayMsec)
     barPosAnimation->setEndValue(QPoint(endX, endY));
     barPosAnimation->setEasingCurve(QEasingCurve::InOutSine);
     barPosAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-
-    QPropertyAnimation* progressAnimation = new QPropertyAnimation(this, "pProgressValue");
-    connect(progressAnimation, &QPropertyAnimation::valueChanged, this, [=]()
-    {
-        q->update();
-    });
-    progressAnimation->setDuration(displayMsec + 300);
-    progressAnimation->setStartValue(1.0);
-    progressAnimation->setEndValue(0.0);
-    progressAnimation->setEasingCurve(QEasingCurve::Linear);
-    progressAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 void ElaMessageBarPrivate::_calculateInitialPos(int& startX, int& startY, int& endX, int& endY)
@@ -502,11 +503,11 @@ bool ElaMessageBarPrivate::_judgeCreateOrder(ElaMessageBar* otherMessageBar)
 void ElaMessageBarPrivate::_drawSuccess(QPainter* painter)
 {
     Q_Q(ElaMessageBar);
+    painter->save();
     painter->setBrush(_themeMode == ElaThemeType::Light ? QColor(0xE0, 0xF6, 0xDD) : QColor(0x39, 0x4D, 0x37));
     QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth, q->height() - 2 * _shadowBorderWidth);
     painter->drawRoundedRect(foregroundRect, _borderRadius, _borderRadius);
     // 图标绘制
-    painter->save();
     painter->setPen(Qt::white);
     QPainterPath textPath;
     textPath.addEllipse(QPoint(_leftPadding + 6, q->height() / 2), 9, 9);
@@ -515,7 +516,14 @@ void ElaMessageBarPrivate::_drawSuccess(QPainter* painter)
     QFont iconFont = QFont("ElaAwesome");
     iconFont.setPixelSize(12);
     painter->setFont(iconFont);
-    painter->drawText(_leftPadding, 0, q->width(), q->height(), Qt::AlignVCenter, QChar((unsigned short)ElaIconType::Check));
+    painter->drawText(QRect(_leftPadding + 6 - 9, q->height() / 2 - 9, 18, 18), Qt::AlignCenter, QChar((unsigned short)ElaIconType::Check));
+    // 时间进度条绘制
+    QPainterPath clipPath;
+    clipPath.addRoundedRect(foregroundRect, _borderRadius, _borderRadius);
+    painter->setClipPath(clipPath);
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QColor(0x3C, 0x96, 0x4B));
+    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight, foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1), 2, 2);
     painter->restore();
     // 文字颜色
     painter->setPen(_themeMode == ElaThemeType::Light ? QPen(Qt::black) : QPen(QColor(0xE0, 0xF6, 0xDD)));
@@ -524,18 +532,25 @@ void ElaMessageBarPrivate::_drawSuccess(QPainter* painter)
 void ElaMessageBarPrivate::_drawWarning(QPainter* painter)
 {
     Q_Q(ElaMessageBar);
+    painter->save();
     painter->setBrush(_themeMode == ElaThemeType::Light ? QColor(0x6B, 0x56, 0x27) : QColor(0x5A, 0x4A, 0x1F));
     QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth, q->height() - 2 * _shadowBorderWidth);
     painter->drawRoundedRect(foregroundRect, _borderRadius, _borderRadius);
     // 图标绘制
     // exclamation
-    painter->save();
     painter->setPen(Qt::black);
     QPainterPath textPath;
     textPath.addEllipse(QPoint(_leftPadding + 6, q->height() / 2), 9, 9);
     painter->setClipPath(textPath);
     painter->fillPath(textPath, _themeMode == ElaThemeType::Light ? QColor(0xF8, 0xE2, 0x23) : QColor(0xFF, 0xEB, 0x3B));
-    painter->drawText(_leftPadding + 4, 0, q->width(), q->height(), Qt::AlignVCenter, "!");
+    painter->drawText(QRect(_leftPadding + 6 - 9, q->height() / 2 - 9, 18, 18), Qt::AlignCenter, "!");
+    // 时间进度条绘制
+    QPainterPath clipPath;
+    clipPath.addRoundedRect(foregroundRect, _borderRadius, _borderRadius);
+    painter->setClipPath(clipPath);
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QColor(0xC4, 0xAD, 0x59));
+    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight, foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1), 2, 2);
     painter->restore();
     // 文字颜色
     painter->setPen(_themeMode == ElaThemeType::Light ? QColor(0xFA, 0xFA, 0xFA) : QColor(0xFF, 0xF3, 0xCD));
@@ -544,17 +559,24 @@ void ElaMessageBarPrivate::_drawWarning(QPainter* painter)
 void ElaMessageBarPrivate::_drawInformation(QPainter* painter)
 {
     Q_Q(ElaMessageBar);
+    painter->save();
     painter->setBrush(_themeMode == ElaThemeType::Light ? QColor(0xF4, 0xF4, 0xF4) : QColor(0x37, 0x47, 0x4F));
     QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth, q->height() - 2 * _shadowBorderWidth);
     painter->drawRoundedRect(foregroundRect, _borderRadius, _borderRadius);
     // 图标绘制
-    painter->save();
     painter->setPen(Qt::white);
     QPainterPath textPath;
     textPath.addEllipse(QPoint(_leftPadding + 6, q->height() / 2), 9, 9);
     painter->setClipPath(textPath);
     painter->fillPath(textPath, _themeMode == ElaThemeType::Light ? QColor(0x00, 0x66, 0xB4) : QColor(0x42, 0xA5, 0xF5));
-    painter->drawText(_leftPadding + 4, 0, q->width(), q->height(), Qt::AlignVCenter, "i");
+    painter->drawText(QRect(_leftPadding + 6 - 9, q->height() / 2 - 9, 18, 18), Qt::AlignCenter, "i");
+    // 时间进度条绘制
+    QPainterPath clipPath;
+    clipPath.addRoundedRect(foregroundRect, _borderRadius, _borderRadius);
+    painter->setClipPath(clipPath);
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QColor(0x00, 0x66, 0xB4));
+    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight, foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1), 2, 2);
     painter->restore();
     // 文字颜色
     painter->setPen(_themeMode == ElaThemeType::Light ? Qt::black : QColor(0xE1, 0xF5, 0xFE));
@@ -563,11 +585,11 @@ void ElaMessageBarPrivate::_drawInformation(QPainter* painter)
 void ElaMessageBarPrivate::_drawError(QPainter* painter)
 {
     Q_Q(ElaMessageBar);
+    painter->save();
     painter->setBrush(_themeMode == ElaThemeType::Light ? QColor(0xFE, 0xE7, 0xEA) : QColor(0x4E, 0x34, 0x2E));
     QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth, q->height() - 2 * _shadowBorderWidth);
     painter->drawRoundedRect(foregroundRect, _borderRadius, _borderRadius);
     // 图标绘制
-    painter->save();
     painter->setPen(Qt::white);
     QPainterPath textPath;
     textPath.addEllipse(QPoint(_leftPadding + 6, q->height() / 2), 9, 9);
@@ -576,7 +598,14 @@ void ElaMessageBarPrivate::_drawError(QPainter* painter)
     QFont iconFont = QFont("ElaAwesome");
     iconFont.setPixelSize(13);
     painter->setFont(iconFont);
-    painter->drawText(_leftPadding + 1, 0, q->width(), q->height(), Qt::AlignVCenter, QChar((unsigned short)ElaIconType::Xmark));
+    painter->drawText(QRect(_leftPadding + 6 - 9, q->height() / 2 - 9, 18, 18), Qt::AlignCenter, QChar((unsigned short)ElaIconType::Xmark));
+    // 时间进度条绘制
+    QPainterPath clipPath;
+    clipPath.addRoundedRect(foregroundRect, _borderRadius, _borderRadius);
+    painter->setClipPath(clipPath);
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QColor(0xCC, 0x5C, 0x65));
+    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight, foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1), 2, 2);
     painter->restore();
     // 文字颜色
     painter->setPen(_themeMode == ElaThemeType::Light ? Qt::black : QColor(0xFF, 0xCD, 0xD2));
