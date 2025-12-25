@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
+#include "ElaIcon.h"
 #include "ElaTheme.h"
 #include "private/ElaPushButtonPrivate.h"
 Q_PROPERTY_CREATE_Q_CPP(ElaPushButton, int, BorderRadius)
@@ -33,7 +34,7 @@ ElaPushButton::ElaPushButton(QWidget* parent)
     font.setPixelSize(15);
     setFont(font);
     setObjectName("ElaPushButton");
-    setStyleSheet("#ElaPushButton{background-color:transparent;}");
+    setStyleSheet("#ElaPushButton{background-color:transparent;border:none;outline:none;}");
     connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
         d->_themeMode = themeMode;
     });
@@ -71,6 +72,23 @@ QColor ElaPushButton::getDarkTextColor() const
 {
     Q_D(const ElaPushButton);
     return d->_darkTextColor;
+}
+
+void ElaPushButton::setElaIcon(ElaIconType::IconName icon)
+{
+    Q_D(ElaPushButton);
+    d->_icon = icon;
+    d->_hasIcon = (icon != ElaIconType::None);
+    update();
+}
+
+void ElaPushButton::setElaIcon(ElaIconType::IconName icon, int iconSize)
+{
+    Q_D(ElaPushButton);
+    d->_icon = icon;
+    d->_iconSize = iconSize;
+    d->_hasIcon = (icon != ElaIconType::None);
+    update();
 }
 
 void ElaPushButton::mousePressEvent(QMouseEvent* event)
@@ -115,8 +133,35 @@ void ElaPushButton::paintEvent(QPaintEvent* event)
         painter.setPen(ElaThemeColor(d->_themeMode, BasicBaseLine));
         painter.drawLine(foregroundRect.x() + d->_pBorderRadius, height() - d->_shadowBorderWidth, foregroundRect.width(), height() - d->_shadowBorderWidth);
     }
-    //文字绘制
     painter.setPen(isEnabled() ? d->_themeMode == ElaThemeType::Light ? d->_lightTextColor : d->_darkTextColor : ElaThemeColor(d->_themeMode, BasicTextDisable));
-    painter.drawText(foregroundRect, Qt::AlignCenter, text());
+    if (d->_hasIcon)
+    {
+        QFont iconFont = QFont("ElaAwesome");
+        iconFont.setPixelSize(d->_iconSize);
+
+        QFontMetrics iconFontMetrics(iconFont);
+        int iconWidth = iconFontMetrics.horizontalAdvance(QChar((unsigned short)d->_icon));
+
+        QFont textFont = this->font();
+        QFontMetrics textFontMetrics(textFont);
+        int textWidth = textFontMetrics.horizontalAdvance(text());
+
+        int spacing = text().isEmpty() ? 0 : 8;
+        int totalWidth = iconWidth + spacing + textWidth;
+        int startX = foregroundRect.x() + (foregroundRect.width() - totalWidth) / 2;
+
+        painter.setFont(iconFont);
+        painter.drawText(QRect(startX, foregroundRect.y(), iconWidth, foregroundRect.height()), Qt::AlignLeft | Qt::AlignVCenter, QChar((unsigned short)d->_icon));
+
+        if (!text().isEmpty())
+        {
+            painter.setFont(textFont);
+            painter.drawText(QRect(startX + iconWidth + spacing, foregroundRect.y(), textWidth, foregroundRect.height()), Qt::AlignLeft | Qt::AlignVCenter, text());
+        }
+    }
+    else
+    {
+        painter.drawText(foregroundRect, Qt::AlignCenter, text());
+    }
     painter.restore();
 }

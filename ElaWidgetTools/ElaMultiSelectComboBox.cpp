@@ -8,18 +8,21 @@
 #include <QPropertyAnimation>
 
 #include "DeveloperComponents/ElaComboBoxView.h"
+#include "DeveloperComponents/ElaMultiSelectComboBoxDelegate.h"
 #include "ElaApplication.h"
 #include "ElaComboBoxStyle.h"
 #include "ElaScrollBar.h"
 #include "ElaTheme.h"
 #include "private/ElaMultiSelectComboBoxPrivate.h"
 Q_PROPERTY_CREATE_Q_CPP(ElaMultiSelectComboBox, int, BorderRadius)
+Q_PROPERTY_CREATE_Q_CPP(ElaMultiSelectComboBox, bool, ShowCheckBox)
 ElaMultiSelectComboBox::ElaMultiSelectComboBox(QWidget* parent)
     : QComboBox(parent), d_ptr(new ElaMultiSelectComboBoxPrivate())
 {
     Q_D(ElaMultiSelectComboBox);
     d->q_ptr = this;
     d->_pBorderRadius = 3;
+    d->_pShowCheckBox = false;  // 默认不显示复选框，保持原样式
     d->_pExpandIconRotate = 0;
     d->_pExpandMarkWidth = 0;
     d->_themeMode = eTheme->getThemeMode();
@@ -70,8 +73,30 @@ ElaMultiSelectComboBox::ElaMultiSelectComboBox(QWidget* parent)
     d->_itemSelection.fill(false);
     d->_itemSelection[0] = true;
     QComboBox::setMaxVisibleItems(5);
-    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
+    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode)
+    {
         d->_themeMode = themeMode;
+    });
+
+    connect(this, &ElaMultiSelectComboBox::pShowCheckBoxChanged, this, [=]()
+    {
+        Q_D(ElaMultiSelectComboBox);
+        QAbstractItemView* comboBoxView = this->view();
+        if (d->_pShowCheckBox)
+        {
+            if (!d->_delegate)
+            {
+                d->_delegate = new ElaMultiSelectComboBoxDelegate(this);
+                connect(this, &ElaMultiSelectComboBox::itemSelectionChanged, d->_delegate, &ElaMultiSelectComboBoxDelegate::setItemSelection);
+                d->_delegate->setItemSelection(d->_itemSelection);
+            }
+            comboBoxView->setItemDelegate(d->_delegate);
+        }
+        else
+        {
+            comboBoxView->setItemDelegate(nullptr);
+        }
+        comboBoxView->viewport()->update();
     });
 }
 

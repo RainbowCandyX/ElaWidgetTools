@@ -27,6 +27,9 @@ private:
     bool _isPressed{false};
     int _shadowBorderWidth{3};
     ElaThemeType::ThemeMode _themeMode;
+    ElaIconType::IconName _icon{ElaIconType::None};
+    bool _hasIcon{false};
+    int _iconSize{18};
 };
 
 #endif // ELAPUSHBUTTONPRIVATE_H

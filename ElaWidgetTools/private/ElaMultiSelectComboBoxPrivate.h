@@ -7,11 +7,13 @@
 class ElaComboBoxStyle;
 class ElaComboBoxView;
 class ElaMultiSelectComboBox;
+class ElaMultiSelectComboBoxDelegate;
 class ElaMultiSelectComboBoxPrivate : public QObject
 {
     Q_OBJECT
     Q_D_CREATE(ElaMultiSelectComboBox)
     Q_PROPERTY_CREATE_D(int, BorderRadius)
+    Q_PROPERTY_CREATE_D(bool, ShowCheckBox)
     Q_PROPERTY_CREATE(qreal, ExpandIconRotate)
     Q_PROPERTY_CREATE(qreal, ExpandMarkWidth)
 public:
@@ -22,6 +24,7 @@ public:
 private:
     ElaComboBoxStyle* _comboBoxStyle{nullptr};
     ElaComboBoxView* _comboView{nullptr};
+    ElaMultiSelectComboBoxDelegate* _delegate{nullptr};
     QVector<bool> _itemSelection;
     bool _isFirstPopup{false};
     bool _isAllowHidePopup{false};

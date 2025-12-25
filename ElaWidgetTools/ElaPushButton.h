@@ -3,6 +3,7 @@
 
 #include <QPushButton>
 
+#include "ElaDef.h"
 #include "ElaProperty.h"
 class ElaPushButtonPrivate;
 class ELA_EXPORT ElaPushButton : public QPushButton
@@ -26,6 +27,9 @@ public:
 
     void setDarkTextColor(QColor color);
     QColor getDarkTextColor() const;
+
+    void setElaIcon(ElaIconType::IconName icon);
+    void setElaIcon(ElaIconType::IconName icon, int iconSize);
 
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;

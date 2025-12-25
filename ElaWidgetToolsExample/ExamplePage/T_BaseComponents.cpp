@@ -97,6 +97,7 @@ T_BaseComponents::T_BaseComponents(QWidget* parent)
     QStringList multiSelectComboList{"执念的鱼", "提着灯闯过远洋的甄选", "无需誓言", "我的心像自沉的旧母舰"};
     _multiSelectComboBox->addItems(multiComboList);
     _multiSelectComboBox->setCurrentSelection(multiSelectComboList);
+    //_multiSelectComboBox->setShowCheckBox(true);
     ElaScrollPageArea* multiSelectComboBoxArea = new ElaScrollPageArea(this);
     QHBoxLayout* multiSelectComboBoxLayout = new QHBoxLayout(multiSelectComboBoxArea);
     ElaText* multiSelectComboBoxText = new ElaText("ElaMutilSelectComboBox", this);

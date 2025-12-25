@@ -9,6 +9,7 @@ class ELA_EXPORT ElaMultiSelectComboBox : public QComboBox
     Q_OBJECT
     Q_Q_CREATE(ElaMultiSelectComboBox)
     Q_PROPERTY_CREATE_Q_H(int, BorderRadius)
+    Q_PROPERTY_CREATE_Q_H(bool, ShowCheckBox)
 public:
     explicit ElaMultiSelectComboBox(QWidget* parent = nullptr);
     ~ElaMultiSelectComboBox();

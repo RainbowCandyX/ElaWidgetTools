@@ -134,12 +134,16 @@ void ElaScrollBarPrivate::_handleScrollBarGeometry()
     q->raise();
     q->setSingleStep(_originScrollBar->singleStep());
     q->setPageStep(_originScrollBar->pageStep());
+
+    // 从样式中获取滚动条宽度，而不是硬编码
+    int scrollBarExtent = q->style()->pixelMetric(QStyle::PM_ScrollBarExtent, nullptr, q);
+
     if (q->orientation() == Qt::Horizontal)
     {
-        q->setGeometry(0, _originScrollArea->height() - 10, _originScrollArea->width(), 10);
+        q->setGeometry(0, _originScrollArea->height() - scrollBarExtent, _originScrollArea->width(), scrollBarExtent);
     }
     else
     {
-        q->setGeometry(_originScrollArea->width() - 10, 0, 10, _originScrollArea->height());
+        q->setGeometry(_originScrollArea->width() - scrollBarExtent, 0, scrollBarExtent, _originScrollArea->height());
     }
 }

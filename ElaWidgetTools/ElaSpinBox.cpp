@@ -16,10 +16,17 @@ ElaSpinBox::ElaSpinBox(QWidget* parent)
     d->q_ptr = this;
     d->_pExpandMarkWidth = 0;
     setFixedSize(115, 35);
+#ifdef Q_OS_MACOS
+    setAttribute(Qt::WA_MacShowFocusRect, false);
+#endif
     d->_style = new ElaSpinBoxStyle(style());
     setStyle(d->_style);
     lineEdit()->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+#ifdef Q_OS_MACOS
+    lineEdit()->setStyleSheet("background-color:transparent;padding-left:10px;padding-bottom:3px;border:none;outline:none;");
+#else
     lineEdit()->setStyleSheet("background-color:transparent;padding-left:10px;padding-bottom:3px;");
+#endif
     d->onThemeChanged(eTheme->getThemeMode());
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaSpinBoxPrivate::onThemeChanged);
 }
@@ -43,7 +50,11 @@ void ElaSpinBox::setButtonMode(ElaSpinBoxType::ButtonMode buttonMode)
     case ElaSpinBoxType::Inline:
     {
         lineEdit()->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+#ifdef Q_OS_MACOS
+        lineEdit()->setStyleSheet("background-color:transparent;padding-left:10px;padding-bottom:3px;border:none;outline:none;");
+#else
         lineEdit()->setStyleSheet("background-color:transparent;padding-left:10px;padding-bottom:3px;");
+#endif
         break;
     }
     case ElaSpinBoxType::Compact:
@@ -51,7 +62,11 @@ void ElaSpinBox::setButtonMode(ElaSpinBoxType::ButtonMode buttonMode)
     case ElaSpinBoxType::PMSide:
     {
         lineEdit()->setAlignment(Qt::AlignCenter);
+#ifdef Q_OS_MACOS
+        lineEdit()->setStyleSheet("background-color:transparent;padding-bottom:3px;border:none;outline:none;");
+#else
         lineEdit()->setStyleSheet("background-color:transparent;padding-bottom:3px;");
+#endif
         break;
     }
     }

@@ -8,6 +8,8 @@
 #include "ElaInputDialog.h"
 #include "ElaKeyBinder.h"
 #include "ElaMenu.h"
+#include "ElaMessageCard.h"
+#include "ElaMessageDialog.h"
 #include "ElaPushButton.h"
 #include "ElaRoller.h"
 #include "ElaRollerPicker.h"
@@ -276,6 +278,65 @@ T_Popup::T_Popup(QWidget* parent)
     _drawer->addDrawer(drawerWidget2);
     _drawer->addDrawer(drawerWidget3);
 
+    // ElaMessageCard 示例
+    _messageCard = new ElaMessageCard(this);
+    _messageCard->setIsCompleted(true);
+    _messageCard->setTitle("Test");
+    _messageCard->setContent("相信回旋吧，只管相信就是了!");
+    _messageCard->setFixedSize(250, 75);
+    _messageCard->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
+    _messageCard->setAttribute(Qt::WA_TranslucentBackground);
+
+    ElaScrollPageArea* messageCardArea = new ElaScrollPageArea(this);
+    QHBoxLayout* messageCardLayout = new QHBoxLayout(messageCardArea);
+    ElaText* messageCardText = new ElaText("ElaMessageCard", this);
+    messageCardText->setTextPixelSize(15);
+    messageCardLayout->addWidget(messageCardText);
+
+    ElaPushButton* showMessageCardButton = new ElaPushButton("显示浮出控件", this);
+    showMessageCardButton->setFixedSize(120, 38);
+    connect(showMessageCardButton, &ElaPushButton::clicked, this, [=]()
+    {
+        QPoint globalPos = showMessageCardButton->mapToGlobal(QPoint(0, showMessageCardButton->height() + 5));
+        _messageCard->move(globalPos);
+        _messageCard->show();
+    });
+    messageCardLayout->addWidget(showMessageCardButton);
+    messageCardLayout->addStretch();
+
+    // ElaMessageDialog 示例
+    _messageDialog = new ElaMessageDialog(this);
+    _messageDialog->setTitle("标题");
+    _messageDialog->setContent("左眼用来忘记你、右眼用来记忆你。");
+    _messageDialog->setFixedSize(280, 150);
+    _messageDialog->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
+    _messageDialog->setAttribute(Qt::WA_TranslucentBackground);
+
+    // 连接信号以判断点击了哪个按钮
+    connect(_messageDialog, &ElaMessageDialog::confirmed, this, [=]() {
+        qDebug() << "确认按钮被点击";
+    });
+    connect(_messageDialog, &ElaMessageDialog::cancelled, this, [=]() {
+        qDebug() << "取消按钮被点击";
+    });
+
+    ElaScrollPageArea* messageDialogArea = new ElaScrollPageArea(this);
+    QHBoxLayout* messageDialogLayout = new QHBoxLayout(messageDialogArea);
+    ElaText* messageDialogText = new ElaText("ElaMessageDialog", this);
+    messageDialogText->setTextPixelSize(15);
+    messageDialogLayout->addWidget(messageDialogText);
+
+    ElaPushButton* showMessageDialogButton = new ElaPushButton("显示对话框", this);
+    showMessageDialogButton->setFixedSize(120, 38);
+    connect(showMessageDialogButton, &ElaPushButton::clicked, this, [=]()
+    {
+        QPoint globalPos = showMessageDialogButton->mapToGlobal(QPoint(0, showMessageDialogButton->height() + 5));
+        _messageDialog->move(globalPos);
+        _messageDialog->show();
+    });
+    messageDialogLayout->addWidget(showMessageDialogButton);
+    messageDialogLayout->addStretch();
+
     QVBoxLayout* centerVLayout = new QVBoxLayout(centralWidget);
     centerVLayout->setContentsMargins(0, 0, 0, 0);
     centerVLayout->addWidget(toolButtonArea);
@@ -285,6 +346,8 @@ T_Popup::T_Popup(QWidget* parent)
     centerVLayout->addWidget(_calendar);
     centerVLayout->addWidget(keyBinderArea);
     centerVLayout->addWidget(_drawer);
+    centerVLayout->addWidget(messageCardArea);
+    centerVLayout->addWidget(messageDialogArea);
     centerVLayout->addWidget(rollerArea);
     centerVLayout->addStretch();
     addCentralWidget(centralWidget, true, false, 0);
