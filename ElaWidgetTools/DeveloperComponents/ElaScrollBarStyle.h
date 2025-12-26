@@ -21,8 +21,13 @@ public:
 
 private:
     ElaThemeType::ThemeMode _themeMode;
+#ifdef Q_OS_MACOS
+    qreal _sliderMargin{2.0};
+    int _scrollBarExtent{8};
+#else
     qreal _sliderMargin{2.5};
     int _scrollBarExtent{10};
+#endif
 };
 
 #endif // ELASCROLLBARSTYLE_H
