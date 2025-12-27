@@ -25,6 +25,7 @@ private:
     QColor _lightTextColor;
     QColor _darkTextColor;
     bool _isPressed{false};
+    bool _isHoverEnabled{true};
     int _shadowBorderWidth{3};
     ElaThemeType::ThemeMode _themeMode;
     ElaIconType::IconName _icon{ElaIconType::None};

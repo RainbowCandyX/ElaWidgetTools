@@ -83,6 +83,7 @@ void T_BasePage::createCustomWidget(QString desText)
 
 	ElaPushButton *iconButton = new ElaPushButton("带图标按钮", this);
 	iconButton->setElaIcon(ElaIconType::Heart, 16);
+	iconButton->setHoverEnabled(false);
 	iconButton->setFixedSize(130, 38);
 
 	QHBoxLayout *buttonLayout = new QHBoxLayout();

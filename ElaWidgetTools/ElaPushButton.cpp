@@ -34,7 +34,7 @@ ElaPushButton::ElaPushButton(QWidget* parent)
     font.setPixelSize(15);
     setFont(font);
     setObjectName("ElaPushButton");
-    setStyleSheet("#ElaPushButton{background-color:transparent;border:none;outline:none;}");
+    setStyleSheet("#ElaPushButton{background-color:transparent;}");
     connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
         d->_themeMode = themeMode;
     });
@@ -91,6 +91,19 @@ void ElaPushButton::setElaIcon(ElaIconType::IconName icon, int iconSize)
     update();
 }
 
+void ElaPushButton::setHoverEnabled(bool enabled)
+{
+    Q_D(ElaPushButton);
+    d->_isHoverEnabled = enabled;
+    update();
+}
+
+bool ElaPushButton::isHoverEnabled() const
+{
+    Q_D(const ElaPushButton);
+    return d->_isHoverEnabled;
+}
+
 void ElaPushButton::mousePressEvent(QMouseEvent* event)
 {
     Q_D(ElaPushButton);
@@ -119,12 +132,12 @@ void ElaPushButton::paintEvent(QPaintEvent* event)
     if (d->_themeMode == ElaThemeType::Light)
     {
         painter.setPen(ElaThemeColor(ElaThemeType::Light, BasicBorder));
-        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pLightPressColor : (underMouse() ? d->_pLightHoverColor : d->_pLightDefaultColor) : ElaThemeColor(d->_themeMode, BasicDisable));
+        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pLightPressColor : ((d->_isHoverEnabled && underMouse()) ? d->_pLightHoverColor : d->_pLightDefaultColor) : ElaThemeColor(d->_themeMode, BasicDisable));
     }
     else
     {
         painter.setPen(Qt::NoPen);
-        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pDarkPressColor : (underMouse() ? d->_pDarkHoverColor : d->_pDarkDefaultColor) : ElaThemeColor(d->_themeMode, BasicDisable));
+        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pDarkPressColor : ((d->_isHoverEnabled && underMouse()) ? d->_pDarkHoverColor : d->_pDarkDefaultColor) : ElaThemeColor(d->_themeMode, BasicDisable));
     }
     painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
     // 底边线绘制

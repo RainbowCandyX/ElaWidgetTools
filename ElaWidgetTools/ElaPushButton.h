@@ -31,6 +31,9 @@ public:
     void setElaIcon(ElaIconType::IconName icon);
     void setElaIcon(ElaIconType::IconName icon, int iconSize);
 
+    void setHoverEnabled(bool enabled);
+    bool isHoverEnabled() const;
+
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseReleaseEvent(QMouseEvent* event) override;
