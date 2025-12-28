@@ -100,7 +100,7 @@ void ElaApplication::init()
 
     QStringList fontFamilies;
 #ifdef Q_OS_WIN
-    fontFamilies << "Microsoft YaHei" << "SimSun" << "Arial";
+    fontFamilies << "Microsoft YaHei UI" << "SimSun" << "Arial";
 #elif defined(Q_OS_MACOS)
     fontFamilies << "PingFang SC" << "Heiti SC" << "STHeiti" << "Helvetica";
 #else

@@ -104,6 +104,7 @@ void ElaMultiSelectComboBoxDelegate::paint(QPainter *painter, const QStyleOption
 		                  QChar((unsigned short) ElaIconType::Check));
 	}
 
+	painter->setFont(option.font);
 	painter->setPen(ElaThemeColor(_themeMode, BasicText));
 	QRect textRect(bgRect.x() + checkBoxSize + 18, bgRect.y(),
 	               bgRect.width() - checkBoxSize - 18, bgRect.height());
