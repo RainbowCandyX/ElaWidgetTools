@@ -31,7 +31,8 @@ void ElaCheckBoxStyle::drawControl(ControlElement element, const QStyleOption* o
             painter->save();
             painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
             QRect checkBoxRect = bopt->rect;
-            QRect checkRect(checkBoxRect.x(), checkBoxRect.y(), _pCheckIndicatorWidth, _pCheckIndicatorWidth);
+            int yOffset = (checkBoxRect.height() - _pCheckIndicatorWidth) / 2;
+            QRect checkRect(checkBoxRect.x(), checkBoxRect.y() + yOffset, _pCheckIndicatorWidth, _pCheckIndicatorWidth);
             checkRect.adjust(1, 1, -1, -1);
             //复选框绘制
             painter->setPen(Qt::NoPen);
@@ -92,7 +93,7 @@ void ElaCheckBoxStyle::drawControl(ControlElement element, const QStyleOption* o
             }
             //文字绘制
             painter->setPen(isEnabled ? ElaThemeColor(_themeMode, BasicText) : ElaThemeColor(_themeMode, BasicTextDisable));
-            QRect textRect(checkRect.right() + 10, checkBoxRect.y(), checkBoxRect.width(), checkBoxRect.height() - 5);
+            QRect textRect(checkRect.right() + 10, checkBoxRect.y() + yOffset, checkBoxRect.width() - checkRect.right() - 10, _pCheckIndicatorWidth);
             painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, bopt->text);
             painter->restore();
         }
