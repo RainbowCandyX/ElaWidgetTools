@@ -211,8 +211,28 @@ void ElaTableWidget::mouseMoveEvent(QMouseEvent* event)
     Q_D(ElaTableWidget);
     if (selectionBehavior() == QAbstractItemView::SelectRows)
     {
-        d->_tableWidgetStyle->setCurrentHoverRow(rowAt(event->pos().y()));
-        update();
+        int newHoverRow = rowAt(event->pos().y());
+        int oldHoverRow = d->_tableWidgetStyle->getCurrentHoverRow();
+        if (newHoverRow != oldHoverRow)
+        {
+            d->_tableWidgetStyle->setCurrentHoverRow(newHoverRow);
+            if (oldHoverRow >= 0)
+            {
+                for (int col = 0; col < columnCount(); ++col)
+                {
+                    QModelIndex index = model()->index(oldHoverRow, col);
+                    update(visualRect(index));
+                }
+            }
+            if (newHoverRow >= 0)
+            {
+                for (int col = 0; col < columnCount(); ++col)
+                {
+                    QModelIndex index = model()->index(newHoverRow, col);
+                    update(visualRect(index));
+                }
+            }
+        }
     }
     QTableWidget::mouseMoveEvent(event);
 }
