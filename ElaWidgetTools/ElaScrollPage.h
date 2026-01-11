@@ -19,6 +19,8 @@ public:
 
     void addCentralWidget(QWidget* centralWidget, bool isWidgetResizeable = true, bool isVerticalGrabGesture = true, qreal mousePressEventDelay = 0.5);
 
+    void setPageTitle(const QString& title);
+
     void navigation(int widgetIndex, bool isLogRoute = true);
 
     void setPageTitleSpacing(int spacing);

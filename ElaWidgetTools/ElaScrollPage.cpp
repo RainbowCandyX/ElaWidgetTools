@@ -92,6 +92,23 @@ void ElaScrollPage::addCentralWidget(QWidget* centralWidget, bool isWidgetResize
     d->_centralStackedWidget->addWidget(scrollArea);
 }
 
+void ElaScrollPage::setPageTitle(const QString& title)
+{
+    Q_D(ElaScrollPage);
+    QStringList breadcrumbList = d->_breadcrumbBar->getBreadcrumbList();
+    if (!breadcrumbList.isEmpty())
+    {
+        QString oldTitle = breadcrumbList.first();
+        breadcrumbList[0] = title;
+        d->_breadcrumbBar->setBreadcrumbList(breadcrumbList);
+        if (d->_centralWidgetMap.contains(oldTitle))
+        {
+            int index = d->_centralWidgetMap.take(oldTitle);
+            d->_centralWidgetMap.insert(title, index);
+        }
+    }
+}
+
 void ElaScrollPage::setCustomWidget(QWidget* widget)
 {
     Q_D(ElaScrollPage);
