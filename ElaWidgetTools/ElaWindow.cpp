@@ -23,7 +23,6 @@
 #include <QToolBar>
 #include <QtMath>
 Q_PROPERTY_CREATE_Q_CPP(ElaWindow, int, ThemeChangeTime)
-Q_PROPERTY_CREATE_Q_CPP(ElaWindow, ElaNavigationType::NavigationDisplayMode, NavigationBarDisplayMode)
 Q_PROPERTY_CREATE_Q_CPP(ElaWindow, ElaWindowType::StackSwitchMode, StackSwitchMode)
 Q_TAKEOVER_NATIVEEVENT_CPP(ElaWindow, d_func()->_appBar);
 ElaWindow::ElaWindow(QWidget* parent)
@@ -37,7 +36,6 @@ ElaWindow::ElaWindow(QWidget* parent)
 
     d->_pThemeChangeTime = 700;
     d->_pNavigationBarDisplayMode = ElaNavigationType::NavigationDisplayMode::Auto;
-    connect(this, &ElaWindow::pNavigationBarDisplayModeChanged, d, &ElaWindowPrivate::onDisplayModeChanged);
 
     // 自定义AppBar
     d->_appBar = new ElaAppBar(this);
@@ -239,6 +237,51 @@ bool ElaWindow::getIsAllowPageOpenInNewWindow() const
 {
     Q_D(const ElaWindow);
     return d->_navigationBar->getIsAllowPageOpenInNewWindow();
+}
+
+void ElaWindow::setNavigationBarDisplayMode(ElaNavigationType::NavigationDisplayMode displayMode)
+{
+    Q_D(ElaWindow);
+    d->_pNavigationBarDisplayMode = displayMode;
+    d->_currentNavigationBarDisplayMode = displayMode;
+    if (d->_isNavigationBarFloat)
+    {
+        d->_isNavigationDisplayModeChanged = true;
+        d->_isNavigationBarFloat = false;
+        d->_isNavigationBarExpanded = false;
+        d->_navigationBar->setIsTransparent(true);
+        d->_resetWindowLayout(false);
+    }
+    switch (displayMode)
+    {
+    case ElaNavigationType::Auto:
+    {
+        d->_doNavigationDisplayModeChange();
+        break;
+    }
+    case ElaNavigationType::Minimal:
+    {
+        d->_navigationBar->setDisplayMode(ElaNavigationType::Minimal, isVisible());
+        break;
+    }
+    case ElaNavigationType::Compact:
+    {
+        d->_navigationBar->setDisplayMode(ElaNavigationType::Compact, isVisible());
+        break;
+    }
+    case ElaNavigationType::Maximal:
+    {
+        d->_navigationBar->setDisplayMode(ElaNavigationType::Maximal, isVisible());
+        break;
+    }
+    }
+    Q_EMIT pNavigationBarDisplayModeChanged();
+}
+
+ElaNavigationType::NavigationDisplayMode ElaWindow::getNavigationBarDisplayMode() const
+{
+    Q_D(const ElaWindow);
+    return d->_pNavigationBarDisplayMode;
 }
 
 void ElaWindow::setNavigationBarWidth(int navigationBarWidth)
