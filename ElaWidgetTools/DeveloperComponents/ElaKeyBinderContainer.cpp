@@ -80,12 +80,20 @@ bool ElaKeyBinderContainer::event(QEvent* event)
             }
             case Qt::Key_Alt:
             {
+#ifdef Q_OS_MACOS
+                _pBinderKeyText = "Option";
+#else
                 _pBinderKeyText = "Alt";
+#endif
                 break;
             }
             case Qt::Key_Meta:
             {
+#ifdef Q_OS_MACOS
+                _pBinderKeyText = "Cmd";
+#else
                 _pBinderKeyText = "Win";
+#endif
                 break;
             }
             default:
