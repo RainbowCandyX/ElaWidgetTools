@@ -191,15 +191,13 @@ void ElaComboBox::hidePopup()
                 layout->takeAt(0);
             }
             QPropertyAnimation* viewPosAnimation = new QPropertyAnimation(view(), "pos");
+            QPoint viewPos = view()->pos();
             connect(viewPosAnimation, &QPropertyAnimation::finished, this, [=]() {
                 layout->addWidget(view());
                 QMouseEvent focusEvent(QEvent::MouseButtonPress, QPoint(-1, -1), QPoint(-1, -1), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
                 QApplication::sendEvent(parentWidget(), &focusEvent);
                 QComboBox::hidePopup();
                 container->setFixedHeight(containerHeight);
-            });
-            QPoint viewPos = view()->pos();
-            connect(viewPosAnimation, &QPropertyAnimation::finished, this, [=]() {
                 view()->move(viewPos);
             });
             viewPosAnimation->setStartValue(viewPos);
