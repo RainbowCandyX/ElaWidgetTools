@@ -7,6 +7,7 @@
 
 #include <QContextMenuEvent>
 #include <QLineEdit>
+#include <QLocale>
 #include <QPainter>
 #include <QPropertyAnimation>
 ElaSpinBox::ElaSpinBox(QWidget* parent)
@@ -15,6 +16,7 @@ ElaSpinBox::ElaSpinBox(QWidget* parent)
     Q_D(ElaSpinBox);
     d->q_ptr = this;
     d->_pExpandMarkWidth = 0;
+    setLocale(QLocale::C);
     setFixedSize(115, 35);
 #ifdef Q_OS_MACOS
     setAttribute(Qt::WA_MacShowFocusRect, false);
