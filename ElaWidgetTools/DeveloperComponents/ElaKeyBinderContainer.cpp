@@ -1,5 +1,6 @@
 #include "ElaKeyBinderContainer.h"
 #include "ElaKeyBinder.h"
+#include "ElaKeyBinderFnMonitor.h"
 #include "ElaTheme.h"
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -22,10 +23,19 @@ ElaKeyBinderContainer::ElaKeyBinderContainer(QWidget* parent)
         _themeMode = themeMode;
         update();
     });
+    elaStartFnKeyMonitor([this]() {
+        if (hasFocus())
+        {
+            _pBinderKeyText = "Globe";
+            _pNativeVirtualBinderKey = 0x3F;
+            update();
+        }
+    });
 }
 
 ElaKeyBinderContainer::~ElaKeyBinderContainer()
 {
+    elaStopFnKeyMonitor();
 }
 
 void ElaKeyBinderContainer::logOrResetHistoryData(bool isLog)
