@@ -18,6 +18,8 @@ class T_TableWidget;
 class T_TreeView;
 class T_About;
 class T_Setting;
+class T_NewComponents;
+class T_CodeEditor;
 class ElaContentDialog;
 
 class MainWindow : public ElaWindow
@@ -53,6 +55,8 @@ private:
     T_TableWidget* _tableWidgetPage{nullptr};
     T_TreeView* _treeViewPage{nullptr};
     T_About* _aboutPage{nullptr};
+    T_NewComponents* _newComponentsPage{nullptr};
+    T_CodeEditor* _codeEditorPage{nullptr};
     T_Setting* _settingPage{nullptr};
     QString _elaDxgiKey{""};
     QString _viewKey{""};
