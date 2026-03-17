@@ -10,7 +10,7 @@
 #include "ElaInfoBadge.h"
 #include "ElaLineEdit.h"
 #include "ElaMarkdownViewer.h"
-#include "ElaMenu.h">
+#include "ElaMenu.h"
 #include "ElaNumberBox.h"
 #include "ElaPagination.h"
 #include "ElaPasswordBox.h"
@@ -33,9 +33,18 @@
 #include "ElaToggleSwitch.h"
 #include "ElaNotificationCenter.h"
 #include "ElaWizard.h"
+#include "ElaVirtualList.h"
+#include "ElaSplashScreen.h"
+#include "ElaSheetPanel.h"
+#include "ElaTransfer.h"
+#include "ElaSpotlight.h"
+#include "ElaCountdown.h"
+#include "ElaPopconfirm.h"
 #include <QButtonGroup>
-#include <QHBoxLayout>
+#include <QDateTime>
 #include <QStackedWidget>
+#include <QStandardItemModel>
+#include <QTimer>
 #include <QVBoxLayout>
 
 T_NewComponents::T_NewComponents(QWidget *parent)
@@ -735,6 +744,295 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	selectorLayout->addWidget(viewSelector);
 	selectorLayout->addStretch();
 
+	// ========== ElaVirtualList 示例 ==========
+	_virtualList = new ElaVirtualList(this);
+	QStandardItemModel *virtualModel = new QStandardItemModel(this);
+	for (int i = 0; i < 10000; ++i)
+	{
+		QStandardItem *item = new QStandardItem(QString("虚拟列表项 #%1 - 支持万级数据量").arg(i + 1));
+		virtualModel->appendRow(item);
+	}
+	_virtualList->setModel(virtualModel);
+
+	ElaText *virtualListInfo = new ElaText("已加载 10,000 条数据", this);
+	virtualListInfo->setTextPixelSize(13);
+	virtualListInfo->setMinimumWidth(200);
+
+	ElaScrollPageArea *virtualListArea = new ElaScrollPageArea(this);
+	virtualListArea->setFixedHeight(200);
+	QVBoxLayout *virtualListLayout = new QVBoxLayout(virtualListArea);
+	QHBoxLayout *virtualListHeader = new QHBoxLayout();
+	virtualListHeader->addWidget(new ElaText("ElaVirtualList", 15, this));
+	virtualListHeader->addWidget(virtualListInfo);
+	virtualListHeader->addStretch();
+	virtualListLayout->addLayout(virtualListHeader);
+	virtualListLayout->addWidget(_virtualList);
+
+	// ========== ElaSplashScreen 示例 ==========
+	_splashScreen = new ElaSplashScreen(this);
+	_splashScreen->setTitle("ElaWidgetTools");
+	_splashScreen->setSubTitle("FluentUI 风格 Qt 组件库");
+	_splashScreen->setStatusText("正在初始化...");
+	_splashScreen->setIsShowProgressRing(true);
+
+	ElaPushButton *splashBtn = new ElaPushButton("显示启动屏", this);
+	splashBtn->setFixedSize(120, 38);
+	connect(splashBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		_splashScreen->setValue(0);
+		_splashScreen->setStatusText("正在初始化...");
+		_splashScreen->show();
+		// 模拟加载过程
+		QTimer *timer = new QTimer(this);
+		int *progress = new int(0);
+		connect(timer, &QTimer::timeout, this, [=]()
+		{
+			*progress += 5;
+			_splashScreen->setValue(*progress);
+			if (*progress >= 30)
+				_splashScreen->setStatusText("正在加载组件...");
+			if (*progress >= 60)
+				_splashScreen->setStatusText("正在准备界面...");
+			if (*progress >= 100)
+			{
+				timer->stop();
+				timer->deleteLater();
+				_splashScreen->setStatusText("加载完成!");
+				QTimer::singleShot(500, this, [=]()
+				{
+					_splashScreen->close();
+					delete progress;
+				});
+			}
+		});
+		timer->start(80);
+	});
+
+	ElaScrollPageArea *splashArea = new ElaScrollPageArea(this);
+	QHBoxLayout *splashLayout = new QHBoxLayout(splashArea);
+	splashLayout->addWidget(new ElaText("ElaSplashScreen", 15, this));
+	splashLayout->addWidget(splashBtn);
+	splashLayout->addStretch();
+
+	// ========== ElaSheetPanel 示例 ==========
+	_sheetPanel = nullptr; // 延迟创建，构造时 window() 可能还未就绪
+
+	ElaPushButton *sheetPeekBtn = new ElaPushButton("Peek", this);
+	sheetPeekBtn->setFixedSize(70, 32);
+	connect(sheetPeekBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		if (!_sheetPanel)
+		{
+			_sheetPanel = new ElaSheetPanel(window());
+			_sheetPanel->setDragHandleVisible(true);
+			_sheetPanel->setCloseOnOverlayClick(true);
+			QWidget *sheetContent = new QWidget();
+			QVBoxLayout *sheetContentLayout = new QVBoxLayout(sheetContent);
+			sheetContentLayout->setContentsMargins(20, 10, 20, 10);
+			sheetContentLayout->addWidget(new ElaText("Sheet 面板内容", 16, sheetContent));
+			sheetContentLayout->addWidget(new ElaText("这是一个从底部滑出的半模态面板，支持拖拽调整高度。", 13, sheetContent));
+			sheetContentLayout->addWidget(new ElaText("可以放置表单、详情或任意内容。", 13, sheetContent));
+			ElaLineEdit *sheetInput = new ElaLineEdit(sheetContent);
+			sheetInput->setPlaceholderText("在 Sheet 中输入内容...");
+			sheetInput->setFixedHeight(35);
+			sheetContentLayout->addWidget(sheetInput);
+			sheetContentLayout->addStretch();
+			_sheetPanel->setCentralWidget(sheetContent);
+		}
+		_sheetPanel->open(ElaSheetPanelType::Peek);
+	});
+	ElaPushButton *sheetHalfBtn = new ElaPushButton("Half", this);
+	sheetHalfBtn->setFixedSize(70, 32);
+	connect(sheetHalfBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		if (!_sheetPanel)
+		{
+			sheetPeekBtn->click();
+			return;
+		}
+		_sheetPanel->open(ElaSheetPanelType::Half);
+	});
+	ElaPushButton *sheetFullBtn = new ElaPushButton("Full", this);
+	sheetFullBtn->setFixedSize(70, 32);
+	connect(sheetFullBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		if (!_sheetPanel)
+		{
+			sheetPeekBtn->click();
+			return;
+		}
+		_sheetPanel->open(ElaSheetPanelType::Full);
+	});
+
+	ElaScrollPageArea *sheetArea = new ElaScrollPageArea(this);
+	QHBoxLayout *sheetLayout = new QHBoxLayout(sheetArea);
+	sheetLayout->addWidget(new ElaText("ElaSheetPanel", 15, this));
+	sheetLayout->addWidget(sheetPeekBtn);
+	sheetLayout->addWidget(sheetHalfBtn);
+	sheetLayout->addWidget(sheetFullBtn);
+	sheetLayout->addStretch();
+
+
+
+	// ========== ElaTransfer 示例 ==========
+	_transfer = new ElaTransfer(this);
+	_transfer->setFixedHeight(280);
+	_transfer->setSourceTitle("可选项目");
+	_transfer->setTargetTitle("已选项目");
+	QStringList transferItems;
+	for (int i = 1; i <= 20; ++i)
+	{
+		transferItems.append(QString("项目 %1").arg(i));
+	}
+	_transfer->setSourceItems(transferItems);
+
+	ElaText *transferResult = new ElaText("已选: 0 项", this);
+	transferResult->setTextPixelSize(13);
+	connect(_transfer, &ElaTransfer::transferChanged, this, [=](const QStringList &, const QStringList &target)
+	{
+		transferResult->setText(QString("已选: %1 项").arg(target.size()));
+	});
+
+	QHBoxLayout *transferHeader = new QHBoxLayout();
+	transferHeader->addWidget(new ElaText("ElaTransfer", 15, this));
+	transferHeader->addWidget(transferResult);
+	transferHeader->addStretch();
+
+	// ========== ElaSpotlight 示例 ==========
+	_spotlight = nullptr; // 延迟创建
+
+	ElaPushButton *spotlightSingleBtn = new ElaPushButton("单目标聚光", this);
+	spotlightSingleBtn->setFixedSize(110, 38);
+	connect(spotlightSingleBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		if (!_spotlight)
+		{
+			_spotlight = new ElaSpotlight(window());
+		}
+		_spotlight->setTitle("ElaSplashScreen");
+		_spotlight->setContent("点击此按钮可以展示启动屏效果。");
+		_spotlight->showSpotlight(splashBtn, "我知道了");
+	});
+
+	ElaPushButton *spotlightTourBtn = new ElaPushButton("多步骤引导", this);
+	spotlightTourBtn->setFixedSize(110, 38);
+	connect(spotlightTourBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		if (!_spotlight)
+		{
+			_spotlight = new ElaSpotlight(window());
+		}
+		QList<ElaSpotlight::SpotlightStep> steps;
+		steps.append({splashBtn, "启动屏", "展示应用启动画面效果", false});
+		steps.append({sheetPeekBtn, "底部面板", "从底部滑出半模态面板", false});
+		steps.append({spotlightSingleBtn, "聚光灯", "高亮任意目标区域", false});
+		_spotlight->setSteps(steps);
+		_spotlight->start();
+	});
+
+	ElaScrollPageArea *spotlightArea = new ElaScrollPageArea(this);
+	QHBoxLayout *spotlightLayout = new QHBoxLayout(spotlightArea);
+	spotlightLayout->addWidget(new ElaText("ElaSpotlight", 15, this));
+	spotlightLayout->addWidget(spotlightSingleBtn);
+	spotlightLayout->addWidget(spotlightTourBtn);
+	spotlightLayout->addStretch();
+
+
+
+	// ========== ElaCountdown 示例 ==========
+	_countdown = new ElaCountdown(this);
+	_countdown->setRemainingSeconds(86400 + 3661);
+	_countdown->setIsShowDays(true);
+
+	ElaPushButton *countdownStartBtn = new ElaPushButton("开始", this);
+	countdownStartBtn->setFixedSize(60, 32);
+	ElaPushButton *countdownPauseBtn = new ElaPushButton("暂停", this);
+	countdownPauseBtn->setFixedSize(60, 32);
+	ElaPushButton *countdownResetBtn = new ElaPushButton("重置", this);
+	countdownResetBtn->setFixedSize(60, 32);
+	connect(countdownStartBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		if (_countdown->isRunning())
+			_countdown->resume();
+		else
+			_countdown->start();
+	});
+	connect(countdownPauseBtn, &ElaPushButton::clicked, _countdown, &ElaCountdown::pause);
+	connect(countdownResetBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		_countdown->stop();
+		_countdown->setRemainingSeconds(86400 + 3661);
+	});
+
+	ElaCountdown *countdownTarget = new ElaCountdown(this);
+	countdownTarget->setIsShowDays(false);
+	countdownTarget->setTargetDateTime(QDateTime::currentDateTime().addSecs(7200));
+	countdownTarget->start();
+
+	ElaScrollPageArea *countdownArea = new ElaScrollPageArea(this);
+	countdownArea->setFixedHeight(130);
+	QVBoxLayout *countdownMainLayout = new QVBoxLayout(countdownArea);
+	QHBoxLayout *countdownHeader = new QHBoxLayout();
+	countdownHeader->addWidget(new ElaText("ElaCountdown", 15, this));
+	countdownHeader->addWidget(countdownStartBtn);
+	countdownHeader->addWidget(countdownPauseBtn);
+	countdownHeader->addWidget(countdownResetBtn);
+	countdownHeader->addStretch();
+	countdownMainLayout->addLayout(countdownHeader);
+	QHBoxLayout *countdownBody = new QHBoxLayout();
+	countdownBody->addWidget(_countdown);
+	countdownBody->addSpacing(20);
+	countdownBody->addWidget(new ElaText("目标时间 (2小时后):", 13, this));
+	countdownBody->addWidget(countdownTarget);
+	countdownBody->addStretch();
+	countdownMainLayout->addLayout(countdownBody);
+
+	// ========== ElaPopconfirm 示例 ==========
+	_popconfirm = new ElaPopconfirm(this);
+	_popconfirm->setTitle("确认删除");
+	_popconfirm->setContent("删除后将无法恢复，是否继续？");
+
+	ElaPushButton *popconfirmBtn = new ElaPushButton("删除项目", this);
+	popconfirmBtn->setFixedSize(100, 38);
+	connect(popconfirmBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		_popconfirm->showPopconfirm(popconfirmBtn);
+	});
+
+	ElaText *popconfirmResult = new ElaText("", this);
+	popconfirmResult->setTextPixelSize(13);
+	connect(_popconfirm, &ElaPopconfirm::confirmed, this, [=]()
+	{
+		popconfirmResult->setText("已确认删除");
+	});
+	connect(_popconfirm, &ElaPopconfirm::cancelled, this, [=]()
+	{
+		popconfirmResult->setText("已取消");
+	});
+
+	ElaPopconfirm *customPopconfirm = new ElaPopconfirm(this);
+	customPopconfirm->setTitle("提交变更");
+	customPopconfirm->setContent("确定要提交到远程仓库吗？");
+	customPopconfirm->setConfirmButtonText("提交");
+	customPopconfirm->setCancelButtonText("再想想");
+	customPopconfirm->setIcon(ElaIconType::CloudArrowUp);
+
+	ElaPushButton *customPopconfirmBtn = new ElaPushButton("提交代码", this);
+	customPopconfirmBtn->setFixedSize(100, 38);
+	connect(customPopconfirmBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		customPopconfirm->showPopconfirm(customPopconfirmBtn);
+	});
+
+	ElaScrollPageArea *popconfirmArea = new ElaScrollPageArea(this);
+	QHBoxLayout *popconfirmLayout = new QHBoxLayout(popconfirmArea);
+	popconfirmLayout->addWidget(new ElaText("ElaPopconfirm", 15, this));
+	popconfirmLayout->addWidget(popconfirmBtn);
+	popconfirmLayout->addWidget(popconfirmResult);
+	popconfirmLayout->addSpacing(10);
+	popconfirmLayout->addWidget(customPopconfirmBtn);
+	popconfirmLayout->addStretch();
+
 	// ========== 中心布局 ==========
 	QVBoxLayout *c = new QVBoxLayout(centralWidget);
 	c->setContentsMargins(0, 0, 0, 0);
@@ -777,6 +1075,16 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	c->addSpacing(5);
 	c->addWidget(new ElaText("ElaTimeline", 15, this));
 	c->addWidget(_timeline);
+	c->addSpacing(10);
+	c->addWidget(virtualListArea);
+	c->addWidget(splashArea);
+	c->addWidget(sheetArea);
+	c->addWidget(spotlightArea);
+	c->addWidget(countdownArea);
+	c->addWidget(popconfirmArea);
+	c->addSpacing(5);
+	c->addLayout(transferHeader);
+	c->addWidget(_transfer);
 	c->addStretch();
 	addCentralWidget(centralWidget, true, false, 0);
 }

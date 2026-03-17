@@ -4,7 +4,7 @@
 
 本项目是基于QT-Widget开发的FluentUI风格的组件库，同时提供不限于组件的常用集成功能；目前Main分支支持QT5.12以上所有版本(Linux为QT5.15以上)，推荐版本为QT5.15.2和QT6.6.2；
 
-目前共有 **100** 个公开组件，涵盖基础控件、数据展示、导航布局、弹出交互、编辑输入等类别。完整 API 文档见 [doc/API.md](doc/API.md)。
+目前共有 **100+** 个公开组件，涵盖基础控件、数据展示、导航布局、弹出交互、编辑输入等类别。完整 API 文档见 [doc/API.md](doc/API.md)。
 
 
 ## 支持平台
@@ -77,6 +77,7 @@
 | ElaSuggestBox          | 建议搜索框        | 输入联想，自动补全建议列表                |
 | ElaDropDownButton      | 下拉按钮         | 整个按钮触发下拉菜单，支持图标+文字           |
 | ElaSelectorBar         | 分段选择器        | 滑动指示条动画，支持图标，筛选/模式切换         |
+| ElaTransfer            | 穿梭框          | 双列表互选，支持搜索过滤、全选、主题跟随          |
 
 ### 数据展示
 
@@ -94,6 +95,7 @@
 | ElaSkeleton            | 骨架屏加载占位      | Text/Circle/Rectangle三种形态，Shimmer动画 |
 | ElaDivider             | 分隔线          | 支持水平/垂直，可带文字（左/中/右对齐）       |
 | ElaLCDNumber           | LCD数字显示      | 仿液晶屏数字显示                     |
+| ElaCountdown           | 倒计时组件        | 天/时/分/秒翻牌显示，支持目标时间和剩余秒数两种模式  |
 
 ### 卡片
 
@@ -146,6 +148,8 @@
 | ElaColorDialog         | 颜色选择器        | HSV/RGB 颜色选取                 |
 | ElaCalendar            | 日历视图         | 月/年视图切换，日期选择                 |
 | ElaCalendarPicker      | 日期选择器        | 点击弹出日历选择日期                   |
+| ElaSpotlight           | 聚光灯引导        | 全窗口遮罩挖洞高亮，支持多步骤引导和平滑过渡动画     |
+| ElaPopconfirm          | 气泡确认框        | 锚定目标控件弹出，带图标/标题/确认取消按钮，Light Dismiss |
 | ElaRoller              | 滚轮选择器        | 纵向滚轮列表选择                     |
 | ElaRollerPicker        | 滚轮选择器        | 多列滚轮组合（如时间/日期）               |
 | ElaDrawerArea          | 抽屉区域         | 可展开/收起的侧边抽屉面板               |
@@ -157,6 +161,8 @@
 | ElaWizard              | 向导窗口         | 多步骤对话框，内置步骤指示器，上一步/下一步/完成    |
 | ElaNotificationCenter  | 通知中心         | 右侧滑出面板，堆叠通知卡片，支持清除和滚动        |
 | ElaDockWidget          | 停靠窗口         | 可拖拽停靠的浮动面板                   |
+| ElaSplashScreen        | 启动屏          | 品牌展示+加载进度，支持进度条/进度环/Logo/拖拽   |
+| ElaSheetPanel          | 底部滑出面板       | 半模态Sheet，支持三级停靠(Peek/Half/Full)和拖拽  |
 
 ### 视图
 
@@ -170,6 +176,7 @@
 | ElaGraphicsView        | 高级视图         | 按键缩放、拖动，画布操作                 |
 | ElaGraphicsItem        | 高级图元         | 大量实用API，自定义绘制                |
 | ElaPromotionView       | 促销卡片视窗       | 多卡片轮播展示容器                    |
+| ElaVirtualList         | 虚拟滚动列表       | 万级数据量流畅滚动，批量布局+统一行高优化         |
 
 ### 编辑器与渲染
 

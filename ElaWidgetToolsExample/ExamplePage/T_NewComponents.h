@@ -27,6 +27,13 @@ class ElaCaptcha;
 class ElaStatCard;
 class ElaDropDownButton;
 class ElaSelectorBar;
+class ElaVirtualList;
+class ElaSplashScreen;
+class ElaSheetPanel;
+class ElaTransfer;
+class ElaSpotlight;
+class ElaCountdown;
+class ElaPopconfirm;
 class T_NewComponents : public T_BasePage
 {
     Q_OBJECT
@@ -82,6 +89,18 @@ private:
     ElaDropDownButton* _dropDownButton{nullptr};
     // SelectorBar
     ElaSelectorBar* _selectorBar{nullptr};
+    // VirtualList
+    ElaVirtualList* _virtualList{nullptr};
+    // SplashScreen
+    ElaSplashScreen* _splashScreen{nullptr};
+    // SheetPanel
+    ElaSheetPanel* _sheetPanel{nullptr};
+    // Transfer
+    ElaTransfer* _transfer{nullptr};
+    // Spotlight
+    ElaSpotlight* _spotlight{nullptr};
+    ElaCountdown* _countdown{nullptr};
+    ElaPopconfirm* _popconfirm{nullptr};
 };
 
 #endif // T_NEWCOMPONENTS_H

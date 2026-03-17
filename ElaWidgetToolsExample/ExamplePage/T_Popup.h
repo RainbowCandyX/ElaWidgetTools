@@ -12,7 +12,6 @@ class ElaKeyBinder;
 class ElaRoller;
 class ElaRollerPicker;
 class ElaDrawerArea;
-class ElaMessageCard;
 class ElaMessageDialog;
 class T_Popup : public T_BasePage
 {
@@ -31,7 +30,6 @@ private:
     ElaRollerPicker* _timeRollerPicker{nullptr};
     ElaRollerPicker* _clockRollerPicker{nullptr};
     ElaDrawerArea* _drawer{nullptr};
-    ElaMessageCard* _messageCard{nullptr};
     ElaMessageDialog* _messageDialog{nullptr};
 };
 

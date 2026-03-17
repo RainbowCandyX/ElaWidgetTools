@@ -2,7 +2,7 @@
 
 > 本文档由 `scripts/generate_docs.py` 自动生成，请勿手动编辑。
 >
-> 共 **100** 个公开组件
+> 共 **106** 个公开组件
 
 ## 目录
 
@@ -24,6 +24,7 @@
 - [ElaComboBox](#elacombobox)
 - [ElaCommandBar](#elacommandbar)
 - [ElaContentDialog](#elacontentdialog)
+- [ElaCountdown](#elacountdown)
 - [ElaDialog](#eladialog)
 - [ElaDivider](#eladivider)
 - [ElaDockWidget](#eladockwidget)
@@ -55,7 +56,6 @@
 - [ElaMenuBar](#elamenubar)
 - [ElaMessageBar](#elamessagebar)
 - [ElaMessageButton](#elamessagebutton)
-- [ElaMessageCard](#elamessagecard)
 - [ElaMessageDialog](#elamessagedialog)
 - [ElaMultiSelectComboBox](#elamultiselectcombobox)
 - [ElaNotificationCenter](#elanotificationcenter)
@@ -65,6 +65,7 @@
 - [ElaPersonPicture](#elapersonpicture)
 - [ElaPivot](#elapivot)
 - [ElaPlainTextEdit](#elaplaintextedit)
+- [ElaPopconfirm](#elapopconfirm)
 - [ElaPopularCard](#elapopularcard)
 - [ElaProgressBar](#elaprogressbar)
 - [ElaProgressRing](#elaprogressring)
@@ -82,10 +83,13 @@
 - [ElaScrollPage](#elascrollpage)
 - [ElaScrollPageArea](#elascrollpagearea)
 - [ElaSelectorBar](#elaselectorbar)
+- [ElaSheetPanel](#elasheetpanel)
 - [ElaSkeleton](#elaskeleton)
 - [ElaSlider](#elaslider)
 - [ElaSpinBox](#elaspinbox)
+- [ElaSplashScreen](#elasplashscreen)
 - [ElaSplitButton](#elasplitbutton)
+- [ElaSpotlight](#elaspotlight)
 - [ElaStatCard](#elastatcard)
 - [ElaStatusBar](#elastatusbar)
 - [ElaSteps](#elasteps)
@@ -104,7 +108,9 @@
 - [ElaToolBar](#elatoolbar)
 - [ElaToolButton](#elatoolbutton)
 - [ElaToolTip](#elatooltip)
+- [ElaTransfer](#elatransfer)
 - [ElaTreeView](#elatreeview)
+- [ElaVirtualList](#elavirtuallist)
 - [ElaWizard](#elawizard)
 
 ---
@@ -617,6 +623,43 @@
 - `leftButtonClicked()`
 - `middleButtonClicked()`
 - `rightButtonClicked()`
+
+---
+
+## ElaCountdown
+
+**继承**: `QWidget` | **头文件**: `ElaCountdown.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `bool` | `IsShowDays` | get/set |
+| `bool` | `IsShowHours` | get/set |
+| `bool` | `IsShowMinutes` | get/set |
+| `bool` | `IsShowSeconds` | get/set |
+| `int` | `DigitWidth` | get/set |
+| `int` | `DigitHeight` | get/set |
+| `int` | `DigitSpacing` | get/set |
+| `int` | `FontPixelSize` | get/set |
+
+### 方法
+
+- `void setTargetDateTime(const QDateTime& dateTime)`
+- `QDateTime getTargetDateTime()`
+- `void setRemainingSeconds(qint64 seconds)`
+- `qint64 getRemainingSeconds()`
+- `void start()`
+- `void pause()`
+- `void resume()`
+- `void stop()`
+- `bool isRunning()`
+
+### 信号
+
+- `timeout()`
+- `tick(qint64 remainingSeconds)`
 
 ---
 
@@ -1269,23 +1312,6 @@
 
 ---
 
-## ElaMessageCard
-
-**继承**: `QWidget` | **头文件**: `ElaMessageCard.h`
-
-### 属性
-
-| 类型 | 名称 | 读写 |
-|------|------|------|
-| `int` | `BorderRadius` | get/set |
-| `bool` | `IsCompleted` | get/set |
-| `QString` | `Title` | get/set |
-| `QString` | `Content` | get/set |
-| `int` | `TitlePixelSize` | get/set |
-| `int` | `ContentPixelSize` | get/set |
-
----
-
 ## ElaMessageDialog
 
 **继承**: `QWidget` | **头文件**: `ElaMessageDialog.h`
@@ -1477,6 +1503,35 @@
 ## ElaPlainTextEdit
 
 **继承**: `QPlainTextEdit` | **头文件**: `ElaPlainTextEdit.h`
+
+---
+
+## ElaPopconfirm
+
+**继承**: `QWidget` | **头文件**: `ElaPopconfirm.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `QString` | `Title` | get/set |
+| `QString` | `Content` | get/set |
+| `QString` | `ConfirmButtonText` | get/set |
+| `QString` | `CancelButtonText` | get/set |
+| `ElaIconType::IconName` | `Icon` | get/set |
+| `bool` | `IsLightDismiss` | get/set |
+
+### 方法
+
+- `void showPopconfirm(QWidget* target)`
+- `void closePopconfirm()`
+
+### 信号
+
+- `confirmed()`
+- `cancelled()`
+- `closed()`
 
 ---
 
@@ -1857,6 +1912,39 @@
 
 ---
 
+## ElaSheetPanel
+
+**继承**: `QWidget` | **头文件**: `ElaSheetPanel.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `ElaSheetPanelType::Direction` | `Direction` | get/set |
+| `qreal` | `PeekRatio` | get/set |
+| `qreal` | `HalfRatio` | get/set |
+| `qreal` | `FullRatio` | get/set |
+| `bool` | `DragHandleVisible` | get/set |
+| `bool` | `CloseOnOverlayClick` | get/set |
+| `qreal` | `OverlayOpacity` | get/set |
+
+### 方法
+
+- `void setCentralWidget(QWidget* widget)`
+- `void open(ElaSheetPanelType::DetentLevel level = ElaSheetPanelType::Half)`
+- `void close()`
+- `ElaSheetPanelType::DetentLevel currentDetent()`
+- `bool isOpened()`
+
+### 信号
+
+- `opened()`
+- `closed()`
+- `detentChanged(ElaSheetPanelType::DetentLevel level)`
+
+---
+
 ## ElaSkeleton
 
 **继承**: `QWidget` | **头文件**: `ElaSkeleton.h`
@@ -1897,6 +1985,38 @@
 
 ---
 
+## ElaSplashScreen
+
+**继承**: `QWidget` | **头文件**: `ElaSplashScreen.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `int` | `Minimum` | get/set |
+| `int` | `Maximum` | get/set |
+| `int` | `Value` | get/set |
+| `bool` | `IsShowProgressBar` | get/set |
+| `bool` | `IsShowProgressRing` | get/set |
+| `bool` | `IsClosable` | get/set |
+
+### 方法
+
+- `void setLogo(const QPixmap& logo)`
+- `void setTitle(const QString& title)`
+- `void setSubTitle(const QString& subTitle)`
+- `void setStatusText(const QString& text)`
+- `void show()`
+- `void close()`
+- `void finish(QWidget* mainWindow)`
+
+### 信号
+
+- `closed()`
+
+---
+
 ## ElaSplitButton
 
 **继承**: `QWidget` | **头文件**: `ElaSplitButton.h`
@@ -1917,6 +2037,46 @@
 ### 信号
 
 - `clicked()`
+
+---
+
+## ElaSpotlight
+
+**继承**: `QWidget` | **头文件**: `ElaSpotlight.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `int` | `Padding` | get/set |
+| `int` | `OverlayAlpha` | get/set |
+| `bool` | `IsCircle` | get/set |
+| `QString` | `Title` | get/set |
+| `QString` | `Content` | get/set |
+
+### 结构体
+
+**SpotlightStep**
+```cpp
+  QWidget* target{nullptr;
+```
+
+### 方法
+
+- `void showSpotlight(QWidget* target, const QString& buttonText = "知道了")`
+- `void setSteps(const QList<SpotlightStep>& steps)`
+- `void start()`
+- `void next()`
+- `void previous()`
+- `void finish()`
+- `int currentStep()`
+- `int stepCount()`
+
+### 信号
+
+- `stepChanged(int step)`
+- `finished()`
 
 ---
 
@@ -2317,6 +2477,38 @@
 
 ---
 
+## ElaTransfer
+
+**继承**: `QWidget` | **头文件**: `ElaTransfer.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `int` | `ItemHeight` | get/set |
+| `QString` | `SourceTitle` | get/set |
+| `QString` | `TargetTitle` | get/set |
+| `bool` | `IsSearchVisible` | get/set |
+
+### 方法
+
+- `void setSourceItems(const QStringList& items)`
+- `void addSourceItem(const QString& text)`
+- `void addSourceItems(const QStringList& items)`
+- `QStringList getSourceItems()`
+- `QStringList getTargetItems()`
+- `void moveToTarget()`
+- `void moveToSource()`
+- `void moveAllToTarget()`
+- `void moveAllToSource()`
+
+### 信号
+
+- `transferChanged(const QStringList& sourceItems, const QStringList& targetItems)`
+
+---
+
 ## ElaTreeView
 
 **继承**: `QTreeView` | **头文件**: `ElaTreeView.h`
@@ -2327,6 +2519,29 @@
 |------|------|------|
 | `int` | `ItemHeight` | get/set |
 | `int` | `HeaderMargin` | get/set |
+
+---
+
+## ElaVirtualList
+
+**继承**: `QListView` | **头文件**: `ElaVirtualList.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `ItemHeight` | get/set |
+| `bool` | `IsTransparent` | get/set |
+| `bool` | `IsAlternatingRowColors` | get/set |
+
+### 方法
+
+- `void setItemCount(int count)`
+- `int getItemCount()`
+
+### 信号
+
+- `itemRequestData(int startIndex, int endIndex)`
 
 ---
 

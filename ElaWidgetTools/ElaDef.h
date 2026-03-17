@@ -299,6 +299,24 @@ enum ButtonMode
 Q_ENUM_CREATE(ButtonMode)
 Q_END_ENUM_CREATE(ElaSpinBoxType)
 
+Q_BEGIN_ENUM_CREATE(ElaSheetPanelType)
+enum Direction
+{
+    Bottom = 0x0000,
+    Left = 0x0001,
+    Right = 0x0002,
+};
+Q_ENUM_CREATE(Direction)
+
+enum DetentLevel
+{
+    Peek = 0x0000,
+    Half = 0x0001,
+    Full = 0x0002,
+};
+Q_ENUM_CREATE(DetentLevel)
+Q_END_ENUM_CREATE(ElaSheetPanelType)
+
 Q_BEGIN_ENUM_CREATE(ElaIconType)
 enum IconName
 {
