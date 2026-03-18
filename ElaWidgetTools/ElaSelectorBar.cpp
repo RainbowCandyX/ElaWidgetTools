@@ -49,11 +49,11 @@ void ElaSelectorBar::addItem(ElaIconType::IconName icon, const QString &text)
 	item.text = text;
 	d->_items.append(item);
 
-	if (d->_items.count() == 1)
+	if (!d->_items.isEmpty())
 	{
-		d->_pCurrentIndex = 0;
+		d->_pCurrentIndex = qBound(0, d->_pCurrentIndex, d->_items.count() - 1);
 		qreal itemWidth = static_cast<qreal>(width()) / d->_items.count();
-		d->_indicatorX = 0;
+		d->_indicatorX = d->_pCurrentIndex * itemWidth;
 		d->_indicatorWidth = itemWidth;
 	}
 	updateGeometry();
@@ -167,6 +167,19 @@ void ElaSelectorBar::paintEvent(QPaintEvent *event)
 		indicatorPath.addRoundedRect(indicatorRect, 1.5, 1.5);
 		painter.fillPath(indicatorPath, ElaThemeColor(d->_themeMode, PrimaryNormal));
 	}
+}
+
+void ElaSelectorBar::mousePressEvent(QMouseEvent *event)
+void ElaSelectorBar::resizeEvent(QResizeEvent *event)
+{
+	Q_D(ElaSelectorBar);
+	if (!d->_items.isEmpty())
+	{
+		const qreal itemWidth = static_cast<qreal>(width()) / d->_items.count();
+		d->_indicatorX = d->_pCurrentIndex * itemWidth;
+		d->_indicatorWidth = itemWidth;
+	}
+	QWidget::resizeEvent(event);
 }
 
 void ElaSelectorBar::mousePressEvent(QMouseEvent *event)
