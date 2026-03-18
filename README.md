@@ -2,26 +2,19 @@
 
 ## 简介
 
-本项目是基于QT-Widget开发的FluentUI风格的组件库，同时提供不限于组件的常用集成功能；目前Main分支支持QT5.12以上所有版本(Linux为QT5.15以上)，推荐版本为QT5.15.2和QT6.6.2；
+本项目基于 [Liniyous/ElaWidgetTools](https://github.com/Liniyous/ElaWidgetTools) 独立修改发展而来。
 
-目前共有 **100+** 个公开组件，涵盖基础控件、数据展示、导航布局、弹出交互、编辑输入等类别。完整 API 文档见 [doc/API.md](doc/API.md)。
-
+基于 Qt Widget 开发的 FluentUI 风格组件库，提供不限于组件的常用集成功能。目前共有 **100+** 个公开组件，涵盖基础控件、数据展示、导航布局、弹出交互、编辑输入等类别。完整 API 文档见 [doc/API.md](doc/API.md)。
 
 ## 支持平台
 
-| [Windows][win-link] | [Ubuntu/Kylin][ubuntu-link] | [macOS][macos-link] |
-|---------------------|-----------------------|---------------------|
-| ![win-badge]        | ![ubuntu-badge]       | ![macos-badge]      |
-
-[win-link]: https://github.com/Liniyous/ElaWidgetTools/actions?query=workflow%3AWindows "WindowsAction"
+| Windows | Ubuntu/Kylin | macOS |
+|---------|-------------|-------|
+| ![win-badge] | ![ubuntu-badge] | ![macos-badge] |
 
 [win-badge]: https://img.shields.io/badge/Windows-Passing-61C263
 
-[ubuntu-link]: https://github.com/Liniyous/ElaWidgetTools/actions?query=workflow%3AUbuntu "UbuntuAction"
-
 [ubuntu-badge]: https://img.shields.io/badge/Ubuntu-Passing-61C263
-
-[macos-link]: https://github.com/RainbowCandyX/ElaWidgetTools "macOSSupport"
 
 [macos-badge]: https://img.shields.io/badge/macOS-Passing-61C263
 
@@ -163,6 +156,7 @@
 | ElaDockWidget          | 停靠窗口         | 可拖拽停靠的浮动面板                   |
 | ElaSplashScreen        | 启动屏          | 品牌展示+加载进度，支持进度条/进度环/Logo/拖拽   |
 | ElaSheetPanel          | 底部滑出面板       | 半模态Sheet，支持三级停靠(Peek/Half/Full)和拖拽  |
+| ElaWatermark           | 全局水印覆盖       | 文字/图片水印，支持旋转角度、透明度、间距、HiDPI，鼠标事件穿透 |
 
 ### 视图
 
@@ -202,5 +196,10 @@
 python3 scripts/generate_docs.py
 ```
 
+## 致谢
+
+本项目基于 [Liniyous/ElaWidgetTools](https://github.com/Liniyous/ElaWidgetTools) 修改而来，感谢原作者的开源贡献。
+
 ## 许可证
+
 ElaWidgetTools 使用 MIT 许可证授权所有类型项目，但要求所有分发的软件中必须保留本项目的MIT授权许可；所有未保留授权分发的商业行为均将被视为侵权行为

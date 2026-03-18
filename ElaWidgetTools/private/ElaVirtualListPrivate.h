@@ -5,7 +5,7 @@
 
 #include "ElaDef.h"
 class ElaVirtualList;
-class ElaListViewStyle;
+class ElaVirtualListStyle;
 class ElaVirtualListPrivate : public QObject
 {
     Q_OBJECT
@@ -19,7 +19,7 @@ public:
 
 private:
     ElaThemeType::ThemeMode _themeMode;
-    ElaListViewStyle* _listViewStyle{nullptr};
+    ElaVirtualListStyle* _listViewStyle{nullptr};
     int _itemCount{0};
 };
 

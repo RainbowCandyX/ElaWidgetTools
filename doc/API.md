@@ -2,7 +2,7 @@
 
 > 本文档由 `scripts/generate_docs.py` 自动生成，请勿手动编辑。
 >
-> 共 **106** 个公开组件
+> 共 **107** 个公开组件
 
 ## 目录
 
@@ -111,6 +111,7 @@
 - [ElaTransfer](#elatransfer)
 - [ElaTreeView](#elatreeview)
 - [ElaVirtualList](#elavirtuallist)
+- [ElaWatermark](#elawatermark)
 - [ElaWizard](#elawizard)
 
 ---
@@ -2542,6 +2543,27 @@
 ### 信号
 
 - `itemRequestData(int startIndex, int endIndex)`
+
+---
+
+## ElaWatermark
+
+**继承**: `QWidget` | **头文件**: `ElaWatermark.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `QString` | `Text` | get/set |
+| `int` | `FontPixelSize` | get/set |
+| `qreal` | `Opacity` | get/set |
+| `qreal` | `Rotation` | get/set |
+| `int` | `GapX` | get/set |
+| `int` | `GapY` | get/set |
+| `QColor` | `TextColor` | get/set |
+| `QImage` | `Image` | get/set |
+| `int` | `ImageWidth` | get/set |
+| `int` | `ImageHeight` | get/set |
 
 ---
 

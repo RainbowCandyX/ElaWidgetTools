@@ -40,6 +40,7 @@
 #include "ElaSpotlight.h"
 #include "ElaCountdown.h"
 #include "ElaPopconfirm.h"
+#include "ElaWatermark.h"
 #include <QButtonGroup>
 #include <QDateTime>
 #include <QStackedWidget>
@@ -873,7 +874,6 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	sheetLayout->addStretch();
 
 
-
 	// ========== ElaTransfer 示例 ==========
 	_transfer = new ElaTransfer(this);
 	_transfer->setFixedHeight(280);
@@ -936,7 +936,6 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	spotlightLayout->addWidget(spotlightSingleBtn);
 	spotlightLayout->addWidget(spotlightTourBtn);
 	spotlightLayout->addStretch();
-
 
 
 	// ========== ElaCountdown 示例 ==========
@@ -1033,6 +1032,65 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	popconfirmLayout->addWidget(customPopconfirmBtn);
 	popconfirmLayout->addStretch();
 
+	// ========== ElaWatermark 示例 ==========
+	_watermark = new ElaWatermark("ElaWidgetTools", window());
+	_watermark->setVisible(false);
+
+	ElaPushButton *watermarkShowBtn = new ElaPushButton("显示", this);
+	watermarkShowBtn->setFixedSize(60, 36);
+	ElaPushButton *watermarkHideBtn = new ElaPushButton("隐藏", this);
+	watermarkHideBtn->setFixedSize(60, 36);
+	connect(watermarkShowBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		_watermark->setVisible(true);
+	});
+	connect(watermarkHideBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		_watermark->setVisible(false);
+	});
+
+	ElaLineEdit *watermarkTextEdit = new ElaLineEdit(this);
+	watermarkTextEdit->setText("ElaWidgetTools");
+	watermarkTextEdit->setFixedWidth(140);
+	connect(watermarkTextEdit, &ElaLineEdit::textChanged, this, [=](const QString &text)
+	{
+		_watermark->setText(text);
+	});
+
+	ElaSlider *watermarkOpacitySlider = new ElaSlider(this);
+	watermarkOpacitySlider->setRange(1, 100);
+	watermarkOpacitySlider->setValue(50);
+	watermarkOpacitySlider->setFixedWidth(120);
+	connect(watermarkOpacitySlider, &ElaSlider::valueChanged, this, [=](int v)
+	{
+		_watermark->setOpacity(v / 100.0);
+	});
+
+	ElaSlider *watermarkRotationSlider = new ElaSlider(this);
+	watermarkRotationSlider->setRange(-90, 90);
+	watermarkRotationSlider->setValue(-22);
+	watermarkRotationSlider->setFixedWidth(120);
+	connect(watermarkRotationSlider, &ElaSlider::valueChanged, this, [=](int v)
+	{
+		_watermark->setRotation(v);
+	});
+
+	ElaScrollPageArea *watermarkArea = new ElaScrollPageArea(this);
+	QHBoxLayout *watermarkLayout = new QHBoxLayout(watermarkArea);
+	watermarkLayout->addWidget(new ElaText("ElaWatermark", 15, this));
+	watermarkLayout->addSpacing(20);
+	watermarkLayout->addWidget(watermarkShowBtn);
+	watermarkLayout->addWidget(watermarkHideBtn);
+	watermarkLayout->addSpacing(10);
+	watermarkLayout->addWidget(watermarkTextEdit);
+	watermarkLayout->addSpacing(10);
+	watermarkLayout->addWidget(new ElaText("透明度", 13, this));
+	watermarkLayout->addWidget(watermarkOpacitySlider);
+	watermarkLayout->addSpacing(10);
+	watermarkLayout->addWidget(new ElaText("角度", 13, this));
+	watermarkLayout->addWidget(watermarkRotationSlider);
+	watermarkLayout->addStretch();
+
 	// ========== 中心布局 ==========
 	QVBoxLayout *c = new QVBoxLayout(centralWidget);
 	c->setContentsMargins(0, 0, 0, 0);
@@ -1082,6 +1140,7 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	c->addWidget(spotlightArea);
 	c->addWidget(countdownArea);
 	c->addWidget(popconfirmArea);
+	c->addWidget(watermarkArea);
 	c->addSpacing(5);
 	c->addLayout(transferHeader);
 	c->addWidget(_transfer);

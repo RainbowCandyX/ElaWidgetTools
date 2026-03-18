@@ -1,11 +1,11 @@
 #include "ElaVirtualList.h"
 
 #include <QPainter>
-#include <QPalette>
 #include <QStandardItemModel>
 
 #include "ElaScrollBar.h"
 #include "ElaTheme.h"
+#include "ElaVirtualListStyle.h"
 #include "private/ElaVirtualListPrivate.h"
 Q_PROPERTY_CREATE_Q_CPP(ElaVirtualList, int, ItemHeight)
 Q_PROPERTY_CREATE_Q_CPP(ElaVirtualList, bool, IsTransparent)
@@ -22,10 +22,11 @@ ElaVirtualList::ElaVirtualList(QWidget *parent) : QListView(parent), d_ptr(new E
 	setObjectName("ElaVirtualList");
 	setStyleSheet("#ElaVirtualList{background-color:transparent;}");
 	setMouseTracking(true);
+	setSpacing(0);
 
-	QPalette p = palette();
-	p.setColor(QPalette::Text, ElaThemeColor(d->_themeMode, BasicText));
-	setPalette(p);
+	d->_listViewStyle = new ElaVirtualListStyle(style());
+	d->_listViewStyle->setItemHeight(d->_pItemHeight);
+	setStyle(d->_listViewStyle);
 
 	ElaScrollBar *vScrollBar = new ElaScrollBar(this);
 	vScrollBar->setIsAnimation(true);
@@ -45,9 +46,6 @@ ElaVirtualList::ElaVirtualList(QWidget *parent) : QListView(parent), d_ptr(new E
 	connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode)
 	{
 		d->_themeMode = themeMode;
-		QPalette p = palette();
-		p.setColor(QPalette::Text, ElaThemeColor(themeMode, BasicText));
-		setPalette(p);
 		viewport()->update();
 	});
 }

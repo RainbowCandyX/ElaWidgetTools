@@ -145,7 +145,6 @@ bool ElaCaptcha::eventFilter(QObject *watched, QEvent *event)
 	{
 		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
 
-		// Paste handling (Ctrl+V)
 		if (keyEvent->matches(QKeySequence::Paste))
 		{
 			QString clipText = QApplication::clipboard()->text().trimmed().toUpper();
@@ -168,7 +167,6 @@ bool ElaCaptcha::eventFilter(QObject *watched, QEvent *event)
 				d->_applyThemeStyle();
 				int nextIndex = qMin(index + clipText.length(), d->_boxes.count() - 1);
 				d->_boxes[nextIndex]->setFocus();
-				// Emit signals
 				QString code = getCode();
 				Q_EMIT codeChanged(code);
 				if (code.length() == d->_pCodeLength)
@@ -179,7 +177,6 @@ bool ElaCaptcha::eventFilter(QObject *watched, QEvent *event)
 			return true;
 		}
 
-		// Arrow key navigation
 		if (keyEvent->key() == Qt::Key_Left)
 		{
 			if (index > 0)
@@ -197,7 +194,6 @@ bool ElaCaptcha::eventFilter(QObject *watched, QEvent *event)
 			return true;
 		}
 
-		// Backspace on empty box: move to previous and clear it
 		if (keyEvent->key() == Qt::Key_Backspace)
 		{
 			if (box->text().isEmpty())
@@ -211,14 +207,12 @@ bool ElaCaptcha::eventFilter(QObject *watched, QEvent *event)
 				}
 				return true;
 			}
-			// Non-empty: let default handle clear, then update
 			box->clear();
 			d->_applyThemeStyle();
 			Q_EMIT codeChanged(getCode());
 			return true;
 		}
 
-		// Input handling
 		QString text = keyEvent->text();
 		if (!text.isEmpty())
 		{
@@ -236,13 +230,11 @@ bool ElaCaptcha::eventFilter(QObject *watched, QEvent *event)
 			{
 				return true;
 			}
-			// Auto uppercase
 			text = text.toUpper();
 			box->blockSignals(true);
 			box->setText(text);
 			box->blockSignals(false);
 			d->_applyThemeStyle();
-			// Auto-advance
 			if (index < d->_boxes.count() - 1)
 			{
 				d->_boxes[index + 1]->setFocus();
@@ -258,8 +250,6 @@ bool ElaCaptcha::eventFilter(QObject *watched, QEvent *event)
 	}
 	return QWidget::eventFilter(watched, event);
 }
-
-// Private implementation
 
 ElaCaptchaPrivate::ElaCaptchaPrivate(QObject *parent)
 	: QObject{parent}
@@ -279,7 +269,6 @@ void ElaCaptchaPrivate::onThemeChanged(ElaThemeType::ThemeMode themeMode)
 void ElaCaptchaPrivate::_buildBoxes()
 {
 	Q_Q(ElaCaptcha);
-	// Remove existing boxes
 	for (QLineEdit *box: _boxes)
 	{
 		_boxLayout->removeWidget(box);

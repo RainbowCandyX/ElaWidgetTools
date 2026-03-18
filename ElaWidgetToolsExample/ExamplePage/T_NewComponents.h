@@ -34,6 +34,7 @@ class ElaTransfer;
 class ElaSpotlight;
 class ElaCountdown;
 class ElaPopconfirm;
+class ElaWatermark;
 class T_NewComponents : public T_BasePage
 {
     Q_OBJECT
@@ -101,6 +102,8 @@ private:
     ElaSpotlight* _spotlight{nullptr};
     ElaCountdown* _countdown{nullptr};
     ElaPopconfirm* _popconfirm{nullptr};
+    // Watermark
+    ElaWatermark* _watermark{nullptr};
 };
 
 #endif // T_NEWCOMPONENTS_H
