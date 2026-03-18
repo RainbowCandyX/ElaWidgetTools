@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typesystem package="ElaWidgetTools">
+    <load-typesystem name="typesystem_widgets.xml" generate="no"/>
+    <load-typesystem name="typesystem_core.xml" generate="no"/>
+    <load-typesystem name="typesystem_gui.xml" generate="no"/>
+
+    <!-- Enum Namespaces -->
+    <namespace-type name="ElaApplicationType">
+        <enum-type name="WindowDisplayMode"/>
+    </namespace-type>
+
+    <namespace-type name="ElaThemeType">
+        <enum-type name="ThemeMode"/>
+        <enum-type name="ThemeColor"/>
+    </namespace-type>
+
+    <namespace-type name="ElaAppBarType">
+        <enum-type name="ButtonType"/>
+        <enum-type name="CustomArea"/>
+        <enum-type name="WMMouseActionType"/>
+    </namespace-type>
+
+    <namespace-type name="ElaTextType">
+        <enum-type name="TextStyle"/>
+    </namespace-type>
+
+    <namespace-type name="ElaNavigationType">
+        <enum-type name="NodeResult"/>
+        <enum-type name="NavigationDisplayMode"/>
+        <enum-type name="NavigationNodeType"/>
+    </namespace-type>
+
+    <namespace-type name="ElaNavigationRouterType">
+        <enum-type name="NavigationRouteType"/>
+        <enum-type name="RouteMode"/>
+    </namespace-type>
+
+    <namespace-type name="ElaEventBusType">
+        <enum-type name="EventBusReturnType"/>
+    </namespace-type>
+
+    <namespace-type name="ElaCardPixType">
+        <enum-type name="PixMode"/>
+    </namespace-type>
+
+    <namespace-type name="ElaGraphicsSceneType">
+        <enum-type name="SceneMode"/>
+    </namespace-type>
+
+    <namespace-type name="ElaMessageBarType">
+        <enum-type name="PositionPolicy"/>
+        <enum-type name="MessageMode"/>
+    </namespace-type>
+
+    <namespace-type name="ElaProgressRingType">
+        <enum-type name="ValueDisplayMode"/>
+    </namespace-type>
+
+    <namespace-type name="ElaWindowType">
+        <enum-type name="StackSwitchMode"/>
+        <enum-type name="PaintMode"/>
+    </namespace-type>
+
+    <namespace-type name="ElaSpinBoxType">
+        <enum-type name="ButtonMode"/>
+    </namespace-type>
+
+    <namespace-type name="ElaSheetPanelType">
+        <enum-type name="Direction"/>
+        <enum-type name="DetentLevel"/>
+    </namespace-type>
+
+    <namespace-type name="ElaIconType">
+        <enum-type name="IconName"/>
+    </namespace-type>
+
+    <!-- Components -->
+    <object-type name="ElaAcrylicUrlCard"/>
+
+    <object-type name="ElaAppBar"/>
+
+    <object-type name="ElaApplication">
+        <modify-function signature="ElaApplication(QObject*)" remove="all"/>
+    </object-type>
+
+    <object-type name="ElaBreadcrumbBar"/>
+
+    <object-type name="ElaCalendar"/>
+
+    <object-type name="ElaCalendarPicker"/>
+
+    <object-type name="ElaCaptcha">
+        <enum-type name="InputMode"/>
+    </object-type>
+
+    <object-type name="ElaCheckBox"/>
+
+    <object-type name="ElaCodeEditor">
+        <enum-type name="Language"/>
+    </object-type>
+
+    <object-type name="ElaColorDialog"/>
+
+    <object-type name="ElaComboBox"/>
+
+    <object-type name="ElaCommandBar"/>
+
+    <object-type name="ElaContentDialog"/>
+
+    <object-type name="ElaCountdown"/>
+
+    <object-type name="ElaDialog"/>
+
+    <object-type name="ElaDivider"/>
+
+    <object-type name="ElaDockWidget"/>
+
+    <object-type name="ElaDoubleSpinBox"/>
+
+    <object-type name="ElaDrawerArea"/>
+
+    <object-type name="ElaDropDownButton"/>
+
+    <object-type name="ElaDxgiManager">
+        <modify-function signature="ElaDxgiManager(QObject*)" remove="all"/>
+    </object-type>
+
+    <object-type name="ElaEvent">
+        <modify-function signature="ElaEvent(QObject*)" remove="all"/>
+    </object-type>
+
+    <object-type name="ElaExpander">
+        <enum-type name="ExpandDirection"/>
+    </object-type>
+
+    <object-type name="ElaFlowLayout"/>
+
+    <object-type name="ElaFlyout"/>
+
+    <object-type name="ElaGraphicsItem"/>
+
+    <object-type name="ElaGraphicsLineItem"/>
+
+    <object-type name="ElaGraphicsScene"/>
+
+    <object-type name="ElaGraphicsView"/>
+
+    <object-type name="ElaGroupBox"/>
+
+    <object-type name="ElaIconButton"/>
+
+    <object-type name="ElaImageCard"/>
+
+    <object-type name="ElaInfoBadge">
+        <enum-type name="BadgeMode"/>
+        <enum-type name="Severity"/>
+    </object-type>
+
+    <object-type name="ElaInputDialog"/>
+
+    <object-type name="ElaInteractiveCard"/>
+
+    <object-type name="ElaKeyBinder"/>
+
+    <object-type name="ElaLCDNumber"/>
+
+    <object-type name="ElaLineEdit"/>
+
+    <object-type name="ElaListView"/>
+
+    <object-type name="ElaLog">
+        <modify-function signature="ElaLog(QObject*)" remove="all"/>
+    </object-type>
+
+    <object-type name="ElaMarkdownViewer"/>
+
+    <object-type name="ElaMenu"/>
+
+    <object-type name="ElaMenuBar"/>
+
+    <object-type name="ElaMessageBar"/>
+
+    <object-type name="ElaMessageButton"/>
+
+    <object-type name="ElaMessageDialog"/>
+
+    <object-type name="ElaMultiSelectComboBox"/>
+
+    <object-type name="ElaNavigationBar"/>
+
+    <object-type name="ElaNavigationRouter">
+        <modify-function signature="ElaNavigationRouter(QObject*)" remove="all"/>
+    </object-type>
+
+    <object-type name="ElaNotificationCenter"/>
+
+    <object-type name="ElaNumberBox"/>
+
+    <object-type name="ElaPagination"/>
+
+    <object-type name="ElaPasswordBox"/>
+
+    <object-type name="ElaPersonPicture"/>
+
+    <object-type name="ElaPivot"/>
+
+    <object-type name="ElaPlainTextEdit"/>
+
+    <object-type name="ElaPopconfirm"/>
+
+    <object-type name="ElaPopularCard"/>
+
+    <object-type name="ElaProgressBar"/>
+
+    <object-type name="ElaProgressRing"/>
+
+    <object-type name="ElaPromotionCard"/>
+
+    <object-type name="ElaPromotionView"/>
+
+    <object-type name="ElaPushButton"/>
+
+    <object-type name="ElaRadioButton"/>
+
+    <object-type name="ElaRatingControl"/>
+
+    <object-type name="ElaReminderCard"/>
+
+    <object-type name="ElaRoller"/>
+
+    <object-type name="ElaRollerPicker"/>
+
+    <object-type name="ElaScreenCaptureManager">
+        <modify-function signature="ElaScreenCaptureManager(QObject*)" remove="all"/>
+    </object-type>
+
+    <object-type name="ElaScrollArea"/>
+
+    <object-type name="ElaScrollBar"/>
+
+    <object-type name="ElaScrollPage"/>
+
+    <object-type name="ElaScrollPageArea"/>
+
+    <object-type name="ElaSelectorBar"/>
+
+    <object-type name="ElaSheetPanel"/>
+
+    <object-type name="ElaSkeleton">
+        <enum-type name="SkeletonType"/>
+    </object-type>
+
+    <object-type name="ElaSlider"/>
+
+    <object-type name="ElaSpinBox"/>
+
+    <object-type name="ElaSplashScreen"/>
+
+    <object-type name="ElaSplitButton"/>
+
+    <object-type name="ElaSpotlight"/>
+
+    <object-type name="ElaStatCard">
+        <enum-type name="TrendType"/>
+    </object-type>
+
+    <object-type name="ElaStatusBar"/>
+
+    <object-type name="ElaSteps"/>
+
+    <object-type name="ElaSuggestBox"/>
+
+    <object-type name="ElaTabBar"/>
+
+    <object-type name="ElaTabWidget"/>
+
+    <object-type name="ElaTableView"/>
+
+    <object-type name="ElaTableWidget"/>
+
+    <object-type name="ElaTag">
+        <enum-type name="TagColor"/>
+    </object-type>
+
+    <object-type name="ElaTeachingTip">
+        <enum-type name="TailPosition"/>
+    </object-type>
+
+    <object-type name="ElaText"/>
+
+    <object-type name="ElaTheme">
+        <modify-function signature="ElaTheme(QObject*)" remove="all"/>
+    </object-type>
+
+    <object-type name="ElaTimeline"/>
+
+    <object-type name="ElaToast">
+        <modify-function signature="ElaToast(QWidget*)" remove="all"/>
+        <enum-type name="ToastType"/>
+    </object-type>
+
+    <object-type name="ElaToggleButton"/>
+
+    <object-type name="ElaToggleSwitch"/>
+
+    <object-type name="ElaToolBar"/>
+
+    <object-type name="ElaToolButton"/>
+
+    <object-type name="ElaToolTip"/>
+
+    <object-type name="ElaTransfer"/>
+
+    <object-type name="ElaTreeView"/>
+
+    <object-type name="ElaVirtualList"/>
+
+    <object-type name="ElaWatermark"/>
+
+    <object-type name="ElaWidget"/>
+
+    <object-type name="ElaWindow"/>
+
+    <object-type name="ElaWizard"/>
+
+</typesystem>

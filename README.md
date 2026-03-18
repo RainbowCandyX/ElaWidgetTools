@@ -196,6 +196,45 @@
 python3 scripts/generate_docs.py
 ```
 
+## PySide6 绑定
+
+本项目提供基于 Shiboken6 的 PySide6 绑定，支持在 Python 中使用所有组件。
+
+### 前置依赖
+
+```bash
+pip install PySide6 shiboken6 shiboken6-generator
+```
+
+### 构建绑定
+
+```bash
+# 生成 typesystem 和 global.h
+python3 scripts/generate_bindings.py
+
+# 构建
+cmake -B build -DBUILD_PYTHON_BINDINGS=ON
+cmake --build build
+```
+
+### 使用示例
+
+```python
+from PySide6.QtWidgets import QApplication
+from ElaWidgetTools import ElaApplication, ElaWindow, ElaIconType
+
+app = QApplication([])
+ElaApplication.getInstance().init()
+
+window = ElaWindow()
+window.setWindowTitle("Python Demo")
+window.moveToCenter()
+window.show()
+app.exec()
+```
+
+完整示例见 [PySide6Example/](PySide6Example/) 目录。
+
 ## 致谢
 
 本项目基于 [Liniyous/ElaWidgetTools](https://github.com/Liniyous/ElaWidgetTools) 修改而来，感谢原作者的开源贡献。

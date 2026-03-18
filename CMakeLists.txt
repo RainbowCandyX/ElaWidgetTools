@@ -53,6 +53,11 @@ if (WIN32 AND BUILD_ELAPACKETIO)
 endif ()
 add_subdirectory(ElaWidgetToolsExample)
 
+option(BUILD_PYTHON_BINDINGS "Build PySide6/Shiboken6 Python bindings" OFF)
+if (BUILD_PYTHON_BINDINGS)
+    add_subdirectory(bindings)
+endif ()
+
 if (${QT_VERSION} VERSION_LESS 6.1.0)
     set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.ElaWidgetTools)
 endif ()

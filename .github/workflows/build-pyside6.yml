@@ -1,0 +1,210 @@
+name: Build PySide6 Bindings
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ElaWidgetTools/**'
+      - 'bindings/**'
+      - 'scripts/generate_bindings.py'
+      - '.github/workflows/build-pyside6.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            qt-version: '6.8.3'
+            python-version: '3.12'
+          - os: windows-latest
+            qt-version: '6.8.3'
+            python-version: '3.12'
+          - os: macos-latest
+            qt-version: '6.8.3'
+            python-version: '3.12'
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ matrix.qt-version }}
+          modules: 'qtimageformats'
+
+      - name: Install PySide6 and Shiboken6
+        run: pip install PySide6==${{ matrix.qt-version }} shiboken6==${{ matrix.qt-version }} shiboken6-generator==${{ matrix.qt-version }}
+
+      - name: Generate typesystem
+        run: python scripts/generate_bindings.py
+
+      - name: Build ElaWidgetTools (Shared)
+        run: |
+          cmake -S . -B build -DELAWIDGETTOOLS_BUILD_STATIC_LIB=OFF -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --target ElaWidgetTools --config Release
+
+      - name: Run Shiboken6 generator
+        shell: bash
+        run: |
+          PYSIDE6_DIR=$(python -c "import PySide6; import os; print(os.path.dirname(PySide6.__file__))")
+          SHIBOKEN6_GEN=$(python -c "import shiboken6_generator; import os; print(os.path.join(os.path.dirname(shiboken6_generator.__file__), 'shiboken6'))")
+          TYPESYSTEMS="$PYSIDE6_DIR/typesystems"
+
+          if [ "$RUNNER_OS" == "macOS" ]; then
+            QT_FRAMEWORK_PATH="$(dirname "$Qt6_DIR")/lib"
+            INCLUDE_PATHS="bindings:ElaWidgetTools:$PYSIDE6_DIR/include:$PYSIDE6_DIR/include/QtCore:$PYSIDE6_DIR/include/QtGui:$PYSIDE6_DIR/include/QtWidgets:$QT_FRAMEWORK_PATH/QtCore.framework/Headers:$QT_FRAMEWORK_PATH/QtGui.framework/Headers:$QT_FRAMEWORK_PATH/QtWidgets.framework/Headers"
+            FRAMEWORK_ARG="--framework-include-paths=$QT_FRAMEWORK_PATH"
+          else
+            QT_INCLUDE="$Qt6_DIR/include"
+            INCLUDE_PATHS="bindings:ElaWidgetTools:$PYSIDE6_DIR/include:$PYSIDE6_DIR/include/QtCore:$PYSIDE6_DIR/include/QtGui:$PYSIDE6_DIR/include/QtWidgets:$QT_INCLUDE:$QT_INCLUDE/QtCore:$QT_INCLUDE/QtGui:$QT_INCLUDE/QtWidgets"
+            FRAMEWORK_ARG=""
+          fi
+
+          "$SHIBOKEN6_GEN" \
+            --generator-set=shiboken \
+            --enable-parent-ctor-heuristic \
+            --enable-return-value-heuristic \
+            --use-isnull-as-nb-bool \
+            --avoid-protected-hack \
+            --enable-pyside-extensions \
+            --typesystem-paths="$TYPESYSTEMS" \
+            --include-paths="$INCLUDE_PATHS" \
+            $FRAMEWORK_ARG \
+            --output-directory=bindings/output \
+            bindings/global.h \
+            bindings/bindings.xml
+
+      - name: Fix generated code
+        shell: bash
+        run: |
+          GEN_DIR=bindings/output/ElaWidgetTools
+          if [ -f "$GEN_DIR/elamessagebar_wrapper.cpp" ]; then
+            sed -i.bak 's/::%CLASS_NAME::/::ElaMessageBar::/g' "$GEN_DIR/elamessagebar_wrapper.cpp"
+          fi
+          if [ -f "$GEN_DIR/elatoast_wrapper.cpp" ]; then
+            sed -i.bak 's/::%CLASS_NAME::/::ElaToast::/g' "$GEN_DIR/elatoast_wrapper.cpp"
+          fi
+          if [ -f "$GEN_DIR/elaflowlayout_wrapper.cpp" ]; then
+            sed -i.bak 's/addLayoutOwnership(cppSelf, cppArg0);/{ \/* addLayoutOwnership *\/ }/g' "$GEN_DIR/elaflowlayout_wrapper.cpp"
+            sed -i.bak 's/addLayoutOwnership(cppSelf, cppResult);/{ \/* addLayoutOwnership *\/ }/g' "$GEN_DIR/elaflowlayout_wrapper.cpp"
+          fi
+          rm -f "$GEN_DIR"/*.bak
+
+      - name: Compile Python bindings
+        shell: bash
+        run: |
+          PYSIDE6_DIR=$(python -c "import PySide6; import os; print(os.path.dirname(PySide6.__file__))")
+          SHIBOKEN6_DIR=$(python -c "import shiboken6; import os; print(os.path.dirname(shiboken6.__file__))")
+          PYTHON_INCLUDE=$(python -c "import sysconfig; print(sysconfig.get_path('include'))")
+          GEN_DIR=bindings/output/ElaWidgetTools
+
+          if [ "$RUNNER_OS" == "macOS" ]; then
+            QT_FRAMEWORK_PATH="$(dirname "$Qt6_DIR")/lib"
+            LIB_DIR=build/ElaWidgetTools
+            SHIBOKEN_LIB=$(ls "$SHIBOKEN6_DIR"/libshiboken6*.dylib | head -1 | xargs basename | sed 's/^lib//;s/\.dylib$//')
+            PYSIDE_LIB=$(ls "$PYSIDE6_DIR"/libpyside6*.dylib | grep -v qml | head -1 | xargs basename | sed 's/^lib//;s/\.dylib$//')
+
+            c++ -std=c++17 -shared -undefined dynamic_lookup -O2 -w \
+              -I ElaWidgetTools -I bindings -I "$GEN_DIR" \
+              -I "$PYTHON_INCLUDE" \
+              -I "$SHIBOKEN6_DIR/include" \
+              -I "$PYSIDE6_DIR/include" \
+              -I "$PYSIDE6_DIR/include/QtCore" \
+              -I "$PYSIDE6_DIR/include/QtGui" \
+              -I "$PYSIDE6_DIR/include/QtWidgets" \
+              -I "$QT_FRAMEWORK_PATH/QtCore.framework/Headers" \
+              -I "$QT_FRAMEWORK_PATH/QtGui.framework/Headers" \
+              -I "$QT_FRAMEWORK_PATH/QtWidgets.framework/Headers" \
+              -F "$QT_FRAMEWORK_PATH" \
+              -L "$LIB_DIR" -L "$SHIBOKEN6_DIR" -L "$PYSIDE6_DIR" \
+              -lElaWidgetTools -l"$SHIBOKEN_LIB" -l"$PYSIDE_LIB" \
+              -Wl,-rpath,"$LIB_DIR" -Wl,-rpath,"$SHIBOKEN6_DIR" -Wl,-rpath,"$PYSIDE6_DIR" -Wl,-rpath,"$QT_FRAMEWORK_PATH" \
+              -o "$LIB_DIR/ElaWidgetTools.abi3.so" \
+              "$GEN_DIR"/*.cpp
+
+          elif [ "$RUNNER_OS" == "Linux" ]; then
+            QT_LIB="$Qt6_DIR/lib"
+            LIB_DIR=build/ElaWidgetTools
+            SHIBOKEN_LIB=$(ls "$SHIBOKEN6_DIR"/libshiboken6*.so | head -1 | xargs basename | sed 's/^lib//;s/\.so.*//')
+            PYSIDE_LIB=$(ls "$PYSIDE6_DIR"/libpyside6*.so | grep -v qml | head -1 | xargs basename | sed 's/^lib//;s/\.so.*//')
+
+            c++ -std=c++17 -shared -fPIC -O2 -w \
+              -I ElaWidgetTools -I bindings -I "$GEN_DIR" \
+              -I "$PYTHON_INCLUDE" \
+              -I "$SHIBOKEN6_DIR/include" \
+              -I "$PYSIDE6_DIR/include" \
+              -I "$PYSIDE6_DIR/include/QtCore" \
+              -I "$PYSIDE6_DIR/include/QtGui" \
+              -I "$PYSIDE6_DIR/include/QtWidgets" \
+              -I "$Qt6_DIR/include" \
+              -I "$Qt6_DIR/include/QtCore" \
+              -I "$Qt6_DIR/include/QtGui" \
+              -I "$Qt6_DIR/include/QtWidgets" \
+              -L "$LIB_DIR" -L "$SHIBOKEN6_DIR" -L "$PYSIDE6_DIR" -L "$QT_LIB" \
+              -lElaWidgetTools -l"$SHIBOKEN_LIB" -l"$PYSIDE_LIB" \
+              -Wl,-rpath,'$ORIGIN' -Wl,-rpath,"$SHIBOKEN6_DIR" -Wl,-rpath,"$PYSIDE6_DIR" -Wl,-rpath,"$QT_LIB" \
+              -o "$LIB_DIR/ElaWidgetTools.abi3.so" \
+              "$GEN_DIR"/*.cpp
+
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            QT_LIB="$Qt6_DIR/lib"
+            LIB_DIR=build/ElaWidgetTools/Release
+            SHIBOKEN_LIB=$(ls "$SHIBOKEN6_DIR"/shiboken6*.lib 2>/dev/null | head -1 || echo "shiboken6.abi3")
+            PYSIDE_LIB=$(ls "$PYSIDE6_DIR"/pyside6*.lib 2>/dev/null | grep -v qml | head -1 || echo "pyside6.abi3")
+
+            cl.exe /std:c++17 /O2 /EHsc /MD /LD /w \
+              /I ElaWidgetTools /I bindings /I "$GEN_DIR" \
+              /I "$PYTHON_INCLUDE" \
+              /I "$SHIBOKEN6_DIR/include" \
+              /I "$PYSIDE6_DIR/include" \
+              /I "$PYSIDE6_DIR/include/QtCore" \
+              /I "$PYSIDE6_DIR/include/QtGui" \
+              /I "$PYSIDE6_DIR/include/QtWidgets" \
+              /I "$Qt6_DIR/include" \
+              /I "$Qt6_DIR/include/QtCore" \
+              /I "$Qt6_DIR/include/QtGui" \
+              /I "$Qt6_DIR/include/QtWidgets" \
+              "$GEN_DIR"/*.cpp \
+              /link /LIBPATH:"$LIB_DIR" /LIBPATH:"$SHIBOKEN6_DIR" /LIBPATH:"$PYSIDE6_DIR" /LIBPATH:"$QT_LIB" \
+              ElaWidgetTools.lib "$SHIBOKEN_LIB" "$PYSIDE_LIB" \
+              /OUT:"$LIB_DIR/ElaWidgetTools.pyd"
+          fi
+
+      - name: Test import
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            LIB_DIR=build/ElaWidgetTools/Release
+          else
+            LIB_DIR=build/ElaWidgetTools
+          fi
+          cd "$LIB_DIR"
+          python -c "
+          from PySide6.QtWidgets import QApplication
+          import ElaWidgetTools
+          classes = [x for x in dir(ElaWidgetTools) if x.startswith('Ela')]
+          print(f'Loaded {len(classes)} symbols')
+          print('Sample:', classes[:10])
+          "
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ElaWidgetTools-PySide6-${{ matrix.os }}
+          path: |
+            build/ElaWidgetTools/libElaWidgetTools.*
+            build/ElaWidgetTools/ElaWidgetTools.*
+            build/ElaWidgetTools/Release/ElaWidgetTools.*
+          retention-days: 30
