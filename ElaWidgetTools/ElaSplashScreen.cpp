@@ -78,7 +78,7 @@ ElaSplashScreen::ElaSplashScreen(QWidget *parent)
 	d->_progressBar = new ElaProgressBar(this);
 	d->_progressBar->setMinimum(0);
 	d->_progressBar->setMaximum(100);
-	d->_progressBar->setFixedHeight(4);
+	d->_progressBar->setFixedHeight(24);
 
 	d->_progressRing = new ElaProgressRing(this);
 	d->_progressRing->setFixedSize(48, 48);
