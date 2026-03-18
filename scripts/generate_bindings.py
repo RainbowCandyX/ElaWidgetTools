@@ -104,6 +104,8 @@ def parse_header(filepath):
         re.search(r"private:\s*\n\s*explicit\s+" + class_name, content)
     )
 
+    has_q_q_create = "Q_Q_CREATE" in content
+
     signals = re.findall(r"Q_SIGNAL\s+void\s+(\w+)\s*\(", content)
 
     inner_enums = []
@@ -117,6 +119,7 @@ def parse_header(filepath):
         "base_class": base_class,
         "is_singleton": is_singleton,
         "has_private_ctor": has_private_ctor,
+        "has_q_q_create": has_q_q_create,
         "signals": signals,
         "inner_enums": inner_enums,
         "header": os.path.basename(filepath),
@@ -160,32 +163,35 @@ def generate_typesystem(classes):
     lines.append("    <!-- Components -->")
     for cls in sorted(classes, key=lambda c: c["class_name"]):
         cn = cls["class_name"]
-        bc = cls["base_class"]
 
+        needs_body = (
+            cls["is_singleton"]
+            or cls["has_private_ctor"]
+            or cls["has_q_q_create"]
+            or cls["inner_enums"]
+        )
+
+        if not needs_body:
+            lines.append(f'    <object-type name="{cn}"/>')
+            lines.append("")
+            continue
+
+        lines.append(f'    <object-type name="{cn}">')
         if cls["is_singleton"]:
-            lines.append(f'    <object-type name="{cn}">')
             lines.append(
                 f'        <modify-function signature="{cn}(QObject*)" remove="all"/>'
             )
-            for enum in cls["inner_enums"]:
-                lines.append(f'        <enum-type name="{enum}"/>')
-            lines.append(f"    </object-type>")
-        elif cls["has_private_ctor"]:
-            lines.append(f'    <object-type name="{cn}">')
+        if cls["has_private_ctor"]:
             lines.append(
                 f'        <modify-function signature="{cn}(QWidget*)" remove="all"/>'
             )
-            for enum in cls["inner_enums"]:
-                lines.append(f'        <enum-type name="{enum}"/>')
-            lines.append(f"    </object-type>")
-        else:
-            if cls["inner_enums"]:
-                lines.append(f'    <object-type name="{cn}">')
-                for enum in cls["inner_enums"]:
-                    lines.append(f'        <enum-type name="{enum}"/>')
-                lines.append(f"    </object-type>")
-            else:
-                lines.append(f'    <object-type name="{cn}"/>')
+        if cls["has_q_q_create"]:
+            lines.append(
+                f'        <modify-function signature="{cn}({cn}Private&amp;,{cn}*)" remove="all"/>'
+            )
+        for enum in cls["inner_enums"]:
+            lines.append(f'        <enum-type name="{enum}"/>')
+        lines.append(f"    </object-type>")
         lines.append("")
 
     lines.append("</typesystem>")

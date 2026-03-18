@@ -75,252 +75,449 @@
     </namespace-type>
 
     <!-- Components -->
-    <object-type name="ElaAcrylicUrlCard"/>
+    <object-type name="ElaAcrylicUrlCard">
+        <modify-function signature="ElaAcrylicUrlCard(ElaAcrylicUrlCardPrivate&amp;,ElaAcrylicUrlCard*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaAppBar"/>
+    <object-type name="ElaAppBar">
+        <modify-function signature="ElaAppBar(ElaAppBarPrivate&amp;,ElaAppBar*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaApplication">
         <modify-function signature="ElaApplication(QObject*)" remove="all"/>
+        <modify-function signature="ElaApplication(QWidget*)" remove="all"/>
+        <modify-function signature="ElaApplication(ElaApplicationPrivate&amp;,ElaApplication*)" remove="all"/>
     </object-type>
 
-    <object-type name="ElaBreadcrumbBar"/>
+    <object-type name="ElaBreadcrumbBar">
+        <modify-function signature="ElaBreadcrumbBar(ElaBreadcrumbBarPrivate&amp;,ElaBreadcrumbBar*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaCalendar"/>
+    <object-type name="ElaCalendar">
+        <modify-function signature="ElaCalendar(ElaCalendarPrivate&amp;,ElaCalendar*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaCalendarPicker"/>
+    <object-type name="ElaCalendarPicker">
+        <modify-function signature="ElaCalendarPicker(ElaCalendarPickerPrivate&amp;,ElaCalendarPicker*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaCaptcha">
+        <modify-function signature="ElaCaptcha(ElaCaptchaPrivate&amp;,ElaCaptcha*)" remove="all"/>
         <enum-type name="InputMode"/>
     </object-type>
 
     <object-type name="ElaCheckBox"/>
 
     <object-type name="ElaCodeEditor">
+        <modify-function signature="ElaCodeEditor(ElaCodeEditorPrivate&amp;,ElaCodeEditor*)" remove="all"/>
         <enum-type name="Language"/>
     </object-type>
 
-    <object-type name="ElaColorDialog"/>
+    <object-type name="ElaColorDialog">
+        <modify-function signature="ElaColorDialog(ElaColorDialogPrivate&amp;,ElaColorDialog*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaComboBox"/>
+    <object-type name="ElaComboBox">
+        <modify-function signature="ElaComboBox(ElaComboBoxPrivate&amp;,ElaComboBox*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaCommandBar"/>
+    <object-type name="ElaCommandBar">
+        <modify-function signature="ElaCommandBar(ElaCommandBarPrivate&amp;,ElaCommandBar*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaContentDialog"/>
+    <object-type name="ElaContentDialog">
+        <modify-function signature="ElaContentDialog(ElaContentDialogPrivate&amp;,ElaContentDialog*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaCountdown"/>
+    <object-type name="ElaCountdown">
+        <modify-function signature="ElaCountdown(ElaCountdownPrivate&amp;,ElaCountdown*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaDialog"/>
+    <object-type name="ElaDialog">
+        <modify-function signature="ElaDialog(ElaDialogPrivate&amp;,ElaDialog*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaDivider"/>
+    <object-type name="ElaDivider">
+        <modify-function signature="ElaDivider(ElaDividerPrivate&amp;,ElaDivider*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaDockWidget"/>
+    <object-type name="ElaDockWidget">
+        <modify-function signature="ElaDockWidget(ElaDockWidgetPrivate&amp;,ElaDockWidget*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaDoubleSpinBox"/>
+    <object-type name="ElaDoubleSpinBox">
+        <modify-function signature="ElaDoubleSpinBox(ElaDoubleSpinBoxPrivate&amp;,ElaDoubleSpinBox*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaDrawerArea"/>
+    <object-type name="ElaDrawerArea">
+        <modify-function signature="ElaDrawerArea(ElaDrawerAreaPrivate&amp;,ElaDrawerArea*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaDropDownButton"/>
+    <object-type name="ElaDropDownButton">
+        <modify-function signature="ElaDropDownButton(ElaDropDownButtonPrivate&amp;,ElaDropDownButton*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaDxgiManager">
         <modify-function signature="ElaDxgiManager(QObject*)" remove="all"/>
+        <modify-function signature="ElaDxgiManager(QWidget*)" remove="all"/>
+        <modify-function signature="ElaDxgiManager(ElaDxgiManagerPrivate&amp;,ElaDxgiManager*)" remove="all"/>
     </object-type>
 
     <object-type name="ElaEvent">
         <modify-function signature="ElaEvent(QObject*)" remove="all"/>
+        <modify-function signature="ElaEvent(QWidget*)" remove="all"/>
+        <modify-function signature="ElaEvent(ElaEventPrivate&amp;,ElaEvent*)" remove="all"/>
     </object-type>
 
     <object-type name="ElaExpander">
+        <modify-function signature="ElaExpander(ElaExpanderPrivate&amp;,ElaExpander*)" remove="all"/>
         <enum-type name="ExpandDirection"/>
     </object-type>
 
-    <object-type name="ElaFlowLayout"/>
+    <object-type name="ElaFlowLayout">
+        <modify-function signature="ElaFlowLayout(ElaFlowLayoutPrivate&amp;,ElaFlowLayout*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaFlyout"/>
+    <object-type name="ElaFlyout">
+        <modify-function signature="ElaFlyout(ElaFlyoutPrivate&amp;,ElaFlyout*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaGraphicsItem"/>
+    <object-type name="ElaGraphicsItem">
+        <modify-function signature="ElaGraphicsItem(ElaGraphicsItemPrivate&amp;,ElaGraphicsItem*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaGraphicsLineItem"/>
+    <object-type name="ElaGraphicsLineItem">
+        <modify-function signature="ElaGraphicsLineItem(ElaGraphicsLineItemPrivate&amp;,ElaGraphicsLineItem*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaGraphicsScene"/>
+    <object-type name="ElaGraphicsScene">
+        <modify-function signature="ElaGraphicsScene(ElaGraphicsScenePrivate&amp;,ElaGraphicsScene*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaGraphicsView"/>
+    <object-type name="ElaGraphicsView">
+        <modify-function signature="ElaGraphicsView(ElaGraphicsViewPrivate&amp;,ElaGraphicsView*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaGroupBox"/>
+    <object-type name="ElaGroupBox">
+        <modify-function signature="ElaGroupBox(ElaGroupBoxPrivate&amp;,ElaGroupBox*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaIconButton"/>
+    <object-type name="ElaIconButton">
+        <modify-function signature="ElaIconButton(ElaIconButtonPrivate&amp;,ElaIconButton*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaImageCard"/>
+    <object-type name="ElaImageCard">
+        <modify-function signature="ElaImageCard(ElaImageCardPrivate&amp;,ElaImageCard*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaInfoBadge">
+        <modify-function signature="ElaInfoBadge(ElaInfoBadgePrivate&amp;,ElaInfoBadge*)" remove="all"/>
         <enum-type name="BadgeMode"/>
         <enum-type name="Severity"/>
     </object-type>
 
-    <object-type name="ElaInputDialog"/>
+    <object-type name="ElaInputDialog">
+        <modify-function signature="ElaInputDialog(ElaInputDialogPrivate&amp;,ElaInputDialog*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaInteractiveCard"/>
+    <object-type name="ElaInteractiveCard">
+        <modify-function signature="ElaInteractiveCard(ElaInteractiveCardPrivate&amp;,ElaInteractiveCard*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaKeyBinder"/>
+    <object-type name="ElaKeyBinder">
+        <modify-function signature="ElaKeyBinder(ElaKeyBinderPrivate&amp;,ElaKeyBinder*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaLCDNumber"/>
+    <object-type name="ElaLCDNumber">
+        <modify-function signature="ElaLCDNumber(ElaLCDNumberPrivate&amp;,ElaLCDNumber*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaLineEdit"/>
+    <object-type name="ElaLineEdit">
+        <modify-function signature="ElaLineEdit(ElaLineEditPrivate&amp;,ElaLineEdit*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaListView"/>
+    <object-type name="ElaListView">
+        <modify-function signature="ElaListView(ElaListViewPrivate&amp;,ElaListView*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaLog">
         <modify-function signature="ElaLog(QObject*)" remove="all"/>
+        <modify-function signature="ElaLog(QWidget*)" remove="all"/>
+        <modify-function signature="ElaLog(ElaLogPrivate&amp;,ElaLog*)" remove="all"/>
     </object-type>
 
-    <object-type name="ElaMarkdownViewer"/>
+    <object-type name="ElaMarkdownViewer">
+        <modify-function signature="ElaMarkdownViewer(ElaMarkdownViewerPrivate&amp;,ElaMarkdownViewer*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaMenu"/>
+    <object-type name="ElaMenu">
+        <modify-function signature="ElaMenu(ElaMenuPrivate&amp;,ElaMenu*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaMenuBar"/>
 
-    <object-type name="ElaMessageBar"/>
+    <object-type name="ElaMessageBar">
+        <modify-function signature="ElaMessageBar(ElaMessageBarPrivate&amp;,ElaMessageBar*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaMessageButton"/>
+    <object-type name="ElaMessageButton">
+        <modify-function signature="ElaMessageButton(ElaMessageButtonPrivate&amp;,ElaMessageButton*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaMessageDialog"/>
+    <object-type name="ElaMessageDialog">
+        <modify-function signature="ElaMessageDialog(ElaMessageDialogPrivate&amp;,ElaMessageDialog*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaMultiSelectComboBox"/>
+    <object-type name="ElaMultiSelectComboBox">
+        <modify-function signature="ElaMultiSelectComboBox(ElaMultiSelectComboBoxPrivate&amp;,ElaMultiSelectComboBox*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaNavigationBar"/>
+    <object-type name="ElaNavigationBar">
+        <modify-function signature="ElaNavigationBar(ElaNavigationBarPrivate&amp;,ElaNavigationBar*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaNavigationRouter">
         <modify-function signature="ElaNavigationRouter(QObject*)" remove="all"/>
+        <modify-function signature="ElaNavigationRouter(QWidget*)" remove="all"/>
+        <modify-function signature="ElaNavigationRouter(ElaNavigationRouterPrivate&amp;,ElaNavigationRouter*)" remove="all"/>
     </object-type>
 
-    <object-type name="ElaNotificationCenter"/>
+    <object-type name="ElaNotificationCenter">
+        <modify-function signature="ElaNotificationCenter(ElaNotificationCenterPrivate&amp;,ElaNotificationCenter*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaNumberBox"/>
+    <object-type name="ElaNumberBox">
+        <modify-function signature="ElaNumberBox(ElaNumberBoxPrivate&amp;,ElaNumberBox*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaPagination"/>
+    <object-type name="ElaPagination">
+        <modify-function signature="ElaPagination(ElaPaginationPrivate&amp;,ElaPagination*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaPasswordBox"/>
+    <object-type name="ElaPasswordBox">
+        <modify-function signature="ElaPasswordBox(ElaPasswordBoxPrivate&amp;,ElaPasswordBox*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaPersonPicture"/>
+    <object-type name="ElaPersonPicture">
+        <modify-function signature="ElaPersonPicture(ElaPersonPicturePrivate&amp;,ElaPersonPicture*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaPivot"/>
+    <object-type name="ElaPivot">
+        <modify-function signature="ElaPivot(ElaPivotPrivate&amp;,ElaPivot*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaPlainTextEdit"/>
+    <object-type name="ElaPlainTextEdit">
+        <modify-function signature="ElaPlainTextEdit(ElaPlainTextEditPrivate&amp;,ElaPlainTextEdit*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaPopconfirm"/>
+    <object-type name="ElaPopconfirm">
+        <modify-function signature="ElaPopconfirm(ElaPopconfirmPrivate&amp;,ElaPopconfirm*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaPopularCard"/>
+    <object-type name="ElaPopularCard">
+        <modify-function signature="ElaPopularCard(ElaPopularCardPrivate&amp;,ElaPopularCard*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaProgressBar"/>
+    <object-type name="ElaProgressBar">
+        <modify-function signature="ElaProgressBar(ElaProgressBarPrivate&amp;,ElaProgressBar*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaProgressRing"/>
+    <object-type name="ElaProgressRing">
+        <modify-function signature="ElaProgressRing(ElaProgressRingPrivate&amp;,ElaProgressRing*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaPromotionCard"/>
+    <object-type name="ElaPromotionCard">
+        <modify-function signature="ElaPromotionCard(ElaPromotionCardPrivate&amp;,ElaPromotionCard*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaPromotionView"/>
+    <object-type name="ElaPromotionView">
+        <modify-function signature="ElaPromotionView(ElaPromotionViewPrivate&amp;,ElaPromotionView*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaPushButton"/>
+    <object-type name="ElaPushButton">
+        <modify-function signature="ElaPushButton(ElaPushButtonPrivate&amp;,ElaPushButton*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaRadioButton"/>
+    <object-type name="ElaRadioButton">
+        <modify-function signature="ElaRadioButton(ElaRadioButtonPrivate&amp;,ElaRadioButton*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaRatingControl"/>
+    <object-type name="ElaRatingControl">
+        <modify-function signature="ElaRatingControl(ElaRatingControlPrivate&amp;,ElaRatingControl*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaReminderCard"/>
+    <object-type name="ElaReminderCard">
+        <modify-function signature="ElaReminderCard(ElaReminderCardPrivate&amp;,ElaReminderCard*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaRoller"/>
+    <object-type name="ElaRoller">
+        <modify-function signature="ElaRoller(ElaRollerPrivate&amp;,ElaRoller*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaRollerPicker"/>
+    <object-type name="ElaRollerPicker">
+        <modify-function signature="ElaRollerPicker(ElaRollerPickerPrivate&amp;,ElaRollerPicker*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaScreenCaptureManager">
         <modify-function signature="ElaScreenCaptureManager(QObject*)" remove="all"/>
+        <modify-function signature="ElaScreenCaptureManager(QWidget*)" remove="all"/>
+        <modify-function signature="ElaScreenCaptureManager(ElaScreenCaptureManagerPrivate&amp;,ElaScreenCaptureManager*)" remove="all"/>
     </object-type>
 
-    <object-type name="ElaScrollArea"/>
+    <object-type name="ElaScrollArea">
+        <modify-function signature="ElaScrollArea(ElaScrollAreaPrivate&amp;,ElaScrollArea*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaScrollBar"/>
+    <object-type name="ElaScrollBar">
+        <modify-function signature="ElaScrollBar(ElaScrollBarPrivate&amp;,ElaScrollBar*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaScrollPage"/>
+    <object-type name="ElaScrollPage">
+        <modify-function signature="ElaScrollPage(ElaScrollPagePrivate&amp;,ElaScrollPage*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaScrollPageArea"/>
+    <object-type name="ElaScrollPageArea">
+        <modify-function signature="ElaScrollPageArea(ElaScrollPageAreaPrivate&amp;,ElaScrollPageArea*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaSelectorBar"/>
+    <object-type name="ElaSelectorBar">
+        <modify-function signature="ElaSelectorBar(ElaSelectorBarPrivate&amp;,ElaSelectorBar*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaSheetPanel"/>
+    <object-type name="ElaSheetPanel">
+        <modify-function signature="ElaSheetPanel(ElaSheetPanelPrivate&amp;,ElaSheetPanel*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaSkeleton">
+        <modify-function signature="ElaSkeleton(ElaSkeletonPrivate&amp;,ElaSkeleton*)" remove="all"/>
         <enum-type name="SkeletonType"/>
     </object-type>
 
     <object-type name="ElaSlider"/>
 
-    <object-type name="ElaSpinBox"/>
+    <object-type name="ElaSpinBox">
+        <modify-function signature="ElaSpinBox(ElaSpinBoxPrivate&amp;,ElaSpinBox*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaSplashScreen"/>
+    <object-type name="ElaSplashScreen">
+        <modify-function signature="ElaSplashScreen(ElaSplashScreenPrivate&amp;,ElaSplashScreen*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaSplitButton"/>
+    <object-type name="ElaSplitButton">
+        <modify-function signature="ElaSplitButton(ElaSplitButtonPrivate&amp;,ElaSplitButton*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaSpotlight"/>
+    <object-type name="ElaSpotlight">
+        <modify-function signature="ElaSpotlight(ElaSpotlightPrivate&amp;,ElaSpotlight*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaStatCard">
+        <modify-function signature="ElaStatCard(ElaStatCardPrivate&amp;,ElaStatCard*)" remove="all"/>
         <enum-type name="TrendType"/>
     </object-type>
 
     <object-type name="ElaStatusBar"/>
 
-    <object-type name="ElaSteps"/>
+    <object-type name="ElaSteps">
+        <modify-function signature="ElaSteps(ElaStepsPrivate&amp;,ElaSteps*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaSuggestBox"/>
+    <object-type name="ElaSuggestBox">
+        <modify-function signature="ElaSuggestBox(ElaSuggestBoxPrivate&amp;,ElaSuggestBox*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaTabBar"/>
+    <object-type name="ElaTabBar">
+        <modify-function signature="ElaTabBar(ElaTabBarPrivate&amp;,ElaTabBar*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaTabWidget"/>
+    <object-type name="ElaTabWidget">
+        <modify-function signature="ElaTabWidget(ElaTabWidgetPrivate&amp;,ElaTabWidget*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaTableView"/>
+    <object-type name="ElaTableView">
+        <modify-function signature="ElaTableView(ElaTableViewPrivate&amp;,ElaTableView*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaTableWidget"/>
+    <object-type name="ElaTableWidget">
+        <modify-function signature="ElaTableWidget(ElaTableWidgetPrivate&amp;,ElaTableWidget*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaTag">
+        <modify-function signature="ElaTag(ElaTagPrivate&amp;,ElaTag*)" remove="all"/>
         <enum-type name="TagColor"/>
     </object-type>
 
     <object-type name="ElaTeachingTip">
+        <modify-function signature="ElaTeachingTip(ElaTeachingTipPrivate&amp;,ElaTeachingTip*)" remove="all"/>
         <enum-type name="TailPosition"/>
     </object-type>
 
-    <object-type name="ElaText"/>
+    <object-type name="ElaText">
+        <modify-function signature="ElaText(ElaTextPrivate&amp;,ElaText*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaTheme">
         <modify-function signature="ElaTheme(QObject*)" remove="all"/>
+        <modify-function signature="ElaTheme(QWidget*)" remove="all"/>
+        <modify-function signature="ElaTheme(ElaThemePrivate&amp;,ElaTheme*)" remove="all"/>
     </object-type>
 
-    <object-type name="ElaTimeline"/>
+    <object-type name="ElaTimeline">
+        <modify-function signature="ElaTimeline(ElaTimelinePrivate&amp;,ElaTimeline*)" remove="all"/>
+    </object-type>
 
     <object-type name="ElaToast">
         <modify-function signature="ElaToast(QWidget*)" remove="all"/>
+        <modify-function signature="ElaToast(ElaToastPrivate&amp;,ElaToast*)" remove="all"/>
         <enum-type name="ToastType"/>
     </object-type>
 
-    <object-type name="ElaToggleButton"/>
+    <object-type name="ElaToggleButton">
+        <modify-function signature="ElaToggleButton(ElaToggleButtonPrivate&amp;,ElaToggleButton*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaToggleSwitch"/>
+    <object-type name="ElaToggleSwitch">
+        <modify-function signature="ElaToggleSwitch(ElaToggleSwitchPrivate&amp;,ElaToggleSwitch*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaToolBar"/>
+    <object-type name="ElaToolBar">
+        <modify-function signature="ElaToolBar(ElaToolBarPrivate&amp;,ElaToolBar*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaToolButton"/>
+    <object-type name="ElaToolButton">
+        <modify-function signature="ElaToolButton(ElaToolButtonPrivate&amp;,ElaToolButton*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaToolTip"/>
+    <object-type name="ElaToolTip">
+        <modify-function signature="ElaToolTip(ElaToolTipPrivate&amp;,ElaToolTip*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaTransfer"/>
+    <object-type name="ElaTransfer">
+        <modify-function signature="ElaTransfer(ElaTransferPrivate&amp;,ElaTransfer*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaTreeView"/>
+    <object-type name="ElaTreeView">
+        <modify-function signature="ElaTreeView(ElaTreeViewPrivate&amp;,ElaTreeView*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaVirtualList"/>
+    <object-type name="ElaVirtualList">
+        <modify-function signature="ElaVirtualList(ElaVirtualListPrivate&amp;,ElaVirtualList*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaWatermark"/>
+    <object-type name="ElaWatermark">
+        <modify-function signature="ElaWatermark(ElaWatermarkPrivate&amp;,ElaWatermark*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaWidget"/>
+    <object-type name="ElaWidget">
+        <modify-function signature="ElaWidget(ElaWidgetPrivate&amp;,ElaWidget*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaWindow"/>
+    <object-type name="ElaWindow">
+        <modify-function signature="ElaWindow(ElaWindowPrivate&amp;,ElaWindow*)" remove="all"/>
+    </object-type>
 
-    <object-type name="ElaWizard"/>
+    <object-type name="ElaWizard">
+        <modify-function signature="ElaWizard(ElaWizardPrivate&amp;,ElaWizard*)" remove="all"/>
+    </object-type>
 
 </typesystem>

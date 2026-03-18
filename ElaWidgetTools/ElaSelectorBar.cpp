@@ -169,7 +169,6 @@ void ElaSelectorBar::paintEvent(QPaintEvent *event)
 	}
 }
 
-void ElaSelectorBar::mousePressEvent(QMouseEvent *event)
 void ElaSelectorBar::resizeEvent(QResizeEvent *event)
 {
 	Q_D(ElaSelectorBar);
