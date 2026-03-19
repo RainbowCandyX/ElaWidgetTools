@@ -43,6 +43,7 @@
 #include "ExamplePage/T_Popup.h"
 #include "ExamplePage/T_NewComponents.h"
 #include "ExamplePage/T_CodeEditor.h"
+#include "ExamplePage/T_Router.h"
 #include "ExamplePage/T_UpdateWidget.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -358,6 +359,7 @@ void MainWindow::initContent()
 	_treeViewPage = new T_TreeView(this);
 	_newComponentsPage = new T_NewComponents(this);
 	_codeEditorPage = new T_CodeEditor(this);
+	_routerPage = new T_Router(this);
 	_settingPage = new T_Setting(this);
 
 	QString testKey_1;
@@ -399,6 +401,7 @@ void MainWindow::initContent()
 	addPageNode("ElaPopup", _popupPage, ElaIconType::Envelope);
 	addPageNode("ElaNewComponents", _newComponentsPage, ElaIconType::Sparkles);
 	addPageNode("ElaCodeEditor", _codeEditorPage, ElaIconType::Code);
+	addPageNode("ElaRouter", _routerPage, ElaIconType::SignsPost);
 	addPageNode("ElaIcon", _iconPage, 99, ElaIconType::FontCase);
 	addExpanderNode("TEST_EXPAND_NODE1", testKey_1, ElaIconType::Acorn);
 	addExpanderNode("TEST_EXPAND_NODE2", testKey_2, testKey_1, ElaIconType::Acorn);

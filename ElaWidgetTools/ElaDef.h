@@ -317,6 +317,20 @@ enum DetentLevel
 Q_ENUM_CREATE(DetentLevel)
 Q_END_ENUM_CREATE(ElaSheetPanelType)
 
+Q_BEGIN_ENUM_CREATE(ElaRouterType)
+enum NavigationResult
+{
+	Success = 0x0000,
+	RouteNotFound = 0x0001,
+	GuardRejected = 0x0002,
+	FactoryFailed = 0x0003,
+	WindowNotBound = 0x0004,
+	RouteAlreadyExists = 0x0005,
+	ParentRouteNotFound = 0x0006,
+};
+Q_ENUM_CREATE(NavigationResult)
+Q_END_ENUM_CREATE(ElaRouterType)
+
 Q_BEGIN_ENUM_CREATE(ElaIconType)
 enum IconName
 {

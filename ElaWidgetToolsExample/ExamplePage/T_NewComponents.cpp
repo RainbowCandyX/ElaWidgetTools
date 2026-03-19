@@ -41,6 +41,8 @@
 #include "ElaCountdown.h"
 #include "ElaPopconfirm.h"
 #include "ElaWatermark.h"
+#include "ElaSplitter.h"
+#include "ElaSnackbar.h"
 #include <QButtonGroup>
 #include <QDateTime>
 #include <QStackedWidget>
@@ -1091,6 +1093,111 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	watermarkLayout->addWidget(watermarkRotationSlider);
 	watermarkLayout->addStretch();
 
+	// ========== ElaSnackbar 示例 ==========
+	ElaPushButton *snackSuccessBtn = new ElaPushButton("成功", this);
+	snackSuccessBtn->setFixedSize(70, 32);
+	connect(snackSuccessBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaSnackbar::success("文件保存成功!", "", 3000, window());
+	});
+
+	ElaPushButton *snackUndoBtn = new ElaPushButton("撤销操作", this);
+	snackUndoBtn->setFixedSize(90, 32);
+	connect(snackUndoBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaSnackbar *snackbar = ElaSnackbar::info("已删除 3 个项目", "撤销", 5000, window());
+		connect(snackbar, &ElaSnackbar::actionClicked, this, [=]()
+		{
+			ElaToast::success("已撤销删除操作", 2000, window());
+		});
+	});
+
+	ElaPushButton *snackWarnBtn = new ElaPushButton("警告", this);
+	snackWarnBtn->setFixedSize(70, 32);
+	connect(snackWarnBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaSnackbar::warning("磁盘空间不足", "查看详情", 4000, window());
+	});
+
+	ElaPushButton *snackErrorBtn = new ElaPushButton("错误", this);
+	snackErrorBtn->setFixedSize(70, 32);
+	connect(snackErrorBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaSnackbar::error("网络连接失败", "重试", 4000, window());
+	});
+
+	ElaScrollPageArea *snackbarArea = new ElaScrollPageArea(this);
+	QHBoxLayout *snackbarLayout = new QHBoxLayout(snackbarArea);
+	snackbarLayout->addWidget(new ElaText("ElaSnackbar", 15, this));
+	snackbarLayout->addWidget(snackSuccessBtn);
+	snackbarLayout->addWidget(snackUndoBtn);
+	snackbarLayout->addWidget(snackWarnBtn);
+	snackbarLayout->addWidget(snackErrorBtn);
+	snackbarLayout->addStretch();
+
+	// ========== ElaSplitter 示例 ==========
+	_splitter = new ElaSplitter(Qt::Horizontal, this);
+	_splitter->setFixedHeight(200);
+
+	QWidget *splitterLeft = new QWidget(this);
+	splitterLeft->setMinimumWidth(120);
+	QVBoxLayout *leftLayout = new QVBoxLayout(splitterLeft);
+	leftLayout->setContentsMargins(10, 10, 10, 10);
+	ElaText *leftTitle = new ElaText("左侧面板", this);
+	leftTitle->setTextPixelSize(14);
+	leftLayout->addWidget(leftTitle);
+	for (int i = 1; i <= 5; ++i)
+	{
+		leftLayout->addWidget(new ElaText(QString("  列表项 #%1").arg(i), 13, this));
+	}
+	leftLayout->addStretch();
+
+	QWidget *splitterRight = new QWidget(this);
+	splitterRight->setMinimumWidth(120);
+	QVBoxLayout *rightLayout = new QVBoxLayout(splitterRight);
+	rightLayout->setContentsMargins(10, 10, 10, 10);
+	ElaText *rightTitle = new ElaText("右侧面板", this);
+	rightTitle->setTextPixelSize(14);
+	rightLayout->addWidget(rightTitle);
+	rightLayout->addWidget(new ElaText("拖拽中间手柄调整面板大小", 13, this));
+	rightLayout->addStretch();
+
+	_splitter->addWidget(splitterLeft);
+	_splitter->addWidget(splitterRight);
+	_splitter->setSizes({300, 300});
+
+	ElaSplitter *vSplitter = new ElaSplitter(Qt::Vertical, this);
+	vSplitter->setFixedHeight(200);
+
+	QWidget *splitterTop = new QWidget(this);
+	splitterTop->setMinimumHeight(40);
+	QVBoxLayout *topLayout = new QVBoxLayout(splitterTop);
+	topLayout->setContentsMargins(10, 10, 10, 10);
+	topLayout->addWidget(new ElaText("上方面板", 14, this));
+	topLayout->addStretch();
+
+	QWidget *splitterBottom = new QWidget(this);
+	splitterBottom->setMinimumHeight(40);
+	QVBoxLayout *bottomLayout = new QVBoxLayout(splitterBottom);
+	bottomLayout->setContentsMargins(10, 10, 10, 10);
+	bottomLayout->addWidget(new ElaText("下方面板", 14, this));
+	bottomLayout->addStretch();
+
+	vSplitter->addWidget(splitterTop);
+	vSplitter->addWidget(splitterBottom);
+	vSplitter->setSizes({100, 100});
+
+	ElaScrollPageArea *splitterArea = new ElaScrollPageArea(this);
+	splitterArea->setFixedHeight(460);
+	QVBoxLayout *splitterMainLayout = new QVBoxLayout(splitterArea);
+	splitterMainLayout->addWidget(new ElaText("ElaSplitter", 15, this));
+	splitterMainLayout->addSpacing(5);
+	splitterMainLayout->addWidget(new ElaText("水平分割", 13, this));
+	splitterMainLayout->addWidget(_splitter);
+	splitterMainLayout->addSpacing(5);
+	splitterMainLayout->addWidget(new ElaText("垂直分割", 13, this));
+	splitterMainLayout->addWidget(vSplitter);
+
 	// ========== 中心布局 ==========
 	QVBoxLayout *c = new QVBoxLayout(centralWidget);
 	c->setContentsMargins(0, 0, 0, 0);
@@ -1141,6 +1248,8 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	c->addWidget(countdownArea);
 	c->addWidget(popconfirmArea);
 	c->addWidget(watermarkArea);
+	c->addWidget(snackbarArea);
+	c->addWidget(splitterArea);
 	c->addSpacing(5);
 	c->addLayout(transferHeader);
 	c->addWidget(_transfer);
