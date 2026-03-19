@@ -39,6 +39,7 @@
 | ElaWidget              | 无边框模态窗口      | 独立的无边框弹出窗口                   |
 | ElaAppBar              | 窗口顶部标题栏      | 支持拖动窗口，最小化、最大化、关闭窗口、调整窗口尺寸 |
 | ElaNavigationRouter    | 路由跳转         | 前进/后退导航历史管理                  |
+| ElaRouter              | 声明式路由器       | 路由表/守卫/动态路由/懒加载/嵌套路由，类 Vue Router |
 | ElaEventBus            | 事件总线         | 跨组件解耦通信                      |
 | ElaIcon                | 图标           | 3500+ FluentUI 图标           |
 | ElaLog                 | 消息日志         | 分级日志输出与管理                    |
@@ -118,6 +119,7 @@
 | ElaFlowLayout          | 流式布局         | 支持动画，自动换行排列                  |
 | ElaExpander            | 折叠展开面板       | 支持向上/向下展开，带平滑高度动画            |
 | ElaGroupBox            | 分组框          | 带标题的控件分组容器                   |
+| ElaSplitter            | 分割面板         | 可拖拽分割，FluentUI 风格手柄，支持水平/垂直  |
 
 ### 弹出与交互
 
@@ -135,6 +137,7 @@
 | ElaMessageBar          | 弹出式信息栏       | 支持八方向，锚定位置                 |
 | ElaMessageButton       | 弹出信息按钮       | 点击弹出带颜色的消息提示                 |
 | ElaToast               | 轻量提示         | 自动消失，支持Success/Info/Warning/Error四种类型 |
+| ElaSnackbar            | 底部通知条        | 带操作按钮（如撤销），自动堆叠/重排，可配置最大数量    |
 | ElaFlyout              | 轻量弹出面板       | 锚定目标控件，Light Dismiss，可嵌入自定义Widget |
 | ElaTeachingTip         | 引导提示气泡       | 带箭头指向目标控件，支持4方向+自动定位         |
 | ElaToolTip             | 工具提示         | 悬停显示，支持自定义内容和延迟              |
@@ -198,7 +201,7 @@ python3 scripts/generate_docs.py
 
 ## PySide6 绑定
 
-本项目提供基于 Shiboken6 的 PySide6 绑定，支持在 Python 中使用所有组件。
+本项目提供基于 Shiboken6 的 PySide6 绑定基础设施，支持在 Python 中使用所有组件。
 
 ### 前置依赖
 
@@ -212,25 +215,12 @@ pip install PySide6 shiboken6 shiboken6-generator
 # 生成 typesystem 和 global.h
 python3 scripts/generate_bindings.py
 
-# 构建
-cmake -B build -DBUILD_PYTHON_BINDINGS=ON
-cmake --build build
-```
+# 构建 ElaWidgetTools 动态库
+cmake -B build -DELAWIDGETTOOLS_BUILD_STATIC_LIB=OFF -DCMAKE_BUILD_TYPE=Release
+cmake --build build --target ElaWidgetTools
 
-### 使用示例
-
-```python
-from PySide6.QtWidgets import QApplication
-from ElaWidgetTools import ElaApplication, ElaWindow, ElaIconType
-
-app = QApplication([])
-ElaApplication.getInstance().init()
-
-window = ElaWindow()
-window.setWindowTitle("Python Demo")
-window.moveToCenter()
-window.show()
-app.exec()
+# 运行 shiboken6 生成绑定代码，然后编译为 Python 模块
+# 详细步骤参考 bindings/ 目录
 ```
 
 完整示例见 [PySide6Example/](PySide6Example/) 目录。

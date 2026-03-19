@@ -2,7 +2,7 @@
 
 > 本文档由 `scripts/generate_docs.py` 自动生成，请勿手动编辑。
 >
-> 共 **107** 个公开组件
+> 共 **110** 个公开组件
 
 ## 目录
 
@@ -77,6 +77,7 @@
 - [ElaReminderCard](#elaremindercard)
 - [ElaRoller](#elaroller)
 - [ElaRollerPicker](#elarollerpicker)
+- [ElaRouter](#elarouter)
 - [ElaScreenCaptureManager](#elascreencapturemanager)
 - [ElaScrollArea](#elascrollarea)
 - [ElaScrollBar](#elascrollbar)
@@ -86,9 +87,11 @@
 - [ElaSheetPanel](#elasheetpanel)
 - [ElaSkeleton](#elaskeleton)
 - [ElaSlider](#elaslider)
+- [ElaSnackbar](#elasnackbar)
 - [ElaSpinBox](#elaspinbox)
 - [ElaSplashScreen](#elasplashscreen)
 - [ElaSplitButton](#elasplitbutton)
+- [ElaSplitter](#elasplitter)
 - [ElaSpotlight](#elaspotlight)
 - [ElaStatCard](#elastatcard)
 - [ElaStatusBar](#elastatusbar)
@@ -1791,6 +1794,43 @@
 
 ---
 
+## ElaRouter
+
+**继承**: `QObject` | **头文件**: `ElaRouter.h`
+
+### 方法
+
+- `void bindWindow(ElaWindow* window)`
+- `ElaWindow* getBoundWindow()`
+- `ElaRouterType::NavigationResult addRoute(const ElaRouteConfig& config)`
+- `ElaRouterType::NavigationResult addRoutes(const QVector<ElaRouteConfig>& configs)`
+- `ElaRouterType::NavigationResult addDynamicRoute(const QString& parentPath, const ElaRouteConfig& config)`
+- `ElaRouterType::NavigationResult removeRoute(const QString& path)`
+- `bool hasRoute(const QString& path)`
+- `QStringList getRoutePaths()`
+- `QVariantMap getRouteMeta(const QString& path)`
+- `ElaRouterType::NavigationResult push(const QString& path, const QVariantMap& params = {})`
+- `ElaRouterType::NavigationResult replace(const QString& path, const QVariantMap& params = {})`
+- `void back()`
+- `void forward()`
+- `QString getCurrentPath()`
+- `QVariantMap getCurrentParams()`
+- `int beforeEach(const ElaRouteGuard& guard)`
+- `int afterEach(const ElaRouteAfterHook& hook)`
+- `void removeBeforeGuard(int guardId)`
+- `void removeAfterHook(int hookId)`
+- `void setRouteBeforeEnter(const QString& path, const ElaRouteGuard& guard)`
+- `void installRoutes()`
+- `void resetRouter()`
+
+### 信号
+
+- `routeChanged(const QString& path, const QVariantMap& params)`
+- `navigationBlocked(const QString& path)`
+- `routeTableChanged()`
+
+---
+
 ## ElaScreenCaptureManager
 
 **继承**: `QObject` | **头文件**: `ElaScreenCaptureManager.h`
@@ -1974,6 +2014,38 @@
 
 ---
 
+## ElaSnackbar
+
+**继承**: `QWidget` | **头文件**: `ElaSnackbar.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `int` | `DisplayMsec` | get/set |
+
+### 枚举
+
+**SnackbarType**: `Success`, `Info`, `Warning`, `Error`
+
+### 方法
+
+- `void dismiss()`
+- `static void setMaxCount(int count)`
+- `static int getMaxCount()`
+- `static ElaSnackbar* success(const QString& text, const QString& actionText = "", int displayMsec = 4000, QWidget* parent = nullptr)`
+- `static ElaSnackbar* info(const QString& text, const QString& actionText = "", int displayMsec = 4000, QWidget* parent = nullptr)`
+- `static ElaSnackbar* warning(const QString& text, const QString& actionText = "", int displayMsec = 4000, QWidget* parent = nullptr)`
+- `static ElaSnackbar* error(const QString& text, const QString& actionText = "", int displayMsec = 4000, QWidget* parent = nullptr)`
+
+### 信号
+
+- `actionClicked()`
+- `closed()`
+
+---
+
 ## ElaSpinBox
 
 **继承**: `QSpinBox` | **头文件**: `ElaSpinBox.h`
@@ -2038,6 +2110,19 @@
 ### 信号
 
 - `clicked()`
+
+---
+
+## ElaSplitter
+
+**继承**: `QSplitter` | **头文件**: `ElaSplitter.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `HandleWidth` | get/set |
+| `int` | `GripLength` | get/set |
 
 ---
 

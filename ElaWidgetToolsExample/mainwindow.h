@@ -16,6 +16,7 @@ class T_ListView;
 class T_TableView;
 class T_TableWidget;
 class T_TreeView;
+class T_Router;
 class T_About;
 class T_Setting;
 class T_NewComponents;
@@ -57,6 +58,7 @@ private:
     T_About* _aboutPage{nullptr};
     T_NewComponents* _newComponentsPage{nullptr};
     T_CodeEditor* _codeEditorPage{nullptr};
+    T_Router* _routerPage{nullptr};
     T_Setting* _settingPage{nullptr};
     QString _elaDxgiKey{""};
     QString _viewKey{""};
