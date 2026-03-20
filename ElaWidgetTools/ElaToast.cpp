@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPropertyAnimation>
+#include <QGuiApplication>
 #include <QScreen>
 #include <QSequentialAnimationGroup>
 #include <QTimer>

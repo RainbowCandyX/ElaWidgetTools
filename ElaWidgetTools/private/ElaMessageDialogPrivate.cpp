@@ -80,7 +80,11 @@ void ElaMessageDialogButton::mouseReleaseEvent(QMouseEvent *event)
 	QWidget::mouseReleaseEvent(event);
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 void ElaMessageDialogButton::enterEvent(QEnterEvent *event)
+#else
+void ElaMessageDialogButton::enterEvent(QEvent *event)
+#endif
 {
 	_isHovered = true;
 	update();

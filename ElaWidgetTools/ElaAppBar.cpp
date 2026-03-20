@@ -746,7 +746,11 @@ void ElaAppBar::mousePressEvent(QMouseEvent* event)
         if (d->_containsCursorToItem(this))
         {
             d->_isDragging = true;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             d->_dragStartPos = event->globalPosition().toPoint() - window()->frameGeometry().topLeft();
+#else
+            d->_dragStartPos = event->globalPos() - window()->frameGeometry().topLeft();
+#endif
             event->accept();
             return;
         }
@@ -759,7 +763,11 @@ void ElaAppBar::mouseMoveEvent(QMouseEvent* event)
     Q_D(ElaAppBar);
     if (d->_isDragging && !d->_pIsFixedSize && !window()->isMaximized() && !window()->isFullScreen())
     {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         window()->move(event->globalPosition().toPoint() - d->_dragStartPos);
+#else
+        window()->move(event->globalPos() - d->_dragStartPos);
+#endif
         event->accept();
         return;
     }

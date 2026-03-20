@@ -9,6 +9,7 @@
 #include <QLayout>
 #include <QLineEdit>
 #include <QListView>
+#include <QScreen>
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 
