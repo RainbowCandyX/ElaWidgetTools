@@ -96,7 +96,7 @@ void ElaSplitterHandle::paintEvent(QPaintEvent* event)
 }
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-void ElaMessageDialogButton::enterEvent(QEnterEvent* event)
+void ElaSplitterHandle::enterEvent(QEnterEvent* event)
 #else
 void ElaSplitterHandle::enterEvent(QEvent* event)
 #endif
