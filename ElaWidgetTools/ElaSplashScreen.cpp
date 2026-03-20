@@ -224,7 +224,11 @@ void ElaSplashScreen::mousePressEvent(QMouseEvent *event)
 	if (event->button() == Qt::LeftButton)
 	{
 		d->_isDragging = true;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 		d->_dragStartPos = event->globalPosition().toPoint() - frameGeometry().topLeft();
+#else
+		d->_dragStartPos = event->globalPos() - frameGeometry().topLeft();
+#endif
 		event->accept();
 	}
 }
@@ -234,7 +238,11 @@ void ElaSplashScreen::mouseMoveEvent(QMouseEvent *event)
 	Q_D(ElaSplashScreen);
 	if (d->_isDragging)
 	{
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 		move(event->globalPosition().toPoint() - d->_dragStartPos);
+#else
+		move(event->globalPos() - d->_dragStartPos);
+#endif
 		event->accept();
 	}
 }

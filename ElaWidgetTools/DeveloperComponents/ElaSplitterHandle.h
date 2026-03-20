@@ -1,4 +1,4 @@
-#ifndef ELASPLITTERHANDLE_H
+﻿#ifndef ELASPLITTERHANDLE_H
 #define ELASPLITTERHANDLE_H
 
 #include <QSplitterHandle>
@@ -17,7 +17,11 @@ public:
 
 protected:
 	void paintEvent(QPaintEvent* event) override;
-	void enterEvent(QEnterEvent* event) override;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	void ElaMessageDialogButton::enterEvent(QEnterEvent* event)
+#else
+	void enterEvent(QEvent* event)override;
+#endif
 	void leaveEvent(QEvent* event) override;
 	void mousePressEvent(QMouseEvent* event) override;
 	void mouseReleaseEvent(QMouseEvent* event) override;
