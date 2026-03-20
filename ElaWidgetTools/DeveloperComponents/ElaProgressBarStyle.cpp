@@ -29,10 +29,11 @@ void ElaProgressBarStyle::drawControl(ControlElement element, const QStyleOption
 		{
 			if (const QStyleOptionProgressBar *popt = qstyleoption_cast<const QStyleOptionProgressBar *>(option))
 			{
+				const int textPadding = 8;
 				painter->save();
 				painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 				painter->setPen(ElaThemeColor(_themeMode, BasicText));
-				painter->drawText(popt->rect, Qt::AlignCenter, popt->text);
+				painter->drawText(popt->rect.adjusted(0, 0, -textPadding, 0), Qt::AlignRight | Qt::AlignVCenter, popt->text);
 				painter->restore();
 			}
 			return;
@@ -145,7 +146,8 @@ QRect ElaProgressBarStyle::subElementRect(SubElement element, const QStyleOption
 			QRect contentRect = popt->rect;
 			if (popt->state & QStyle::State_Horizontal)
 			{
-				int textWidth = popt->fontMetrics.horizontalAdvance(" 100% ");
+				const int textPadding = 8;
+				const int textWidth = qMax(popt->fontMetrics.horizontalAdvance(QStringLiteral("100%")), popt->fontMetrics.horizontalAdvance(popt->text)) + textPadding * 2;
 				return QRect(contentRect.right() - textWidth + 1, contentRect.top(), textWidth, contentRect.height());
 			}
 			return contentRect;
