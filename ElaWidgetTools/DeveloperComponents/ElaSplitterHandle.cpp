@@ -1,4 +1,4 @@
-#include "ElaSplitterHandle.h"
+﻿#include "ElaSplitterHandle.h"
 
 #include <QPainter>
 #include <QPainterPath>
@@ -95,7 +95,11 @@ void ElaSplitterHandle::paintEvent(QPaintEvent* event)
 	}
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 void ElaSplitterHandle::enterEvent(QEnterEvent* event)
+#else
+void ElaSplitterHandle::enterEvent(QEvent* event)
+#endif
 {
 	Q_UNUSED(event);
 	_isHover = true;

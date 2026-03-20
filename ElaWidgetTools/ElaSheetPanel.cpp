@@ -173,7 +173,11 @@ bool ElaSheetPanel::eventFilter(QObject *watched, QEvent *event)
 			if (mouseEvent->button() == Qt::LeftButton && watched == d->_dragHandle)
 			{
 				d->_isDragging = true;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 				d->_dragStartPos = mouseEvent->globalPosition().toPoint();
+#else
+				d->_dragStartPos = mouseEvent->globalPos();
+#endif
 				if (d->_pDirection == ElaSheetPanelType::Bottom)
 				{
 					d->_dragStartSize = d->_panelWidget->height();
@@ -188,7 +192,11 @@ bool ElaSheetPanel::eventFilter(QObject *watched, QEvent *event)
 		else if (event->type() == QEvent::MouseMove && d->_isDragging)
 		{
 			QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 			QPoint delta = mouseEvent->globalPosition().toPoint() - d->_dragStartPos;
+#else
+			QPoint delta = mouseEvent->globalPos() - d->_dragStartPos;
+#endif
 			int newSize = d->_dragStartSize;
 			if (d->_pDirection == ElaSheetPanelType::Bottom)
 			{
