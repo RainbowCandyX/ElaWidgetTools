@@ -72,6 +72,7 @@
 | ElaDropDownButton      | 下拉按钮         | 整个按钮触发下拉菜单，支持图标+文字           |
 | ElaSelectorBar         | 分段选择器        | 滑动指示条动画，支持图标，筛选/模式切换         |
 | ElaTransfer            | 穿梭框          | 双列表互选，支持搜索过滤、全选、主题跟随          |
+| ElaEmojiPicker         | 表情选择器        | Telegram风格，分类标签页+搜索+最近使用+网格选择    |
 
 ### 数据展示
 
@@ -90,6 +91,7 @@
 | ElaDivider             | 分隔线          | 支持水平/垂直，可带文字（左/中/右对齐）       |
 | ElaLCDNumber           | LCD数字显示      | 仿液晶屏数字显示                     |
 | ElaCountdown           | 倒计时组件        | 天/时/分/秒翻牌显示，支持目标时间和剩余秒数两种模式  |
+| ElaQRCode              | 二维码生成器       | 输入文本/URL 生成二维码，支持自定义颜色和导出 Pixmap |
 
 ### 卡片
 
@@ -138,6 +140,9 @@
 | ElaMessageButton       | 弹出信息按钮       | 点击弹出带颜色的消息提示                 |
 | ElaToast               | 轻量提示         | 自动消失，支持Success/Info/Warning/Error四种类型 |
 | ElaSnackbar            | 底部通知条        | 带操作按钮（如撤销），自动堆叠/重排，可配置最大数量    |
+| ElaFloatButton         | 悬浮操作按钮       | 圆形按钮，支持四角定位、菜单展开、hover 动画、自动跟随父窗口 |
+| ElaEmojiPicker         | 表情选择器        | Telegram风格，分类标签页+搜索+最近使用+网格选择    |
+| ElaFloatButton         | 悬浮操作按钮       | 右下角圆形按钮，支持菜单展开、hover 动画、自动跟随父窗口 |
 | ElaFlyout              | 轻量弹出面板       | 锚定目标控件，Light Dismiss，可嵌入自定义Widget |
 | ElaTeachingTip         | 引导提示气泡       | 带箭头指向目标控件，支持4方向+自动定位         |
 | ElaToolTip             | 工具提示         | 悬停显示，支持自定义内容和延迟              |

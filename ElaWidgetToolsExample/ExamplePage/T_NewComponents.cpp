@@ -2,6 +2,7 @@
 
 #include "ElaCaptcha.h"
 #include "ElaCheckBox.h"
+#include "ElaComboBox.h"
 #include "ElaCommandBar.h"
 #include "ElaDivider.h"
 #include "ElaDropDownButton.h"
@@ -43,6 +44,9 @@
 #include "ElaWatermark.h"
 #include "ElaSplitter.h"
 #include "ElaSnackbar.h"
+#include "ElaQRCode.h"
+#include "ElaFloatButton.h"
+#include "ElaEmojiPicker.h"
 #include <QButtonGroup>
 #include <QDateTime>
 #include <QStackedWidget>
@@ -1250,6 +1254,105 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	c->addWidget(watermarkArea);
 	c->addWidget(snackbarArea);
 	c->addWidget(splitterArea);
+
+	// ========== ElaQRCode ==========
+	_qrCode = new ElaQRCode("https://github.com/RainbowCandyX/ElaWidgetTools", this);
+	_qrCode->setFixedSize(180, 180);
+
+	ElaLineEdit *qrInput = new ElaLineEdit(this);
+	qrInput->setText("https://github.com/RainbowCandyX/ElaWidgetTools");
+	qrInput->setFixedHeight(35);
+	qrInput->setMinimumWidth(300);
+	connect(qrInput, &ElaLineEdit::textChanged, this, [=](const QString &text)
+	{
+		_qrCode->setText(text);
+	});
+
+	ElaComboBox *qrEcLevel = new ElaComboBox(this);
+	qrEcLevel->addItems({"低 (7%)", "中 (15%)", "较高 (25%)", "高 (30%)"});
+	qrEcLevel->setCurrentIndex(1);
+	connect(qrEcLevel, &ElaComboBox::currentIndexChanged, this, [=](int index)
+	{
+		_qrCode->setErrorCorrectionLevel(static_cast<ElaQRCode::ErrorCorrectionLevel>(index));
+	});
+
+	ElaScrollPageArea *qrArea = new ElaScrollPageArea(this);
+	qrArea->setFixedHeight(240);
+	QVBoxLayout *qrMainLayout = new QVBoxLayout(qrArea);
+	QHBoxLayout *qrHeader = new QHBoxLayout();
+	qrHeader->addWidget(new ElaText("ElaQRCode", 15, this));
+	qrHeader->addWidget(qrInput);
+	qrHeader->addSpacing(10);
+	qrHeader->addWidget(new ElaText("纠错:", 13, this));
+	qrHeader->addWidget(qrEcLevel);
+	qrHeader->addStretch();
+	qrMainLayout->addLayout(qrHeader);
+	QHBoxLayout *qrBody = new QHBoxLayout();
+	qrBody->addWidget(_qrCode);
+	qrBody->addStretch();
+	qrMainLayout->addLayout(qrBody);
+	c->addWidget(qrArea);
+
+	_emojiPicker = new ElaEmojiPicker(this);
+
+	ElaLineEdit *emojiInput = new ElaLineEdit(this);
+	emojiInput->setPlaceholderText(QString::fromUtf8("点击表情按钮插入..."));
+	emojiInput->setFixedHeight(35);
+	emojiInput->setMinimumWidth(300);
+
+	ElaPushButton *emojiBtn = new ElaPushButton(QString::fromUtf8("😀"), this);
+	emojiBtn->setFixedSize(40, 35);
+	connect(emojiBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		_emojiPicker->popup(emojiBtn);
+	});
+	connect(_emojiPicker, &ElaEmojiPicker::emojiSelected, this, [=](const QString &emoji)
+	{
+		emojiInput->setText(emojiInput->text() + emoji);
+	});
+
+	ElaScrollPageArea *emojiArea = new ElaScrollPageArea(this);
+	QHBoxLayout *emojiLayout = new QHBoxLayout(emojiArea);
+	emojiLayout->addWidget(new ElaText("ElaEmojiPicker", 15, this));
+	emojiLayout->addSpacing(10);
+	emojiLayout->addWidget(emojiInput);
+	emojiLayout->addWidget(emojiBtn);
+	emojiLayout->addStretch();
+	c->addWidget(emojiArea);
+
+	_floatButton = new ElaFloatButton(ElaIconType::Plus, this);
+	ElaMenu *floatMenu = new ElaMenu(this);
+	floatMenu->addElaIconAction(ElaIconType::Pen, "新建笔记");
+	floatMenu->addElaIconAction(ElaIconType::Upload, "上传文件");
+	floatMenu->addElaIconAction(ElaIconType::Share, "分享");
+	_floatButton->setMenu(floatMenu);
+
+	ElaScrollPageArea *floatBtnArea = new ElaScrollPageArea(this);
+	QHBoxLayout *floatBtnLayout = new QHBoxLayout(floatBtnArea);
+	floatBtnLayout->addWidget(new ElaText("ElaFloatButton", 15, this));
+	floatBtnLayout->addSpacing(10);
+	floatBtnLayout->addWidget(new ElaText("位置:", 13, this));
+	ElaComboBox *floatPosCombo = new ElaComboBox(this);
+	floatPosCombo->addItems({"右下", "左下", "右上", "左上"});
+	connect(floatPosCombo, &ElaComboBox::currentIndexChanged, this, [=](int index)
+	{
+		_floatButton->setPosition(static_cast<ElaFloatButton::Position>(index));
+	});
+	floatBtnLayout->addWidget(floatPosCombo);
+	floatBtnLayout->addSpacing(10);
+	floatBtnLayout->addWidget(new ElaText("边距:", 13, this));
+	ElaSlider *floatMarginSlider = new ElaSlider(this);
+	floatMarginSlider->setRange(10, 100);
+	floatMarginSlider->setValue(30);
+	floatMarginSlider->setFixedWidth(150);
+	connect(floatMarginSlider, &ElaSlider::valueChanged, this, [=](int value)
+	{
+		_floatButton->setMargin(value);
+	});
+	floatBtnLayout->addWidget(floatMarginSlider);
+	floatBtnLayout->addStretch();
+	c->addWidget(floatBtnArea);
+
 	c->addSpacing(5);
 	c->addLayout(transferHeader);
 	c->addWidget(_transfer);

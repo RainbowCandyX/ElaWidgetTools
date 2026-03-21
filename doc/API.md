@@ -2,7 +2,7 @@
 
 > 本文档由 `scripts/generate_docs.py` 自动生成，请勿手动编辑。
 >
-> 共 **110** 个公开组件
+> 共 **113** 个公开组件
 
 ## 目录
 
@@ -32,8 +32,10 @@
 - [ElaDrawerArea](#eladrawerarea)
 - [ElaDropDownButton](#eladropdownbutton)
 - [ElaDxgiManager](#eladxgimanager)
+- [ElaEmojiPicker](#elaemojipicker)
 - [ElaEvent](#elaevent)
 - [ElaExpander](#elaexpander)
+- [ElaFloatButton](#elafloatbutton)
 - [ElaFlowLayout](#elaflowlayout)
 - [ElaFlyout](#elaflyout)
 - [ElaGraphicsItem](#elagraphicsitem)
@@ -72,6 +74,7 @@
 - [ElaPromotionCard](#elapromotioncard)
 - [ElaPromotionView](#elapromotionview)
 - [ElaPushButton](#elapushbutton)
+- [ElaQRCode](#elaqrcode)
 - [ElaRadioButton](#elaradiobutton)
 - [ElaRatingControl](#elaratingcontrol)
 - [ElaReminderCard](#elaremindercard)
@@ -816,6 +819,28 @@
 
 ---
 
+## ElaEmojiPicker
+
+**继承**: `QWidget` | **头文件**: `ElaEmojiPicker.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `EmojiSize` | get/set |
+| `int` | `Columns` | get/set |
+
+### 方法
+
+- `void popup(QWidget* anchor)`
+- `void popup(const QPoint& pos)`
+
+### 信号
+
+- `emojiSelected(const QString& emoji)`
+
+---
+
 ## ElaEvent
 
 **继承**: `QObject` | **头文件**: `ElaEventBus.h`
@@ -867,6 +892,36 @@
 ### 信号
 
 - `expandStateChanged(bool expanded)`
+
+---
+
+## ElaFloatButton
+
+**继承**: `QWidget` | **头文件**: `ElaFloatButton.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `ButtonSize` | get/set |
+| `int` | `Margin` | get/set |
+
+### 枚举
+
+**Position**: `BottomRight`, `BottomLeft`, `TopRight`, `TopLeft`
+
+### 方法
+
+- `void setIcon(ElaIconType::IconName icon)`
+- `ElaIconType::IconName getIcon()`
+- `void setPosition(Position position)`
+- `Position getPosition()`
+- `void setMenu(ElaMenu* menu)`
+- `ElaMenu* getMenu()`
+
+### 信号
+
+- `clicked()`
 
 ---
 
@@ -1682,6 +1737,33 @@
 - `void setElaIcon(ElaIconType::IconName icon, int iconSize)`
 - `void setHoverEnabled(bool enabled)`
 - `bool isHoverEnabled()`
+
+---
+
+## ElaQRCode
+
+**继承**: `QWidget` | **头文件**: `ElaQRCode.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `int` | `QuietZone` | get/set |
+| `QColor` | `ForegroundColor` | get/set |
+| `QColor` | `BackgroundColor` | get/set |
+
+### 枚举
+
+**ErrorCorrectionLevel**: `Low`, `Medium`, `Quartile`, `High`
+
+### 方法
+
+- `void setText(const QString& text)`
+- `QString getText()`
+- `void setErrorCorrectionLevel(ErrorCorrectionLevel level)`
+- `ErrorCorrectionLevel getErrorCorrectionLevel()`
+- `QPixmap toPixmap(int size = 256)`
 
 ---
 
