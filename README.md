@@ -154,6 +154,7 @@
 | ElaRoller              | 滚轮选择器        | 纵向滚轮列表选择                     |
 | ElaRollerPicker        | 滚轮选择器        | 多列滚轮组合（如时间/日期）               |
 | ElaDrawerArea          | 抽屉区域         | 可展开/收起的侧边抽屉面板               |
+| ElaInfoBar             | 信息栏          | 内嵌式持久提示，支持Info/Success/Warning/Error四种级别，可添加操作按钮，关闭动画 |
 
 ### 窗口与面板
 

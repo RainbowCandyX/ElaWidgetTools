@@ -47,6 +47,7 @@
 #include "ElaQRCode.h"
 #include "ElaFloatButton.h"
 #include "ElaEmojiPicker.h"
+#include "ElaInfoBar.h"
 #include <QButtonGroup>
 #include <QDateTime>
 #include <QStackedWidget>
@@ -1202,6 +1203,28 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	splitterMainLayout->addWidget(new ElaText("垂直分割", 13, this));
 	splitterMainLayout->addWidget(vSplitter);
 
+	// ========== ElaInfoBar 示例 ==========
+	_infoBarInfo = new ElaInfoBar(ElaInfoBarType::Informational, this);
+	_infoBarInfo->setTitle("提示");
+	_infoBarInfo->setMessage("这是一条信息提示，用于展示一般性的通知内容。");
+
+	_infoBarSuccess = new ElaInfoBar(ElaInfoBarType::Success, this);
+	_infoBarSuccess->setTitle("成功");
+	_infoBarSuccess->setMessage("文件已成功保存到指定路径。");
+	_infoBarSuccess->addAction("查看", [=]() { qDebug() << "查看按钮被点击"; });
+
+	_infoBarWarning = new ElaInfoBar(ElaInfoBarType::Warning, this);
+	_infoBarWarning->setTitle("警告");
+	_infoBarWarning->setMessage("你的许可证将在 7 天后过期。");
+	_infoBarWarning->addAction("续费", [=]() { qDebug() << "续费按钮被点击"; });
+	_infoBarWarning->addAction("稍后提醒", [=]() { qDebug() << "稍后提醒按钮被点击"; });
+
+	_infoBarError = new ElaInfoBar(ElaInfoBarType::Error, this);
+	_infoBarError->setTitle("错误");
+	_infoBarError->setMessage("无法连接到服务器，请检查网络设置。");
+	_infoBarError->setIsClosable(false);
+	_infoBarError->addAction("重试", [=]() { qDebug() << "重试按钮被点击"; });
+
 	// ========== 中心布局 ==========
 	QVBoxLayout *c = new QVBoxLayout(centralWidget);
 	c->setContentsMargins(0, 0, 0, 0);
@@ -1352,6 +1375,13 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	floatBtnLayout->addWidget(floatMarginSlider);
 	floatBtnLayout->addStretch();
 	c->addWidget(floatBtnArea);
+
+	c->addSpacing(5);
+	c->addWidget(new ElaText("ElaInfoBar", 15, this));
+	c->addWidget(_infoBarInfo);
+	c->addWidget(_infoBarSuccess);
+	c->addWidget(_infoBarWarning);
+	c->addWidget(_infoBarError);
 
 	c->addSpacing(5);
 	c->addLayout(transferHeader);

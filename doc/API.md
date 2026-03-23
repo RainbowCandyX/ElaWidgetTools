@@ -2,7 +2,7 @@
 
 > 本文档由 `scripts/generate_docs.py` 自动生成，请勿手动编辑。
 >
-> 共 **113** 个公开组件
+> 共 **114** 个公开组件
 
 ## 目录
 
@@ -46,6 +46,7 @@
 - [ElaIconButton](#elaiconbutton)
 - [ElaImageCard](#elaimagecard)
 - [ElaInfoBadge](#elainfobadge)
+- [ElaInfoBar](#elainfobar)
 - [ElaInputDialog](#elainputdialog)
 - [ElaInteractiveCard](#elainteractivecard)
 - [ElaKeyBinder](#elakeybinder)
@@ -1138,6 +1139,33 @@
 - `void setSeverity(Severity severity)`
 - `Severity getSeverity()`
 - `void attachTo(QWidget* target)`
+
+---
+
+## ElaInfoBar
+
+**继承**: `QFrame` | **头文件**: `ElaInfoBar.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `QString` | `Title` | get/set |
+| `QString` | `Message` | get/set |
+| `ElaInfoBarType::InfoBarSeverity` | `Severity` | get/set |
+| `bool` | `IsClosable` | get/set |
+| `ElaIconType::IconName` | `InfoBarIcon` | get/set |
+
+### 方法
+
+- `void clearActions()`
+- `void closeInfoBar()`
+
+### 信号
+
+- `closed()`
+- `closeButtonClicked()`
 
 ---
 
