@@ -36,6 +36,10 @@ class ElaCountdown;
 class ElaPopconfirm;
 class ElaWatermark;
 class ElaSplitter;
+class ElaQRCode;
+class ElaFloatButton;
+class ElaEmojiPicker;
+class ElaInfoBar;
 class T_NewComponents : public T_BasePage
 {
     Q_OBJECT
@@ -107,6 +111,16 @@ private:
     ElaWatermark* _watermark{nullptr};
     // Splitter
     ElaSplitter* _splitter{nullptr};
+    // QRCode
+    ElaQRCode* _qrCode{nullptr};
+    // FloatButton
+    ElaFloatButton* _floatButton{nullptr};
+    ElaEmojiPicker* _emojiPicker{nullptr};
+    // InfoBar
+    ElaInfoBar* _infoBarInfo{nullptr};
+    ElaInfoBar* _infoBarSuccess{nullptr};
+    ElaInfoBar* _infoBarWarning{nullptr};
+    ElaInfoBar* _infoBarError{nullptr};
 };
 
 #endif // T_NEWCOMPONENTS_H
