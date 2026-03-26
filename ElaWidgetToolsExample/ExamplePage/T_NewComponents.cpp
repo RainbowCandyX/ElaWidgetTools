@@ -48,6 +48,7 @@
 #include "ElaFloatButton.h"
 #include "ElaEmojiPicker.h"
 #include "ElaInfoBar.h"
+#include "ElaAutoComplete.h"
 #include <QButtonGroup>
 #include <QDateTime>
 #include <QStackedWidget>
@@ -1382,6 +1383,47 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	c->addWidget(_infoBarSuccess);
 	c->addWidget(_infoBarWarning);
 	c->addWidget(_infoBarError);
+
+	// ========== ElaAutoComplete 示例 ==========
+	_autoComplete = new ElaAutoComplete(this);
+	_autoComplete->setPlaceholderText("输入城市名称...");
+	_autoComplete->setCompletions({
+		"北京", "北京大兴机场", "北京西站", "上海", "上海虹桥", "上海浦东",
+		"广州", "广州南站", "深圳", "深圳北站", "杭州", "杭州西湖",
+		"成都", "成都天府", "武汉", "南京", "南京南站", "西安",
+		"重庆", "天津", "苏州", "长沙",
+		"Singapore", "Hong Kong", "Taiwan", "Tokyo", "Seoul",
+		"Bangkok", "New York", "London", "Paris", "Sydney",
+		"Los Angeles", "San Francisco", "Chicago", "Toronto", "Vancouver",
+		"Berlin", "Amsterdam", "Dubai", "Mumbai", "Melbourne",
+		"Oslo", "Stockholm", "Helsinki", "Lisbon", "Barcelona"
+	});
+
+	ElaText *autoCompleteResult = new ElaText("", this);
+	autoCompleteResult->setTextPixelSize(13);
+	connect(_autoComplete, &ElaAutoComplete::completionSelected, this, [=](const QString &text)
+	{
+		autoCompleteResult->setText(QString("已选择: %1").arg(text));
+	});
+
+	ElaComboBox *matchModeCombo = new ElaComboBox(this);
+	matchModeCombo->addItems({"包含匹配", "前缀匹配", "后缀匹配", "正则表达式"});
+	connect(matchModeCombo, &ElaComboBox::currentIndexChanged, this, [=](int index)
+	{
+		_autoComplete->setMatchMode(static_cast<ElaAutoComplete::MatchMode>(index));
+	});
+
+	ElaScrollPageArea *autoCompleteArea = new ElaScrollPageArea(this);
+	QHBoxLayout *autoCompleteLayout = new QHBoxLayout(autoCompleteArea);
+	autoCompleteLayout->addWidget(new ElaText("ElaAutoComplete", 15, this));
+	autoCompleteLayout->addSpacing(10);
+	autoCompleteLayout->addWidget(_autoComplete);
+	autoCompleteLayout->addSpacing(10);
+	autoCompleteLayout->addWidget(matchModeCombo);
+	autoCompleteLayout->addSpacing(10);
+	autoCompleteLayout->addWidget(autoCompleteResult);
+	autoCompleteLayout->addStretch();
+	c->addWidget(autoCompleteArea);
 
 	c->addSpacing(5);
 	c->addLayout(transferHeader);
