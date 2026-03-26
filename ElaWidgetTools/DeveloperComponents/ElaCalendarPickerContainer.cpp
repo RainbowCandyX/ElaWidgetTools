@@ -23,9 +23,11 @@ ElaCalendarPickerContainer::~ElaCalendarPickerContainer()
 
 void ElaCalendarPickerContainer::paintEvent(QPaintEvent* event)
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 11, 0)
     QPainter painter(this);
     painter.save();
     painter.setRenderHints(QPainter::Antialiasing);
     eTheme->drawEffectShadow(&painter, rect(), 6, 5);
     painter.restore();
+#endif
 }

@@ -86,7 +86,11 @@ ElaSplashScreen::ElaSplashScreen(QWidget *parent)
 	d->_progressRing->setVisible(false);
 
 	QVBoxLayout *mainLayout = new QVBoxLayout(this);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+	mainLayout->setContentsMargins(30, 44, 30, 30);
+#else
 	mainLayout->setContentsMargins(36, 50, 36, 36);
+#endif
 	mainLayout->setSpacing(6);
 	mainLayout->addStretch(2);
 	mainLayout->addWidget(d->_titleText, 0, Qt::AlignCenter);
@@ -193,9 +197,12 @@ void ElaSplashScreen::paintEvent(QPaintEvent *event)
 	painter.save();
 	painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+	QRect foregroundRect = rect();
+#else
 	eTheme->drawEffectShadow(&painter, rect(), 6, d->_pBorderRadius);
-
 	QRect foregroundRect = rect().adjusted(6, 6, -6, -6);
+#endif
 	QPainterPath path;
 	path.addRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
 	painter.setClipPath(path);

@@ -11,7 +11,11 @@ ElaRollerPickerContainer::ElaRollerPickerContainer(QWidget* parent)
     setMouseTracking(true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup | Qt::NoDropShadowWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+    setContentsMargins(2, 2, 2, _pButtonAreaHeight);
+#else
     setContentsMargins(8, 8, 8, 6 + _pButtonAreaHeight);
+#endif
     setObjectName("ElaCalendarPickerContainer");
     setStyleSheet("#ElaCalendarPickerContainer{background-color:transparent}");
 
@@ -127,10 +131,14 @@ void ElaRollerPickerContainer::paintEvent(QPaintEvent* event)
     }
     else
     {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+        QRect foregroundRect = rect();
+#else
         eTheme->drawEffectShadow(&painter, rect(), 6, 5);
+        QRect foregroundRect(6, 6, rect().width() - 2 * 6, rect().height() - 2 * 6);
+#endif
         painter.setPen(ElaThemeColor(_themeMode, PopupBorder));
         painter.setBrush(ElaThemeColor(_themeMode, PopupBase));
-        QRect foregroundRect(6, 6, rect().width() - 2 * 6, rect().height() - 2 * 6);
         painter.drawRoundedRect(foregroundRect, 8, 8);
         // 纵向分割线
         painter.setPen(ElaThemeColor(_themeMode, BasicBorder));

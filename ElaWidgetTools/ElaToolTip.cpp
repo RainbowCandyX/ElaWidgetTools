@@ -33,7 +33,11 @@ ElaToolTip::ElaToolTip(QWidget* parent)
     d->_toolTipText->setWordWrap(false);
     d->_toolTipText->setTextPixelSize(17);
     d->_mainLayout = new QVBoxLayout(this);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+    d->_mainLayout->setContentsMargins(d->_shadowBorderWidth, d->_shadowBorderWidth, d->_shadowBorderWidth, d->_shadowBorderWidth);
+#else
     d->_mainLayout->setContentsMargins(d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2);
+#endif
     d->_mainLayout->addWidget(d->_toolTipText);
 
     d->_themeMode = eTheme->getThemeMode();
@@ -98,10 +102,14 @@ void ElaToolTip::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.save();
     painter.setRenderHint(QPainter::Antialiasing);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+    QRect foregroundRect = rect();
+#else
     //阴影
     eTheme->drawEffectShadow(&painter, rect(), d->_shadowBorderWidth, d->_pBorderRadius);
     QRect foregroundRect = rect();
     foregroundRect.adjust(d->_shadowBorderWidth, d->_shadowBorderWidth, -d->_shadowBorderWidth, -d->_shadowBorderWidth);
+#endif
     painter.setPen(ElaThemeColor(d->_themeMode, PopupBorder));
     painter.setBrush(ElaThemeColor(d->_themeMode, PopupBase));
     painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);

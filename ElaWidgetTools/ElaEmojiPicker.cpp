@@ -32,7 +32,11 @@ ElaEmojiPicker::ElaEmojiPicker(QWidget *parent) : QWidget{nullptr}, d_ptr(new El
 	d->initEmojis();
 
 	QVBoxLayout *mainLayout = new QVBoxLayout(this);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+	mainLayout->setContentsMargins(2, 2, 2, 2);
+#else
 	mainLayout->setContentsMargins(8, 8, 8, 8);
+#endif
 	mainLayout->setSpacing(4);
 
 	d->_searchEdit = new ElaLineEdit(this);
@@ -120,8 +124,12 @@ void ElaEmojiPicker::paintEvent(QPaintEvent *event)
 	Q_D(ElaEmojiPicker);
 	QPainter painter(this);
 	painter.setRenderHints(QPainter::Antialiasing);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+	QRect fg = rect();
+#else
 	eTheme->drawEffectShadow(&painter, rect(), 6, 8);
 	QRect fg = rect().adjusted(6, 6, -6, -6);
+#endif
 	painter.setPen(ElaThemeColor(d->_themeMode, PopupBorder));
 	painter.setBrush(ElaThemeColor(d->_themeMode, PopupBase));
 	painter.drawRoundedRect(fg, 8, 8);

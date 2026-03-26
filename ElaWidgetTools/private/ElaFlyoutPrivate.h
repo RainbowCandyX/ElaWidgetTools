@@ -28,7 +28,11 @@ private:
     QWidget* _contentWidget{nullptr};
     QGraphicsOpacityEffect* _opacityEffect{nullptr};
     ElaThemeType::ThemeMode _themeMode;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+    int _shadowBorderWidth{0};
+#else
     int _shadowBorderWidth{8};
+#endif
     void _doShowAnimation();
 };
 

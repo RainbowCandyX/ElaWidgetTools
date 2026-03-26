@@ -59,7 +59,11 @@ ElaMultiSelectComboBox::ElaMultiSelectComboBox(QWidget* parent)
             layout->takeAt(0);
         }
         layout->addWidget(view());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+        layout->setContentsMargins(0, 0, 0, 0);
+#else
         layout->setContentsMargins(6, 0, 6, 6);
+#endif
 #if defined(Q_OS_LINUX) && QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         container->setStyleSheet("background-color:transparent;");
 #endif

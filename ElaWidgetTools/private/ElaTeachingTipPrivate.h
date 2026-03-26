@@ -38,7 +38,11 @@ private:
     bool _closeButtonVisible{true};
     QList<ActionItem> _actions;
     QRect _closeButtonRect;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+    int _shadowBorderWidth{0};
+#else
     int _shadowBorderWidth{8};
+#endif
     int _tailSize{8};
     ElaThemeType::ThemeMode _themeMode;
 

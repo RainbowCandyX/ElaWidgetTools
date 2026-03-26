@@ -252,7 +252,7 @@ void ElaTeachingTip::showTip()
 	{
 		contentHeight += 44;
 	}
-	contentHeight += 12; // bottom padding
+	contentHeight += d->_shadowBorderWidth + 4; // bottom padding
 	setFixedHeight(contentHeight);
 
 	QPoint pos = d->_calculatePosition();
@@ -279,7 +279,6 @@ void ElaTeachingTip::paintEvent(QPaintEvent *event)
 
 	// Shadow
 	eTheme->drawEffectShadow(&painter, rect(), d->_shadowBorderWidth, d->_pBorderRadius);
-
 	// Main body
 	QRect bodyRect = rect().adjusted(d->_shadowBorderWidth, d->_shadowBorderWidth, -d->_shadowBorderWidth, -d->_shadowBorderWidth);
 	painter.setPen(QPen(ElaThemeColor(d->_themeMode, PopupBorder), 1));

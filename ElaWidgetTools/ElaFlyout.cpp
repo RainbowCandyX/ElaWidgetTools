@@ -25,7 +25,8 @@ ElaFlyout::ElaFlyout(QWidget *parent)
 	setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
 	setAttribute(Qt::WA_TranslucentBackground);
 	d->_mainLayout = new QVBoxLayout(this);
-	d->_mainLayout->setContentsMargins(d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2);
+	int margin = d->_shadowBorderWidth + 8;
+	d->_mainLayout->setContentsMargins(margin, margin, margin, margin);
 
 	d->_opacityEffect = new QGraphicsOpacityEffect(this);
 	d->_opacityEffect->setOpacity(0);
