@@ -40,6 +40,7 @@ class ElaQRCode;
 class ElaFloatButton;
 class ElaEmojiPicker;
 class ElaInfoBar;
+class ElaAutoComplete;
 class T_NewComponents : public T_BasePage
 {
     Q_OBJECT
@@ -121,6 +122,8 @@ private:
     ElaInfoBar* _infoBarSuccess{nullptr};
     ElaInfoBar* _infoBarWarning{nullptr};
     ElaInfoBar* _infoBarError{nullptr};
+    // AutoComplete
+    ElaAutoComplete* _autoComplete{nullptr};
 };
 
 #endif // T_NEWCOMPONENTS_H

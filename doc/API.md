@@ -2,7 +2,7 @@
 
 > 本文档由 `scripts/generate_docs.py` 自动生成，请勿手动编辑。
 >
-> 共 **114** 个公开组件
+> 共 **115** 个公开组件
 
 ## 目录
 
@@ -14,6 +14,7 @@
 - [ElaNavigationBar](#elanavigationbar)
 - [ElaNavigationRouter](#elanavigationrouter)
 - [ElaAcrylicUrlCard](#elaacrylicurlcard)
+- [ElaAutoComplete](#elaautocomplete)
 - [ElaBreadcrumbBar](#elabreadcrumbbar)
 - [ElaCalendar](#elacalendar)
 - [ElaCalendarPicker](#elacalendarpicker)
@@ -419,6 +420,43 @@
 ### 方法
 
 - `void setCardPixmapSize(int width, int height)`
+
+---
+
+## ElaAutoComplete
+
+**继承**: `QWidget` | **头文件**: `ElaAutoComplete.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `int` | `MaxVisibleItems` | get/set |
+| `Qt::CaseSensitivity` | `CaseSensitivity` | get/set |
+
+### 枚举
+
+**MatchMode**: `Contains`, `StartsWith`, `EndsWith`, `RegExp`
+
+### 方法
+
+- `void setPlaceholderText(const QString& placeholderText)`
+- `QString placeholderText()`
+- `void setText(const QString& text)`
+- `QString text()`
+- `void setCompletions(const QStringList& completions)`
+- `QStringList completions()`
+- `void setMatchMode(MatchMode mode)`
+- `MatchMode matchMode()`
+- `void setFixedHeight(int h)`
+
+### 信号
+
+- `textChanged(const QString& text)`
+- `textEdited(const QString& text)`
+- `completionSelected(const QString& completion)`
+- `returnPressed(const QString& text)`
 
 ---
 
