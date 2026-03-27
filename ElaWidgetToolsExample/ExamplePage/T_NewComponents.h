@@ -41,6 +41,8 @@ class ElaFloatButton;
 class ElaEmojiPicker;
 class ElaInfoBar;
 class ElaAutoComplete;
+class ElaTreeSelect;
+class ElaUploadArea;
 class T_NewComponents : public T_BasePage
 {
     Q_OBJECT
@@ -124,6 +126,10 @@ private:
     ElaInfoBar* _infoBarError{nullptr};
     // AutoComplete
     ElaAutoComplete* _autoComplete{nullptr};
+    // TreeSelect
+    ElaTreeSelect* _treeSelect{nullptr};
+    // UploadArea
+    ElaUploadArea* _uploadArea{nullptr};
 };
 
 #endif // T_NEWCOMPONENTS_H

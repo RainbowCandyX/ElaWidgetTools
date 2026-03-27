@@ -49,6 +49,8 @@
 #include "ElaEmojiPicker.h"
 #include "ElaInfoBar.h"
 #include "ElaAutoComplete.h"
+#include "ElaTreeSelect.h"
+#include "ElaUploadArea.h"
 #include <QButtonGroup>
 #include <QDateTime>
 #include <QStackedWidget>
@@ -1424,6 +1426,100 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	autoCompleteLayout->addWidget(autoCompleteResult);
 	autoCompleteLayout->addStretch();
 	c->addWidget(autoCompleteArea);
+
+	// ========== ElaTreeSelect 示例 ==========
+	_treeSelect = new ElaTreeSelect(this);
+	_treeSelect->setPlaceholderText("请选择分类...");
+	_treeSelect->setMinimumWidth(280);
+
+	QStandardItemModel *treeModel = new QStandardItemModel(this);
+	QStandardItem *china = new QStandardItem("中国");
+	QStandardItem *beijing = new QStandardItem("北京");
+	beijing->appendRow(new QStandardItem("朝阳区"));
+	beijing->appendRow(new QStandardItem("海淀区"));
+	beijing->appendRow(new QStandardItem("西城区"));
+	china->appendRow(beijing);
+	QStandardItem *shanghai = new QStandardItem("上海");
+	shanghai->appendRow(new QStandardItem("浦东新区"));
+	shanghai->appendRow(new QStandardItem("黄浦区"));
+	china->appendRow(shanghai);
+	QStandardItem *guangdong = new QStandardItem("广东");
+	guangdong->appendRow(new QStandardItem("深圳"));
+	guangdong->appendRow(new QStandardItem("广州"));
+	china->appendRow(guangdong);
+	treeModel->appendRow(china);
+
+	QStandardItem *usa = new QStandardItem("美国");
+	QStandardItem *california = new QStandardItem("加利福尼亚");
+	california->appendRow(new QStandardItem("洛杉矶"));
+	california->appendRow(new QStandardItem("旧金山"));
+	usa->appendRow(california);
+	QStandardItem *newYork = new QStandardItem("纽约州");
+	newYork->appendRow(new QStandardItem("纽约市"));
+	usa->appendRow(newYork);
+	treeModel->appendRow(usa);
+
+	_treeSelect->setModel(treeModel);
+
+	ElaText *treeSelectResult = new ElaText("", this);
+	treeSelectResult->setTextPixelSize(13);
+	connect(_treeSelect, &ElaTreeSelect::currentTextChanged, this, [=](const QString &text)
+	{
+		treeSelectResult->setText(QString("已选择: %1").arg(text));
+	});
+
+	ElaScrollPageArea *treeSelectArea = new ElaScrollPageArea(this);
+	QHBoxLayout *treeSelectLayout = new QHBoxLayout(treeSelectArea);
+	treeSelectLayout->addWidget(new ElaText("ElaTreeSelect", 15, this));
+	treeSelectLayout->addSpacing(10);
+	treeSelectLayout->addWidget(_treeSelect);
+	treeSelectLayout->addSpacing(10);
+	treeSelectLayout->addWidget(treeSelectResult);
+	treeSelectLayout->addStretch();
+	c->addWidget(treeSelectArea);
+
+	// ========== ElaUploadArea 示例 ==========
+	_uploadArea = new ElaUploadArea(this);
+	_uploadArea->setFixedHeight(200);
+	_uploadArea->setAcceptedSuffixes({"png", "jpg", "jpeg", "gif", "bmp", "pdf", "txt"});
+	_uploadArea->setMaxFileCount(5);
+	_uploadArea->setTitle("拖拽文件到此处");
+	_uploadArea->setSubTitle("支持 png, jpg, gif, bmp, pdf, txt (最多5个)");
+	_uploadArea->setDialogTitle("选择要上传的文件");
+
+	ElaText *uploadInfo = new ElaText("已选择 0 个文件", this);
+	uploadInfo->setTextPixelSize(13);
+	connect(_uploadArea, &ElaUploadArea::filesSelected, this, [=](const QStringList &files)
+	{
+		uploadInfo->setText(QString("已选择 %1 个文件").arg(files.size()));
+	});
+	connect(_uploadArea, &ElaUploadArea::fileRejected, this, [=](const QString &path, const QString &reason)
+	{
+		Q_UNUSED(path)
+		ElaToast::warning(reason, 2000, window());
+	});
+
+	ElaPushButton *clearUploadBtn = new ElaPushButton("清空文件", this);
+	clearUploadBtn->setFixedSize(100, 35);
+	connect(clearUploadBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		_uploadArea->clearFiles();
+		uploadInfo->setText("已选择 0 个文件");
+	});
+
+	ElaScrollPageArea *uploadAreaContainer = new ElaScrollPageArea(this);
+	uploadAreaContainer->setFixedHeight(280);
+	QVBoxLayout *uploadMainLayout = new QVBoxLayout(uploadAreaContainer);
+	QHBoxLayout *uploadHeader = new QHBoxLayout();
+	uploadHeader->addWidget(new ElaText("ElaUploadArea", 15, this));
+	uploadHeader->addSpacing(10);
+	uploadHeader->addWidget(uploadInfo);
+	uploadHeader->addSpacing(10);
+	uploadHeader->addWidget(clearUploadBtn);
+	uploadHeader->addStretch();
+	uploadMainLayout->addLayout(uploadHeader);
+	uploadMainLayout->addWidget(_uploadArea);
+	c->addWidget(uploadAreaContainer);
 
 	c->addSpacing(5);
 	c->addLayout(transferHeader);

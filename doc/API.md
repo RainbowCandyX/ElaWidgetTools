@@ -2,7 +2,7 @@
 
 > 本文档由 `scripts/generate_docs.py` 自动生成，请勿手动编辑。
 >
-> 共 **115** 个公开组件
+> 共 **117** 个公开组件
 
 ## 目录
 
@@ -117,7 +117,9 @@
 - [ElaToolButton](#elatoolbutton)
 - [ElaToolTip](#elatooltip)
 - [ElaTransfer](#elatransfer)
+- [ElaTreeSelect](#elatreeselect)
 - [ElaTreeView](#elatreeview)
+- [ElaUploadArea](#elauploadarea)
 - [ElaVirtualList](#elavirtuallist)
 - [ElaWatermark](#elawatermark)
 - [ElaWizard](#elawizard)
@@ -2743,6 +2745,38 @@
 
 ---
 
+## ElaTreeSelect
+
+**继承**: `QWidget` | **头文件**: `ElaTreeSelect.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `int` | `ItemHeight` | get/set |
+| `int` | `MaxVisibleItems` | get/set |
+| `QString` | `PlaceholderText` | get/set |
+| `bool` | `IsSearchVisible` | get/set |
+| `bool` | `IsEditable` | get/set |
+
+### 方法
+
+- `void setModel(QStandardItemModel* model)`
+- `QStandardItemModel* model()`
+- `void setCurrentIndex(const QModelIndex& index)`
+- `QModelIndex currentIndex()`
+- `QString currentText()`
+- `void expandAll()`
+- `void collapseAll()`
+
+### 信号
+
+- `currentIndexChanged(const QModelIndex& index)`
+- `currentTextChanged(const QString& text)`
+
+---
+
 ## ElaTreeView
 
 **继承**: `QTreeView` | **头文件**: `ElaTreeView.h`
@@ -2753,6 +2787,39 @@
 |------|------|------|
 | `int` | `ItemHeight` | get/set |
 | `int` | `HeaderMargin` | get/set |
+
+---
+
+## ElaUploadArea
+
+**继承**: `QWidget` | **头文件**: `ElaUploadArea.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `QString` | `Title` | get/set |
+| `QString` | `SubTitle` | get/set |
+| `QStringList` | `AcceptedSuffixes` | get/set |
+| `int` | `MaxFileCount` | get/set |
+| `qint64` | `MaxFileSize` | get/set |
+| `bool` | `IsMultiple` | get/set |
+| `QString` | `DialogTitle` | get/set |
+
+### 方法
+
+- `QStringList getSelectedFiles()`
+- `void clearFiles()`
+- `void setAcceptedMimeFilter(const QString& filter)`
+- `QString getAcceptedMimeFilter()`
+
+### 信号
+
+- `filesSelected(const QStringList& filePaths)`
+- `fileAdded(const QString& filePath)`
+- `fileRemoved(const QString& filePath)`
+- `fileRejected(const QString& filePath, const QString& reason)`
 
 ---
 
