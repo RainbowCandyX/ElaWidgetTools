@@ -237,7 +237,11 @@ void ElaTreeSelect::mouseReleaseEvent(QMouseEvent *event)
 	QWidget::mouseReleaseEvent(event);
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 void ElaTreeSelect::enterEvent(QEnterEvent *event)
+#else
+void ElaTreeSelect::enterEvent(QEvent *event)
+#endif
 {
 	Q_D(ElaTreeSelect);
 	d->_isHover = true;

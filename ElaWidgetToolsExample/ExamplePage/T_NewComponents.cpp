@@ -51,6 +51,7 @@
 #include "ElaAutoComplete.h"
 #include "ElaTreeSelect.h"
 #include "ElaUploadArea.h"
+#include "ElaCopyButton.h"
 #include <QButtonGroup>
 #include <QDateTime>
 #include <QStackedWidget>
@@ -1520,6 +1521,41 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	uploadMainLayout->addLayout(uploadHeader);
 	uploadMainLayout->addWidget(_uploadArea);
 	c->addWidget(uploadAreaContainer);
+
+	_copyButton = new ElaCopyButton(this);
+	_copyButton->setCopyText("https://github.com/RainbowCandyX/ElaWidgetTools");
+
+	ElaLineEdit *copyInput = new ElaLineEdit(this);
+	copyInput->setText("https://github.com/RainbowCandyX/ElaWidgetTools");
+	copyInput->setFixedHeight(35);
+	copyInput->setMinimumWidth(350);
+	connect(copyInput, &ElaLineEdit::textChanged, this, [=](const QString &text)
+	{
+		_copyButton->setCopyText(text);
+	});
+
+	ElaText *copyStatus = new ElaText("", this);
+	copyStatus->setTextPixelSize(13);
+	connect(_copyButton, &ElaCopyButton::copyCompleted, this, [=](const QString &text)
+	{
+		Q_UNUSED(text)
+		copyStatus->setText("已复制!");
+		QTimer::singleShot(2000, this, [=]()
+		{
+			copyStatus->setText("");
+		});
+	});
+
+	ElaScrollPageArea *copyArea = new ElaScrollPageArea(this);
+	QHBoxLayout *copyLayout = new QHBoxLayout(copyArea);
+	copyLayout->addWidget(new ElaText("ElaCopyButton", 15, this));
+	copyLayout->addSpacing(10);
+	copyLayout->addWidget(copyInput);
+	copyLayout->addWidget(_copyButton);
+	copyLayout->addSpacing(5);
+	copyLayout->addWidget(copyStatus);
+	copyLayout->addStretch();
+	c->addWidget(copyArea);
 
 	c->addSpacing(5);
 	c->addLayout(transferHeader);

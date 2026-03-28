@@ -2,7 +2,7 @@
 
 > 本文档由 `scripts/generate_docs.py` 自动生成，请勿手动编辑。
 >
-> 共 **117** 个公开组件
+> 共 **118** 个公开组件
 
 ## 目录
 
@@ -25,6 +25,7 @@
 - [ElaComboBox](#elacombobox)
 - [ElaCommandBar](#elacommandbar)
 - [ElaContentDialog](#elacontentdialog)
+- [ElaCopyButton](#elacopybutton)
 - [ElaCountdown](#elacountdown)
 - [ElaDialog](#eladialog)
 - [ElaDivider](#eladivider)
@@ -671,6 +672,31 @@
 - `leftButtonClicked()`
 - `middleButtonClicked()`
 - `rightButtonClicked()`
+
+---
+
+## ElaCopyButton
+
+**继承**: `QPushButton` | **头文件**: `ElaCopyButton.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `int` | `BorderRadius` | get/set |
+| `QString` | `CopyText` | get/set |
+| `int` | `SuccessDuration` | get/set |
+| `QString` | `SuccessText` | get/set |
+
+### 方法
+
+- `void setText(const QString& text)`
+- `void setElaIcon(ElaIconType::IconName icon)`
+- `void setSuccessIcon(ElaIconType::IconName icon)`
+
+### 信号
+
+- `copyCompleted(const QString& text)`
 
 ---
 

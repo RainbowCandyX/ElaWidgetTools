@@ -44,7 +44,11 @@ bool ElaTreeSelectPrivate::eventFilter(QObject *watched, QEvent *event)
 	if (_isPopupVisible && event->type() == QEvent::MouseButtonPress)
 	{
 		QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 		QPoint globalPos = mouseEvent->globalPosition().toPoint();
+#else
+		QPoint globalPos = mouseEvent->globalPos();
+#endif
 		Q_Q(ElaTreeSelect);
 		QRect popupRect(_popupContainer->mapToGlobal(QPoint(0, 0)), _popupContainer->size());
 		QRect triggerRect(q->mapToGlobal(QPoint(0, 0)), q->size());

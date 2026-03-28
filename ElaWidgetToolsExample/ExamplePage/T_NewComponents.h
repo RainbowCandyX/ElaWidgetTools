@@ -43,6 +43,7 @@ class ElaInfoBar;
 class ElaAutoComplete;
 class ElaTreeSelect;
 class ElaUploadArea;
+class ElaCopyButton;
 class T_NewComponents : public T_BasePage
 {
     Q_OBJECT
@@ -130,6 +131,8 @@ private:
     ElaTreeSelect* _treeSelect{nullptr};
     // UploadArea
     ElaUploadArea* _uploadArea{nullptr};
+    // CopyButton
+    ElaCopyButton* _copyButton{nullptr};
 };
 
 #endif // T_NEWCOMPONENTS_H

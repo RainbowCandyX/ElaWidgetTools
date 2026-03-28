@@ -285,7 +285,11 @@ void ElaUploadArea::mouseReleaseEvent(QMouseEvent *event)
 	QWidget::mouseReleaseEvent(event);
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 void ElaUploadArea::enterEvent(QEnterEvent *event)
+#else
+void ElaUploadArea::enterEvent(QEvent *event)
+#endif
 {
 	Q_D(ElaUploadArea);
 	d->_isHover = true;
