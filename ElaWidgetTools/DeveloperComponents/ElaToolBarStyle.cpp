@@ -302,7 +302,14 @@ void ElaToolBarStyle::_drawText(QPainter* painter, QRect contentRect, const QSty
 {
     if (!bopt->text.isEmpty())
     {
-        painter->setPen(ElaThemeColor(_themeMode, BasicText));
+        if (bopt->state.testFlag(QStyle::State_Enabled))
+        {
+            painter->setPen(ElaThemeColor(_themeMode, BasicText));
+        }
+        else
+        {
+            painter->setPen(ElaThemeColor(_themeMode, BasicTextDisable));
+        }
         switch (bopt->toolButtonStyle)
         {
         case Qt::ToolButtonTextOnly:

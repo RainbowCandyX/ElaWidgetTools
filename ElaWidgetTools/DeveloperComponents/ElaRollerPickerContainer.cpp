@@ -11,7 +11,7 @@ ElaRollerPickerContainer::ElaRollerPickerContainer(QWidget* parent)
     setMouseTracking(true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup | Qt::NoDropShadowWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
     setContentsMargins(2, 2, 2, _pButtonAreaHeight);
 #else
     setContentsMargins(8, 8, 8, 6 + _pButtonAreaHeight);
@@ -131,7 +131,7 @@ void ElaRollerPickerContainer::paintEvent(QPaintEvent* event)
     }
     else
     {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
         QRect foregroundRect = rect();
 #else
         eTheme->drawEffectShadow(&painter, rect(), 6, 5);

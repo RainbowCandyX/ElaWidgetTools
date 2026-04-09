@@ -23,7 +23,7 @@ ElaCalendarPickerContainer::~ElaCalendarPickerContainer()
 
 void ElaCalendarPickerContainer::paintEvent(QPaintEvent* event)
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 11, 0)
+#if !(defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0))
     QPainter painter(this);
     painter.save();
     painter.setRenderHints(QPainter::Antialiasing);

@@ -19,6 +19,7 @@ ElaSpinBox::ElaSpinBox(QWidget* parent)
     setLocale(QLocale::C);
     setFixedSize(115, 35);
 #ifdef Q_OS_MACOS
+    setAttribute(Qt::WA_Hover);
     setAttribute(Qt::WA_MacShowFocusRect, false);
 #endif
     d->_style = new ElaSpinBoxStyle(style());

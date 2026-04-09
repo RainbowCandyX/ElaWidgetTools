@@ -35,7 +35,14 @@ void ElaSpinBoxStyle::drawComplexControl(ComplexControl control, const QStyleOpt
         //背景
         QRect spinBoxRect = sopt->rect.adjusted(1, 1, -1, -1);
         painter->setPen(ElaThemeColor(_themeMode, BasicBorder));
-        painter->setBrush(ElaThemeColor(_themeMode, BasicBase));
+        if (sopt->state & QStyle::State_MouseOver)
+        {
+            painter->setBrush(ElaThemeColor(_themeMode, BasicHover));
+        }
+        else
+        {
+            painter->setBrush(ElaThemeColor(_themeMode, BasicBase));
+        }
         painter->drawRoundedRect(spinBoxRect, 4, 4);
         //添加按钮
         QRect addLineRect = subControlRect(control, sopt, SC_ScrollBarAddLine, widget);

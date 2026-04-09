@@ -42,7 +42,7 @@ ElaTreeSelect::ElaTreeSelect(QWidget *parent) : QWidget(parent), d_ptr(new ElaTr
 	d->_popupContainer->hide();
 
 	QVBoxLayout *popupLayout = new QVBoxLayout(d->_popupContainer);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
 	popupLayout->setContentsMargins(4, 4, 4, 4);
 #else
 	popupLayout->setContentsMargins(6, 6, 6, 6);

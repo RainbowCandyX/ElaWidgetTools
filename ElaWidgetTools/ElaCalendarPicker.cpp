@@ -20,14 +20,14 @@ ElaCalendarPicker::ElaCalendarPicker(QWidget* parent)
     setObjectName("ElaCalendarPicker");
     setMouseTracking(true);
     d->_calendarPickerContainer = new ElaCalendarPickerContainer(this);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
     d->_calendarPickerContainer->resize(305, 340);
 #else
     d->_calendarPickerContainer->resize(317, 352);
 #endif
     d->_calendar = new ElaCalendar(d->_calendarPickerContainer);
     QVBoxLayout* containerLayout = new QVBoxLayout(d->_calendarPickerContainer);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
     containerLayout->setContentsMargins(0, 0, 0, 0);
 #else
     containerLayout->setContentsMargins(6, 6, 6, 6);

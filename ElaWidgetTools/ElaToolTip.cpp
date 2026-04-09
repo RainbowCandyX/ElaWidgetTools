@@ -33,7 +33,7 @@ ElaToolTip::ElaToolTip(QWidget* parent)
     d->_toolTipText->setWordWrap(false);
     d->_toolTipText->setTextPixelSize(17);
     d->_mainLayout = new QVBoxLayout(this);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
     d->_mainLayout->setContentsMargins(d->_shadowBorderWidth, d->_shadowBorderWidth, d->_shadowBorderWidth, d->_shadowBorderWidth);
 #else
     d->_mainLayout->setContentsMargins(d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2);
@@ -102,7 +102,7 @@ void ElaToolTip::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.save();
     painter.setRenderHint(QPainter::Antialiasing);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
     QRect foregroundRect = rect();
 #else
     //阴影

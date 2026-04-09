@@ -67,7 +67,7 @@ ElaPopconfirm::ElaPopconfirm(QWidget *parent) : QWidget{nullptr}, d_ptr(new ElaP
 
 	d->_mainLayout = new QVBoxLayout(this);
 	int sw = d->_shadowBorderWidth;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
 	d->_mainLayout->setContentsMargins(sw, sw, sw, sw);
 #else
 	d->_mainLayout->setContentsMargins(sw * 2, sw * 2, sw * 2, sw * 2);
@@ -182,7 +182,7 @@ void ElaPopconfirm::paintEvent(QPaintEvent *event)
 	painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
 	int sw = d->_shadowBorderWidth;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
 	QRect fg = rect();
 #else
 	eTheme->drawEffectShadow(&painter, rect(), sw, d->_pBorderRadius);

@@ -20,7 +20,7 @@
 
 ## Qt 版本兼容性
 
-Qt 6.11 改变了 Popup 窗口透明区域的合成行为，导致使用 `drawEffectShadow` 绘制阴影的组件出现透明边框。本项目已通过 `QT_VERSION_CHECK(6, 11, 0)` 条件编译适配，在 Qt 6.11+ 下禁用 `drawEffectShadow` 阴影并调整布局边距，确保弹出组件显示正常。
+> **⚠️ 不建议在 Windows 上使用 Qt 6.11.0。** 该版本在 Windows 平台存在 Popup 窗口透明区域合成行为变更的 bug，导致使用 `drawEffectShadow` 绘制阴影的组件出现透明边框（macOS 不受影响）。此问题已在下一版本中修复。本项目通过 `Q_OS_WIN && QT_VERSION_CHECK(6, 11, 0)` 条件编译针对该版本进行了适配，但仍建议升级或使用其他版本以获得最佳体验。
 
 ## 主界面预览
 

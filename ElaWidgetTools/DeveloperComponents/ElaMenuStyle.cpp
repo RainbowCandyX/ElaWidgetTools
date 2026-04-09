@@ -29,7 +29,7 @@ void ElaMenuStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* o
         // 高性能阴影
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
         QRect foregroundRect = option->rect;
 #else
         eTheme->drawEffectShadow(painter, option->rect, _shadowBorderWidth, 6);
@@ -191,7 +191,7 @@ int ElaMenuStyle::pixelMetric(PixelMetric metric, const QStyleOption* option, co
     case QStyle::PM_MenuPanelWidth:
     {
         //外围容器宽度
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
         return 0;
 #else
         return _shadowBorderWidth * 1.5;

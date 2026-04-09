@@ -63,7 +63,7 @@ void ElaComboBoxStyle::drawControl(ControlElement element, const QStyleOption* o
             QRect viewRect = option->rect;
             painter->save();
             painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+#if defined(Q_OS_WIN) && QT_VERSION == QT_VERSION_CHECK(6, 11, 0)
             QRect foregroundRect = viewRect;
 #else
             eTheme->drawEffectShadow(painter, viewRect, _shadowBorderWidth, 6);
