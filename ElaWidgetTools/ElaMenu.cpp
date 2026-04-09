@@ -15,6 +15,9 @@ ElaMenu::ElaMenu(QWidget* parent)
 {
     Q_D(ElaMenu);
     d->q_ptr = this;
+#ifdef Q_OS_MACOS
+    setAttribute(Qt::WA_Hover);
+#endif
     setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setObjectName("ElaMenu");

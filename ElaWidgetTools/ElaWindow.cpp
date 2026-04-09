@@ -31,6 +31,9 @@ ElaWindow::ElaWindow(QWidget *parent)
 {
     Q_D(ElaWindow);
     d->q_ptr = this;
+#ifdef Q_OS_MACOS
+    setAttribute(Qt::WA_Hover);
+#endif
     d->_pStackSwitchMode = ElaWindowType::StackSwitchMode::Popup;
     setProperty("ElaBaseClassName", "ElaWindow");
     resize(1020, 680); // 默认宽高

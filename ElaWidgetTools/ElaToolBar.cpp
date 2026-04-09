@@ -13,6 +13,9 @@ ElaToolBar::ElaToolBar(QWidget* parent)
 {
     Q_D(ElaToolBar);
     d->q_ptr = this;
+#ifdef Q_OS_MACOS
+    setAttribute(Qt::WA_Hover);
+#endif
     setObjectName("ElaToolBar");
     setStyle(new ElaToolBarStyle(style()));
     layout()->setSpacing(10);

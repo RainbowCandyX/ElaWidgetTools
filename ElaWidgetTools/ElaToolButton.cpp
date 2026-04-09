@@ -15,6 +15,9 @@ ElaToolButton::ElaToolButton(QWidget* parent)
 {
     Q_D(ElaToolButton);
     d->q_ptr = this;
+#ifdef Q_OS_MACOS
+    setAttribute(Qt::WA_Hover);
+#endif
     setIconSize(QSize(22, 22));
     setPopupMode(QToolButton::InstantPopup);
     d->_toolButtonStyle = new ElaToolButtonStyle(style());

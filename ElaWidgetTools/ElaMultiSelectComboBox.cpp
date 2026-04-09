@@ -22,6 +22,9 @@ ElaMultiSelectComboBox::ElaMultiSelectComboBox(QWidget *parent)
 {
 	Q_D(ElaMultiSelectComboBox);
 	d->q_ptr = this;
+#ifdef Q_OS_MACOS
+	setAttribute(Qt::WA_Hover);
+#endif
 	d->_pBorderRadius = 3;
 	d->_pShowCheckBox = false; // 默认不显示复选框，保持原样式
 	d->_pExpandIconRotate = 0;

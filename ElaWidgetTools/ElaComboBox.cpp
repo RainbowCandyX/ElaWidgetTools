@@ -20,6 +20,9 @@ ElaComboBox::ElaComboBox(QWidget *parent)
 {
 	Q_D(ElaComboBox);
 	d->q_ptr = this;
+#ifdef Q_OS_MACOS
+	setAttribute(Qt::WA_Hover);
+#endif
 	d->_pBorderRadius = 3;
 	d->_themeMode = eTheme->getThemeMode();
 	setObjectName("ElaComboBox");

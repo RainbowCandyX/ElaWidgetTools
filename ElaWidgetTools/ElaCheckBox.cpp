@@ -6,6 +6,9 @@ ElaCheckBox::ElaCheckBox(QWidget* parent)
 {
     _pBorderRadius = 3;
     setMouseTracking(true);
+#ifdef Q_OS_MACOS
+    setAttribute(Qt::WA_Hover);
+#endif
     setObjectName("ElaCheckBox");
     setStyle(new ElaCheckBoxStyle(style()));
     QFont font = this->font();

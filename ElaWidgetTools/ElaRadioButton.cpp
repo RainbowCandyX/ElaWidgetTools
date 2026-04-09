@@ -8,6 +8,9 @@ ElaRadioButton::ElaRadioButton(QWidget* parent)
 {
     Q_D(ElaRadioButton);
     d->q_ptr = this;
+#ifdef Q_OS_MACOS
+    setAttribute(Qt::WA_Hover);
+#endif
     setFixedHeight(20);
     QFont font = this->font();
     font.setPixelSize(15);
