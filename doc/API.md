@@ -2,7 +2,7 @@
 
 > 本文档由 `scripts/generate_docs.py` 自动生成，请勿手动编辑。
 >
-> 共 **118** 个公开组件
+> 共 **121** 个公开组件
 
 ## 目录
 
@@ -19,6 +19,7 @@
 - [ElaCalendar](#elacalendar)
 - [ElaCalendarPicker](#elacalendarpicker)
 - [ElaCaptcha](#elacaptcha)
+- [ElaChatBubble](#elachatbubble)
 - [ElaCheckBox](#elacheckbox)
 - [ElaCodeEditor](#elacodeeditor)
 - [ElaColorDialog](#elacolordialog)
@@ -27,6 +28,7 @@
 - [ElaContentDialog](#elacontentdialog)
 - [ElaCopyButton](#elacopybutton)
 - [ElaCountdown](#elacountdown)
+- [ElaDashboardGauge](#eladashboardgauge)
 - [ElaDialog](#eladialog)
 - [ElaDivider](#eladivider)
 - [ElaDockWidget](#eladockwidget)
@@ -109,6 +111,7 @@
 - [ElaTableWidget](#elatablewidget)
 - [ElaTag](#elatag)
 - [ElaTeachingTip](#elateachingtip)
+- [ElaTerminalWidget](#elaterminalwidget)
 - [ElaText](#elatext)
 - [ElaTimeline](#elatimeline)
 - [ElaToast](#elatoast)
@@ -555,6 +558,40 @@
 
 ---
 
+## ElaChatBubble
+
+**继承**: `QWidget` | **头文件**: `ElaChatBubble.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `QString` | `MessageText` | get/set |
+| `QString` | `SenderName` | get/set |
+| `QString` | `Timestamp` | get/set |
+| `int` | `BorderRadius` | get/set |
+| `int` | `AvatarSize` | get/set |
+| `int` | `MaxBubbleWidth` | get/set |
+
+### 枚举
+
+**BubbleDirection**: `Left`, `Right`
+
+**MessageStatus**: `None`, `Sending`, `Sent`, `Read`, `Failed`
+
+### 方法
+
+- `void setDirection(BubbleDirection direction)`
+- `BubbleDirection getDirection()`
+- `void setStatus(MessageStatus status)`
+- `MessageStatus getStatus()`
+- `void setAvatar(const QPixmap& avatar)`
+- `QPixmap getAvatar()`
+- `void setBubbleColor(const QColor& color)`
+- `QColor getBubbleColor()`
+
+---
+
 ## ElaCheckBox
 
 **继承**: `QCheckBox` | **头文件**: `ElaCheckBox.h`
@@ -734,6 +771,43 @@
 
 - `timeout()`
 - `tick(qint64 remainingSeconds)`
+
+---
+
+## ElaDashboardGauge
+
+**继承**: `QWidget` | **头文件**: `ElaDashboardGauge.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `qreal` | `Minimum` | get/set |
+| `qreal` | `Maximum` | get/set |
+| `qreal` | `Value` | get/set |
+| `int` | `MajorTickCount` | get/set |
+| `int` | `MinorTickCount` | get/set |
+| `int` | `StartAngle` | get/set |
+| `int` | `SpanAngle` | get/set |
+| `int` | `ArcWidth` | get/set |
+| `int` | `ValuePixelSize` | get/set |
+| `bool` | `IsAnimated` | get/set |
+| `int` | `Decimals` | get/set |
+| `QString` | `Title` | get/set |
+| `QString` | `Unit` | get/set |
+
+### 方法
+
+- `void setDangerPercent(qreal percent)`
+- `qreal getDangerPercent()`
+- `void setWarningPercent(qreal percent)`
+- `qreal getWarningPercent()`
+- `void setTickWarningPercent(qreal percent)`
+- `qreal getTickWarningPercent()`
+
+### 信号
+
+- `valueChanged(qreal value)`
 
 ---
 
@@ -2582,6 +2656,34 @@
 
 - `closed()`
 - `closeButtonClicked()`
+
+---
+
+## ElaTerminalWidget
+
+**继承**: `QWidget` | **头文件**: `ElaTerminalWidget.h`
+
+### 属性
+
+| 类型 | 名称 | 读写 |
+|------|------|------|
+| `QString` | `Prompt` | get/set |
+| `int` | `MaxHistorySize` | get/set |
+| `int` | `MaxLineCount` | get/set |
+| `int` | `FontPixelSize` | get/set |
+
+### 方法
+
+- `void appendHtml(const QString& html)`
+- `void appendError(const QString& text)`
+- `void appendSuccess(const QString& text)`
+- `void clear()`
+- `QStringList getCommandHistory()`
+
+### 信号
+
+- `commandSubmitted(const QString& command)`
+- `tabPressed(const QString& currentInput)`
 
 ---
 

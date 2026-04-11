@@ -42,6 +42,7 @@
 #include "ExamplePage/T_Navigation.h"
 #include "ExamplePage/T_Popup.h"
 #include "ExamplePage/T_NewComponents.h"
+#include "ExamplePage/T_NewComponents2.h"
 #include "ExamplePage/T_CodeEditor.h"
 #include "ExamplePage/T_Router.h"
 #include "ExamplePage/T_UpdateWidget.h"
@@ -358,6 +359,7 @@ void MainWindow::initContent()
 	_tableWidgetPage = new T_TableWidget(this);
 	_treeViewPage = new T_TreeView(this);
 	_newComponentsPage = new T_NewComponents(this);
+	_newComponents2Page = new T_NewComponents2(this);
 	_codeEditorPage = new T_CodeEditor(this);
 	_routerPage = new T_Router(this);
 	_settingPage = new T_Setting(this);
@@ -400,6 +402,7 @@ void MainWindow::initContent()
 	addPageNode("ElaNavigation", _navigationPage, ElaIconType::LocationArrow);
 	addPageNode("ElaPopup", _popupPage, ElaIconType::Envelope);
 	addPageNode("ElaNewComponents", _newComponentsPage, ElaIconType::Sparkles);
+	addPageNode("ElaNewComponents2", _newComponents2Page, ElaIconType::StarChristmas);
 	addPageNode("ElaCodeEditor", _codeEditorPage, ElaIconType::Code);
 	addPageNode("ElaRouter", _routerPage, ElaIconType::SignsPost);
 	addPageNode("ElaIcon", _iconPage, 99, ElaIconType::FontCase);

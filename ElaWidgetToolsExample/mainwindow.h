@@ -20,6 +20,7 @@ class T_Router;
 class T_About;
 class T_Setting;
 class T_NewComponents;
+class T_NewComponents2;
 class T_CodeEditor;
 class ElaContentDialog;
 
@@ -57,6 +58,7 @@ private:
     T_TreeView* _treeViewPage{nullptr};
     T_About* _aboutPage{nullptr};
     T_NewComponents* _newComponentsPage{nullptr};
+    T_NewComponents2* _newComponents2Page{nullptr};
     T_CodeEditor* _codeEditorPage{nullptr};
     T_Router* _routerPage{nullptr};
     T_Setting* _settingPage{nullptr};
