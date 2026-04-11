@@ -50,10 +50,20 @@ public:
     void setBubbleColor(const QColor& color);
     QColor getBubbleColor() const;
 
+    void setMessageImage(const QPixmap& image);
+    QPixmap getMessageImage() const;
+
+    void setImageMaxWidth(int width);
+    int getImageMaxWidth() const;
+
     QSize sizeHint() const override;
+
+Q_SIGNALS:
+    Q_SIGNAL void imageDoubleClicked(const QPixmap& image);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
 };
 
 #endif // ELACHATBUBBLE_H

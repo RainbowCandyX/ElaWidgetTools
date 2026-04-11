@@ -45,14 +45,24 @@ T_NewComponents2::T_NewComponents2(QWidget *parent)
 	_chatBubbleSystem->setStatus(ElaChatBubble::Sending);
 	_chatBubbleSystem->setMinimumWidth(500);
 
+	_chatBubbleImage = new ElaChatBubble(this);
+	_chatBubbleImage->setDirection(ElaChatBubble::Right);
+	_chatBubbleImage->setSenderName("Bob");
+	_chatBubbleImage->setMessageImage(QPixmap(":/Resource/Image/Cirno.jpg"));
+	_chatBubbleImage->setMessageText("看看这张图片！");
+	_chatBubbleImage->setTimestamp("10:33");
+	_chatBubbleImage->setStatus(ElaChatBubble::Sent);
+	_chatBubbleImage->setMinimumWidth(500);
+
 	QVBoxLayout *chatLayout = new QVBoxLayout();
 	chatLayout->setSpacing(4);
 	chatLayout->addWidget(_chatBubbleLeft);
 	chatLayout->addWidget(_chatBubbleRight);
 	chatLayout->addWidget(_chatBubbleSystem);
+	chatLayout->addWidget(_chatBubbleImage);
 
 	ElaScrollPageArea *chatArea = new ElaScrollPageArea(this);
-	chatArea->setFixedHeight(380);
+	chatArea->setFixedHeight(700);
 	QVBoxLayout *chatAreaLayout = new QVBoxLayout(chatArea);
 	chatAreaLayout->addWidget(chatTitle);
 	chatAreaLayout->addLayout(chatLayout);

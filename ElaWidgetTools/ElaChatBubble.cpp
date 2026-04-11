@@ -1,10 +1,25 @@
 #include "ElaChatBubble.h"
 
+#include <QApplication>
+#include <QFontMetrics>
+#include <QGestureEvent>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
-#include <QFontMetrics>
+#include <QPinchGesture>
+#include <QScreen>
+#include <QShortcut>
+#include <QVBoxLayout>
+#include <QWheelEvent>
+#include <functional>
 
+#include "ElaIconButton.h"
+#include "ElaScrollArea.h"
+#include "ElaText.h"
 #include "ElaTheme.h"
+#include "ElaWidget.h"
 #include "private/ElaChatBubblePrivate.h"
 
 Q_PROPERTY_CREATE_Q_CPP(ElaChatBubble, int, BorderRadius)
@@ -124,6 +139,50 @@ QColor ElaChatBubble::getBubbleColor() const
 	return d_ptr->_bubbleColor;
 }
 
+void ElaChatBubble::setMessageImage(const QPixmap &image)
+{
+	Q_D(ElaChatBubble);
+	d->_messageImage = image;
+	if (!image.isNull())
+	{
+		int maxW = d->_imageMaxWidth;
+		if (image.width() > maxW)
+		{
+			d->_scaledImage = image.scaledToWidth(maxW, Qt::SmoothTransformation);
+		}
+		else
+		{
+			d->_scaledImage = image;
+		}
+	}
+	else
+	{
+		d->_scaledImage = QPixmap();
+	}
+	setFixedHeight(sizeHint().height());
+	update();
+}
+
+QPixmap ElaChatBubble::getMessageImage() const
+{
+	return d_ptr->_messageImage;
+}
+
+void ElaChatBubble::setImageMaxWidth(int width)
+{
+	Q_D(ElaChatBubble);
+	d->_imageMaxWidth = width;
+	if (!d->_messageImage.isNull())
+	{
+		setMessageImage(d->_messageImage);
+	}
+}
+
+int ElaChatBubble::getImageMaxWidth() const
+{
+	return d_ptr->_imageMaxWidth;
+}
+
 QSize ElaChatBubble::sizeHint() const
 {
 	Q_D(const ElaChatBubble);
@@ -131,14 +190,37 @@ QSize ElaChatBubble::sizeHint() const
 	int avatarSpace = d->_pAvatarSize + 10;
 	int nameHeight = d->_pSenderName.isEmpty() ? 0 : 20;
 	int timestampHeight = d->_pTimestamp.isEmpty() ? 0 : 16;
+	int textPadding = 12;
 
-	QFont msgFont = font();
-	msgFont.setPixelSize(14);
-	QFontMetrics fm(msgFont);
-	int bubbleContentWidth = qMin(fm.horizontalAdvance(d->_pMessageText) + 24, d->_pMaxBubbleWidth);
-	QRect textRect = fm.boundingRect(0, 0, bubbleContentWidth - 24, 10000, Qt::TextWordWrap, d->_pMessageText);
+	int bubbleContentHeight = 0;
+	int bubbleContentWidth = 0;
 
-	int totalHeight = padding + nameHeight + textRect.height() + 24 + timestampHeight + padding;
+	if (!d->_scaledImage.isNull())
+	{
+		bubbleContentWidth = d->_scaledImage.width() + textPadding * 2;
+		bubbleContentHeight = d->_scaledImage.height() + textPadding * 2;
+
+		if (!d->_pMessageText.isEmpty())
+		{
+			QFont msgFont = font();
+			msgFont.setPixelSize(14);
+			QFontMetrics fm(msgFont);
+			int maxTextW = bubbleContentWidth - textPadding * 2;
+			QRect textRect = fm.boundingRect(0, 0, maxTextW, 10000, Qt::TextWordWrap, d->_pMessageText);
+			bubbleContentHeight += textRect.height() + 6;
+		}
+	}
+	else
+	{
+		QFont msgFont = font();
+		msgFont.setPixelSize(14);
+		QFontMetrics fm(msgFont);
+		bubbleContentWidth = qMin(fm.horizontalAdvance(d->_pMessageText) + textPadding * 2, d->_pMaxBubbleWidth);
+		QRect textRect = fm.boundingRect(0, 0, bubbleContentWidth - textPadding * 2, 10000, Qt::TextWordWrap, d->_pMessageText);
+		bubbleContentHeight = textRect.height() + textPadding * 2;
+	}
+
+	int totalHeight = padding + nameHeight + bubbleContentHeight + timestampHeight + padding;
 	int totalWidth = avatarSpace + bubbleContentWidth + padding * 2;
 	return QSize(totalWidth, totalHeight);
 }
@@ -204,11 +286,34 @@ void ElaChatBubble::paintEvent(QPaintEvent *event)
 	msgFont.setPixelSize(14);
 	QFontMetrics fm(msgFont);
 	int textPadding = 12;
-	int maxTextWidth = qMin(d->_pMaxBubbleWidth - textPadding * 2, bubbleMaxWidth - textPadding * 2);
-	QRect textBound = fm.boundingRect(0, 0, maxTextWidth, 10000, Qt::TextWordWrap, d->_pMessageText);
 
-	int bubbleWidth = textBound.width() + textPadding * 2;
-	int bubbleHeight = textBound.height() + textPadding * 2;
+	int bubbleWidth = 0;
+	int bubbleHeight = 0;
+	int imageH = 0;
+	int captionH = 0;
+	QRect textBound;
+
+	if (!d->_scaledImage.isNull())
+	{
+		bubbleWidth = d->_scaledImage.width() + textPadding * 2;
+		imageH = d->_scaledImage.height();
+		bubbleHeight = imageH + textPadding * 2;
+
+		if (!d->_pMessageText.isEmpty())
+		{
+			int maxTextW = bubbleWidth - textPadding * 2;
+			textBound = fm.boundingRect(0, 0, maxTextW, 10000, Qt::TextWordWrap, d->_pMessageText);
+			captionH = textBound.height() + 6;
+			bubbleHeight += captionH;
+		}
+	}
+	else
+	{
+		int maxTextWidth = qMin(d->_pMaxBubbleWidth - textPadding * 2, bubbleMaxWidth - textPadding * 2);
+		textBound = fm.boundingRect(0, 0, maxTextWidth, 10000, Qt::TextWordWrap, d->_pMessageText);
+		bubbleWidth = textBound.width() + textPadding * 2;
+		bubbleHeight = textBound.height() + textPadding * 2;
+	}
 
 	int bx = isRight ? (bubbleX + bubbleMaxWidth - bubbleWidth) : bubbleX;
 
@@ -238,17 +343,52 @@ void ElaChatBubble::paintEvent(QPaintEvent *event)
 		painter.drawPath(bubblePath);
 	}
 
-	painter.setFont(msgFont);
-	if (isRight)
+	if (!d->_scaledImage.isNull())
 	{
-		painter.setPen(ElaThemeColor(d->_themeMode, BasicTextInvert));
+		int imgX = bx + textPadding;
+		int imgY = currentY + textPadding;
+
+		d->_imageRect = QRect(imgX, imgY, d->_scaledImage.width(), imageH);
+
+		painter.save();
+		QPainterPath imgClip;
+		int imgRadius = qMax(d->_pBorderRadius - 4, 0);
+		imgClip.addRoundedRect(QRectF(imgX, imgY, d->_scaledImage.width(), imageH), imgRadius, imgRadius);
+		painter.setClipPath(imgClip);
+		painter.drawPixmap(imgX, imgY, d->_scaledImage);
+		painter.restore();
+
+		if (!d->_pMessageText.isEmpty())
+		{
+			painter.setFont(msgFont);
+			if (isRight)
+			{
+				painter.setPen(ElaThemeColor(d->_themeMode, BasicTextInvert));
+			}
+			else
+			{
+				painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
+			}
+			int captionY = imgY + imageH + 6;
+			painter.drawText(QRect(imgX, captionY, bubbleWidth - textPadding * 2, textBound.height()),
+			                 Qt::TextWordWrap, d->_pMessageText);
+		}
 	}
 	else
 	{
-		painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
+		int maxTextWidth = qMin(d->_pMaxBubbleWidth - textPadding * 2, bubbleMaxWidth - textPadding * 2);
+		painter.setFont(msgFont);
+		if (isRight)
+		{
+			painter.setPen(ElaThemeColor(d->_themeMode, BasicTextInvert));
+		}
+		else
+		{
+			painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
+		}
+		painter.drawText(QRect(bx + textPadding, currentY + textPadding, maxTextWidth, textBound.height()),
+		                 Qt::TextWordWrap, d->_pMessageText);
 	}
-	painter.drawText(QRect(bx + textPadding, currentY + textPadding, maxTextWidth, textBound.height()),
-	                 Qt::TextWordWrap, d->_pMessageText);
 
 	currentY += bubbleHeight + 4;
 
@@ -319,6 +459,199 @@ void ElaChatBubble::paintEvent(QPaintEvent *event)
 			}
 		}
 	}
+}
+
+void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
+{
+	Q_D(ElaChatBubble);
+	if (!d->_messageImage.isNull() && d->_imageRect.contains(event->pos()))
+	{
+		Q_EMIT imageDoubleClicked(d->_messageImage);
+
+		ElaWidget *previewWindow = new ElaWidget();
+		previewWindow->setAttribute(Qt::WA_DeleteOnClose);
+		previewWindow->setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
+		previewWindow->setIsStayTop(true);
+		previewWindow->setIsDefaultClosed(true);
+
+		QScreen *screen = QApplication::primaryScreen();
+		QSize screenSize = screen->availableSize();
+		QSize imgSize = d->_messageImage.size();
+		int appBarH = previewWindow->getAppBarHeight();
+		int bottomBarH = 40;
+
+		int maxW = qMin(static_cast<int>(screenSize.width() * 0.75), 1200);
+		int maxH = qMin(static_cast<int>(screenSize.height() * 0.75), 900) - appBarH - bottomBarH;
+
+		qreal initScale = 1.0;
+		if (imgSize.width() > maxW || imgSize.height() > maxH)
+		{
+			qreal sw = static_cast<qreal>(maxW) / imgSize.width();
+			qreal sh = static_cast<qreal>(maxH) / imgSize.height();
+			initScale = qMin(sw, sh);
+		}
+
+		int winW = qMax(static_cast<int>(imgSize.width() * initScale), 400) + 12;
+		int winH = qMax(static_cast<int>(imgSize.height() * initScale), 300) + appBarH + bottomBarH + 12;
+
+		QLabel *imageLabel = new QLabel(previewWindow);
+		imageLabel->setAlignment(Qt::AlignCenter);
+		imageLabel->setMinimumSize(1, 1);
+
+		QPixmap *currentImage = new QPixmap(d->_messageImage);
+		qreal *currentScale = new qreal(initScale);
+		ElaText *scaleLabel = new ElaText(previewWindow);
+		scaleLabel->setTextPixelSize(13);
+
+		auto updateImage = [imageLabel, currentImage, previewWindow, scaleLabel](qreal zoomScale)
+		{
+			int w = static_cast<int>(currentImage->width() * zoomScale);
+			int h = static_cast<int>(currentImage->height() * zoomScale);
+			imageLabel->setPixmap(currentImage->scaled(w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+			imageLabel->resize(w, h);
+			int percent = static_cast<int>(zoomScale * 100);
+			previewWindow->setWindowTitle(QString("图片预览 - %1%").arg(percent));
+			scaleLabel->setText(QString("%1%").arg(percent));
+		};
+		updateImage(initScale);
+
+		ElaScrollArea *scrollArea = new ElaScrollArea(previewWindow);
+		scrollArea->setWidgetResizable(false);
+		scrollArea->setAlignment(Qt::AlignCenter);
+		scrollArea->setWidget(imageLabel);
+		scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+		ElaIconButton *zoomOutBtn = new ElaIconButton(ElaIconType::MagnifyingGlassMinus, 18, previewWindow);
+		zoomOutBtn->setFixedSize(32, 32);
+		ElaIconButton *zoomInBtn = new ElaIconButton(ElaIconType::MagnifyingGlassPlus, 18, previewWindow);
+		zoomInBtn->setFixedSize(32, 32);
+		ElaIconButton *zoomResetBtn = new ElaIconButton(ElaIconType::Expand, 18, previewWindow);
+		zoomResetBtn->setFixedSize(32, 32);
+		ElaIconButton *rotateLeftBtn = new ElaIconButton(ElaIconType::RotateLeft, 18, previewWindow);
+		rotateLeftBtn->setFixedSize(32, 32);
+		ElaIconButton *rotateRightBtn = new ElaIconButton(ElaIconType::RotateRight, 18, previewWindow);
+		rotateRightBtn->setFixedSize(32, 32);
+
+		auto doZoom = [currentScale, updateImage](qreal delta)
+		{
+			*currentScale = qBound(0.1, *currentScale + delta, 10.0);
+			updateImage(*currentScale);
+		};
+
+		auto doRotate = [currentImage, currentScale, updateImage](int degrees)
+		{
+			QTransform transform;
+			transform.rotate(degrees);
+			*currentImage = currentImage->transformed(transform, Qt::SmoothTransformation);
+			updateImage(*currentScale);
+		};
+
+		connect(zoomInBtn, &ElaIconButton::clicked, previewWindow, [doZoom]() { doZoom(0.1); });
+		connect(zoomOutBtn, &ElaIconButton::clicked, previewWindow, [doZoom]() { doZoom(-0.1); });
+		connect(zoomResetBtn, &ElaIconButton::clicked, previewWindow, [currentScale, updateImage, initScale]()
+		{
+			*currentScale = initScale;
+			updateImage(initScale);
+		});
+		connect(rotateLeftBtn, &ElaIconButton::clicked, previewWindow, [doRotate]() { doRotate(-90); });
+		connect(rotateRightBtn, &ElaIconButton::clicked, previewWindow, [doRotate]() { doRotate(90); });
+
+		QHBoxLayout *bottomLayout = new QHBoxLayout();
+		bottomLayout->setContentsMargins(10, 4, 10, 6);
+		bottomLayout->addStretch();
+		bottomLayout->addWidget(rotateLeftBtn);
+		bottomLayout->addSpacing(6);
+		bottomLayout->addWidget(rotateRightBtn);
+		bottomLayout->addSpacing(12);
+		bottomLayout->addWidget(zoomOutBtn);
+		bottomLayout->addSpacing(6);
+		bottomLayout->addWidget(scaleLabel);
+		bottomLayout->addSpacing(6);
+		bottomLayout->addWidget(zoomInBtn);
+		bottomLayout->addSpacing(12);
+		bottomLayout->addWidget(zoomResetBtn);
+		bottomLayout->addStretch();
+
+		QVBoxLayout *layout = new QVBoxLayout();
+		layout->setContentsMargins(5, 5, 5, 0);
+		layout->setSpacing(0);
+		layout->addWidget(scrollArea, 1);
+		layout->addLayout(bottomLayout);
+		previewWindow->setLayout(layout);
+
+		connect(previewWindow, &QObject::destroyed, previewWindow, [currentScale, currentImage]()
+		{
+			delete currentScale;
+			delete currentImage;
+		});
+
+		class ZoomEventFilter : public QObject
+		{
+		public:
+			using ZoomFunc = std::function<void(qreal)>;
+			ZoomFunc _doZoom;
+			qreal *_scale;
+			std::function<void(qreal)> _updateImage;
+
+			ZoomEventFilter(ZoomFunc doZoom, qreal *scale, std::function<void(qreal)> updateImage, QObject *parent)
+				: QObject(parent), _doZoom(std::move(doZoom)), _scale(scale), _updateImage(std::move(updateImage))
+			{
+			}
+
+			bool eventFilter(QObject *obj, QEvent *ev) override
+			{
+				if (ev->type() == QEvent::Wheel)
+				{
+					QWheelEvent *we = static_cast<QWheelEvent *>(ev);
+#ifdef Q_OS_MAC
+					if (we->phase() != Qt::NoScrollPhase || (we->modifiers() & Qt::ControlModifier))
+					{
+						qreal pixelDelta = we->pixelDelta().y();
+						if (qAbs(pixelDelta) > 0)
+						{
+							qreal step = pixelDelta / 600.0;
+							*_scale = qBound(0.1, *_scale + step, 10.0);
+							_updateImage(*_scale);
+							return true;
+						}
+					}
+#endif
+					if (we->modifiers() & Qt::ControlModifier)
+					{
+						qreal delta = we->angleDelta().y() > 0 ? 0.1 : -0.1;
+						*_scale = qBound(0.1, *_scale + delta, 10.0);
+						_updateImage(*_scale);
+						return true;
+					}
+				}
+				else if (ev->type() == QEvent::NativeGesture)
+				{
+					QNativeGestureEvent *nge = static_cast<QNativeGestureEvent *>(ev);
+					if (nge->gestureType() == Qt::ZoomNativeGesture)
+					{
+						qreal factor = nge->value();
+						*_scale = qBound(0.1, *_scale * (1.0 + factor), 10.0);
+						_updateImage(*_scale);
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+
+		auto *filter = new ZoomEventFilter(doZoom, currentScale, updateImage, previewWindow);
+		scrollArea->viewport()->installEventFilter(filter);
+		scrollArea->installEventFilter(filter);
+
+		QShortcut* escShortcut = new QShortcut(Qt::Key_Escape, previewWindow);
+		connect(escShortcut, &QShortcut::activated, previewWindow, &ElaWidget::close);
+
+		previewWindow->resize(winW, winH);
+		previewWindow->moveToCenter();
+		previewWindow->show();
+		return;
+	}
+	QWidget::mouseDoubleClickEvent(event);
 }
 
 ElaChatBubblePrivate::ElaChatBubblePrivate(QObject *parent)

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QPixmap>
+#include <QRect>
 
 #include "ElaDef.h"
 #include "ElaProperty.h"
@@ -27,6 +28,10 @@ private:
     ElaChatBubble::BubbleDirection _direction{ElaChatBubble::Left};
     ElaChatBubble::MessageStatus _status{ElaChatBubble::None};
     QPixmap _avatar;
+    QPixmap _messageImage;
+    QPixmap _scaledImage;
+    int _imageMaxWidth{280};
+    QRect _imageRect;
     QColor _bubbleColor;
 };
 

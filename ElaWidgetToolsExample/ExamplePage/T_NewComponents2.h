@@ -18,6 +18,7 @@ private:
     ElaChatBubble* _chatBubbleLeft{nullptr};
     ElaChatBubble* _chatBubbleRight{nullptr};
     ElaChatBubble* _chatBubbleSystem{nullptr};
+    ElaChatBubble* _chatBubbleImage{nullptr};
     // DashboardGauge
     ElaDashboardGauge* _gauge{nullptr};
     ElaDashboardGauge* _gaugeSmall{nullptr};

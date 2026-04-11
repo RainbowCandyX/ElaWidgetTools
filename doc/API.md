@@ -589,6 +589,14 @@
 - `QPixmap getAvatar()`
 - `void setBubbleColor(const QColor& color)`
 - `QColor getBubbleColor()`
+- `void setMessageImage(const QPixmap& image)`
+- `QPixmap getMessageImage()`
+- `void setImageMaxWidth(int width)`
+- `int getImageMaxWidth()`
+
+### 信号
+
+- `imageDoubleClicked(const QPixmap& image)`
 
 ---
 
