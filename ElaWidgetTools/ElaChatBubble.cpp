@@ -11,6 +11,7 @@
 #include <QPainterPath>
 #include <QPinchGesture>
 #include <QScreen>
+#include <QScrollBar>
 #include <QShortcut>
 #include <QVBoxLayout>
 #include <QWheelEvent>
@@ -524,6 +525,7 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 		scrollArea->setAlignment(Qt::AlignCenter);
 		scrollArea->setWidget(imageLabel);
 		scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+		scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
 		ElaIconButton *zoomOutBtn = new ElaIconButton(ElaIconType::MagnifyingGlassMinus, 18, previewWindow);
 		zoomOutBtn->setFixedSize(32, 32);
@@ -641,9 +643,14 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 			ZoomFunc _doZoom;
 			qreal *_scale;
 			std::function<void(qreal)> _updateImage;
+			ElaScrollArea *_scrollArea;
+			bool _dragging{false};
+			QPoint _dragStartPos;
+			int _dragStartHBar{0};
+			int _dragStartVBar{0};
 
-			ZoomEventFilter(ZoomFunc doZoom, qreal *scale, std::function<void(qreal)> updateImage, QObject *parent)
-				: QObject(parent), _doZoom(std::move(doZoom)), _scale(scale), _updateImage(std::move(updateImage))
+			ZoomEventFilter(ZoomFunc doZoom, qreal *scale, std::function<void(qreal)> updateImage, ElaScrollArea *scrollArea, QObject *parent)
+				: QObject(parent), _doZoom(std::move(doZoom)), _scale(scale), _updateImage(std::move(updateImage)), _scrollArea(scrollArea)
 			{
 			}
 
@@ -665,7 +672,6 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 						}
 					}
 #endif
-					if (we->modifiers() & Qt::ControlModifier)
 					{
 						qreal delta = we->angleDelta().y() > 0 ? 0.1 : -0.1;
 						*_scale = qBound(0.1, *_scale + delta, 10.0);
@@ -684,13 +690,47 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 						return true;
 					}
 				}
+				else if (ev->type() == QEvent::MouseButtonPress)
+				{
+					QMouseEvent *me = static_cast<QMouseEvent *>(ev);
+					if (me->button() == Qt::LeftButton)
+					{
+						_dragging = true;
+						_dragStartPos = me->globalPos();
+						_dragStartHBar = _scrollArea->horizontalScrollBar()->value();
+						_dragStartVBar = _scrollArea->verticalScrollBar()->value();
+						_scrollArea->viewport()->setCursor(Qt::ClosedHandCursor);
+						return true;
+					}
+				}
+				else if (ev->type() == QEvent::MouseMove)
+				{
+					if (_dragging)
+					{
+						QMouseEvent *me = static_cast<QMouseEvent *>(ev);
+						QPoint delta = me->globalPos() - _dragStartPos;
+						_scrollArea->horizontalScrollBar()->setValue(_dragStartHBar - delta.x());
+						_scrollArea->verticalScrollBar()->setValue(_dragStartVBar - delta.y());
+						return true;
+					}
+				}
+				else if (ev->type() == QEvent::MouseButtonRelease)
+				{
+					if (_dragging)
+					{
+						_dragging = false;
+						_scrollArea->viewport()->setCursor(Qt::OpenHandCursor);
+						return true;
+					}
+				}
 				return false;
 			}
 		};
 
-		auto *filter = new ZoomEventFilter(doZoom, currentScale, updateImage, previewWindow);
+		auto *filter = new ZoomEventFilter(doZoom, currentScale, updateImage, scrollArea, previewWindow);
 		scrollArea->viewport()->installEventFilter(filter);
 		scrollArea->installEventFilter(filter);
+		scrollArea->viewport()->setCursor(Qt::OpenHandCursor);
 
 		QShortcut *escShortcut = new QShortcut(Qt::Key_Escape, previewWindow);
 		connect(escShortcut, &QShortcut::activated, previewWindow, &ElaWidget::close);
