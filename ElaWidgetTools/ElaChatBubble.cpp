@@ -1,6 +1,7 @@
 #include "ElaChatBubble.h"
 
 #include <QApplication>
+#include <QFileDialog>
 #include <QFontMetrics>
 #include <QGestureEvent>
 #include <QHBoxLayout>
@@ -13,9 +14,11 @@
 #include <QShortcut>
 #include <QVBoxLayout>
 #include <QWheelEvent>
+#include <QClipboard>
 #include <functional>
 
 #include "ElaIconButton.h"
+#include "ElaMenu.h"
 #include "ElaScrollArea.h"
 #include "ElaText.h"
 #include "ElaTheme.h"
@@ -497,6 +500,7 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 		QLabel *imageLabel = new QLabel(previewWindow);
 		imageLabel->setAlignment(Qt::AlignCenter);
 		imageLabel->setMinimumSize(1, 1);
+		imageLabel->setContextMenuPolicy(Qt::CustomContextMenu);
 
 		QPixmap *currentImage = new QPixmap(d->_messageImage);
 		qreal *currentScale = new qreal(initScale);
@@ -531,6 +535,10 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 		rotateLeftBtn->setFixedSize(32, 32);
 		ElaIconButton *rotateRightBtn = new ElaIconButton(ElaIconType::RotateRight, 18, previewWindow);
 		rotateRightBtn->setFixedSize(32, 32);
+		ElaIconButton *copyBtn = new ElaIconButton(ElaIconType::Copy, 18, previewWindow);
+		copyBtn->setFixedSize(32, 32);
+		ElaIconButton *saveBtn = new ElaIconButton(ElaIconType::Download, 18, previewWindow);
+		saveBtn->setFixedSize(32, 32);
 
 		auto doZoom = [currentScale, updateImage](qreal delta)
 		{
@@ -555,6 +563,43 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 		});
 		connect(rotateLeftBtn, &ElaIconButton::clicked, previewWindow, [doRotate]() { doRotate(-90); });
 		connect(rotateRightBtn, &ElaIconButton::clicked, previewWindow, [doRotate]() { doRotate(90); });
+		connect(copyBtn, &ElaIconButton::clicked, previewWindow, [currentImage]()
+		{
+			QApplication::clipboard()->setPixmap(*currentImage);
+		});
+		connect(saveBtn, &ElaIconButton::clicked, previewWindow, [currentImage, previewWindow]()
+		{
+			QString filePath = QFileDialog::getSaveFileName(
+				previewWindow, "保存图片", "image.png",
+				"PNG (*.png);;JPEG (*.jpg *.jpeg);;BMP (*.bmp);;所有文件 (*)");
+			if (!filePath.isEmpty())
+			{
+				currentImage->save(filePath);
+			}
+		});
+
+		connect(imageLabel, &QLabel::customContextMenuRequested, previewWindow, [currentImage, previewWindow](const QPoint &pos)
+		{
+			ElaMenu *menu = new ElaMenu(previewWindow);
+			QAction *copyAction = menu->addElaIconAction(ElaIconType::Copy, "复制图片");
+			QAction *saveAction = menu->addElaIconAction(ElaIconType::Download, "保存图片");
+			connect(copyAction, &QAction::triggered, previewWindow, [currentImage]()
+			{
+				QApplication::clipboard()->setPixmap(*currentImage);
+			});
+			connect(saveAction, &QAction::triggered, previewWindow, [currentImage, previewWindow]()
+			{
+				QString filePath = QFileDialog::getSaveFileName(
+					previewWindow, "保存图片", "image.png",
+					"PNG (*.png);;JPEG (*.jpg *.jpeg);;BMP (*.bmp);;所有文件 (*)");
+				if (!filePath.isEmpty())
+				{
+					currentImage->save(filePath);
+				}
+			});
+			connect(menu, &ElaMenu::aboutToHide, menu, &ElaMenu::deleteLater);
+			menu->popup(QCursor::pos());
+		});
 
 		QHBoxLayout *bottomLayout = new QHBoxLayout();
 		bottomLayout->setContentsMargins(10, 4, 10, 6);
@@ -570,6 +615,10 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 		bottomLayout->addWidget(zoomInBtn);
 		bottomLayout->addSpacing(12);
 		bottomLayout->addWidget(zoomResetBtn);
+		bottomLayout->addSpacing(12);
+		bottomLayout->addWidget(copyBtn);
+		bottomLayout->addSpacing(6);
+		bottomLayout->addWidget(saveBtn);
 		bottomLayout->addStretch();
 
 		QVBoxLayout *layout = new QVBoxLayout();
@@ -643,8 +692,27 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 		scrollArea->viewport()->installEventFilter(filter);
 		scrollArea->installEventFilter(filter);
 
-		QShortcut* escShortcut = new QShortcut(Qt::Key_Escape, previewWindow);
+		QShortcut *escShortcut = new QShortcut(Qt::Key_Escape, previewWindow);
 		connect(escShortcut, &QShortcut::activated, previewWindow, &ElaWidget::close);
+
+		QShortcut *copyShortcut = new QShortcut(QKeySequence::Copy, previewWindow);
+		connect(copyShortcut, &QShortcut::activated, previewWindow, [currentImage]()
+		{
+			QApplication::clipboard()->setPixmap(*currentImage);
+		});
+
+		scrollArea->setContextMenuPolicy(Qt::CustomContextMenu);
+		connect(scrollArea, &QWidget::customContextMenuRequested, previewWindow,
+		        [currentImage, scrollArea](const QPoint &pos)
+		        {
+			        ElaMenu contextMenu;
+			        QAction *copyAction = contextMenu.addElaIconAction(ElaIconType::Copy, "复制图片");
+			        connect(copyAction, &QAction::triggered, [currentImage]()
+			        {
+				        QApplication::clipboard()->setPixmap(*currentImage);
+			        });
+			        contextMenu.exec(scrollArea->mapToGlobal(pos));
+		        });
 
 		previewWindow->resize(winW, winH);
 		previewWindow->moveToCenter();
