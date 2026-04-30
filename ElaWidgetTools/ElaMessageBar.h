@@ -19,12 +19,12 @@ public:
     static void error(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent = nullptr);
 
 protected:
-    virtual void paintEvent(QPaintEvent* event) override;
-    virtual bool eventFilter(QObject* watched, QEvent* event) override;
+    void paintEvent(QPaintEvent* event) override;
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
     explicit ElaMessageBar(ElaMessageBarType::PositionPolicy policy, ElaMessageBarType::MessageMode messageMode, QString& title, QString& text, int displayMsec, QWidget* parent = nullptr);
-    ~ElaMessageBar();
+    ~ElaMessageBar() override;
 };
 
 #endif // ELAMESSAGEBAR_H

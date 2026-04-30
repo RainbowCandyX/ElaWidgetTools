@@ -1,9 +1,9 @@
 #ifndef ELACALENDAR_H
 #define ELACALENDAR_H
 
-#include <QWidget>
-
 #include "ElaProperty.h"
+#include <QDate>
+#include <QWidget>
 class ElaCalendarPrivate;
 class ELA_EXPORT ElaCalendar : public QWidget
 {
@@ -15,7 +15,7 @@ class ELA_EXPORT ElaCalendar : public QWidget
     Q_PROPERTY_CREATE_Q_H(QDate, MaximumDate)
 public:
     explicit ElaCalendar(QWidget* parent = nullptr);
-    ~ElaCalendar();
+    ~ElaCalendar() override;
 Q_SIGNALS:
     Q_SIGNAL void clicked(QDate date);
 

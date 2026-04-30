@@ -23,6 +23,7 @@ public:
     Q_SLOT void onThemeChanged(ElaThemeType::ThemeMode themeMode);
 
 private:
+    static QMap<QObject*, QMap<ElaMessageBarType::PositionPolicy, QList<ElaMessageBar*>*>> _messageBarActiveMap;
     ElaThemeType::ThemeMode _themeMode;
     int _borderRadius{6};
     QString _title{""};
@@ -39,7 +40,7 @@ private:
     int _closeButtonWidth{30};
     int _messageBarHorizontalMargin{20};
     int _messageBarVerticalBottomMargin{20};
-    int _messageBarVerticalTopMargin{20};
+    int _messageBarVerticalTopMargin{25};
     int _messageBarSpacing{15};
     int _shadowBorderWidth{6};
     qreal _timePercentHeight{2};

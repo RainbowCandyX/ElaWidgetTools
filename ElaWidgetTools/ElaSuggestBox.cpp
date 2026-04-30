@@ -114,12 +114,14 @@ void ElaSuggestBox::setFixedSize(const QSize& size)
     d->_searchEdit->setFixedHeight(size.height());
     QWidget::setFixedSize(size);
 }
+
 void ElaSuggestBox::setFixedSize(int w, int h)
 {
     Q_D(ElaSuggestBox);
     d->_searchEdit->setFixedHeight(h);
     QWidget::setFixedSize(w, h);
 }
+
 void ElaSuggestBox::setFixedHeight(int h)
 {
     Q_D(ElaSuggestBox);

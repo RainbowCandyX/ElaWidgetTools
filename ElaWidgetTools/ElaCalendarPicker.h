@@ -1,9 +1,9 @@
 #ifndef ELACALENDARPICKER_H
 #define ELACALENDARPICKER_H
 
-#include <QPushButton>
-
 #include "ElaProperty.h"
+#include <QDate>
+#include <QPushButton>
 class ElaCalendarPickerPrivate;
 class ELA_EXPORT ElaCalendarPicker : public QPushButton
 {
@@ -13,7 +13,7 @@ class ELA_EXPORT ElaCalendarPicker : public QPushButton
     Q_PRIVATE_CREATE_Q_H(QDate, SelectedDate)
 public:
     explicit ElaCalendarPicker(QWidget* parent = nullptr);
-    ~ElaCalendarPicker();
+    ~ElaCalendarPicker() override;
 
 Q_SIGNALS:
     Q_SIGNAL void selectedDateChanged(QDate date);

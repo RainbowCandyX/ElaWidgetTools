@@ -123,7 +123,7 @@ void ElaNavigationStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                 if (index == _pPressIndex)
                 {
                     // 点击时颜色
-                    painter->fillPath(path, ElaThemeColor(_themeMode, BasicSelectedHoverAlpha));
+                    painter->fillPath(path, ElaThemeColor(_themeMode, BasicPressAlpha));
                 }
                 else
                 {

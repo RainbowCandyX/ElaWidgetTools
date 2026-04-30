@@ -16,7 +16,7 @@ ElaNavigationModel::ElaNavigationModel(QObject* parent)
 
 ElaNavigationModel::~ElaNavigationModel()
 {
-    delete _rootNode;
+    _rootNode->deleteLater();
 }
 
 void ElaNavigationModel::setIsMaximalMode(bool isMaximal)

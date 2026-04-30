@@ -36,7 +36,7 @@ class ElaSuggestBoxPrivate : public QObject
     Q_PROPERTY_CREATE_D(Qt::CaseSensitivity, CaseSensitivity)
 public:
     explicit ElaSuggestBoxPrivate(QObject* parent = nullptr);
-    ~ElaSuggestBoxPrivate();
+    ~ElaSuggestBoxPrivate() override;
     Q_SLOT void onThemeModeChanged(ElaThemeType::ThemeMode themeMode);
     Q_SLOT void onSearchEditTextEdit(const QString& searchText);
     Q_SLOT void onSearchViewClicked(const QModelIndex& index);

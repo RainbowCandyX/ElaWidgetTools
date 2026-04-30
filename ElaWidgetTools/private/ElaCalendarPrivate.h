@@ -21,7 +21,7 @@ class ElaCalendarPrivate : public QObject
     Q_PROPERTY_CREATE(qreal, PixOpacity)
 public:
     explicit ElaCalendarPrivate(QObject* parent = nullptr);
-    ~ElaCalendarPrivate();
+    ~ElaCalendarPrivate() override;
     Q_SLOT void onSwitchButtonClicked();
     Q_SLOT void onCalendarViewClicked(const QModelIndex& index);
     Q_SLOT void onUpButtonClicked();

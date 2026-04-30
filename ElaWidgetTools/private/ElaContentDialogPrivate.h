@@ -37,6 +37,7 @@ private:
     bool _isMiddleButtonVisible{true};
     bool _isRightButtonVisible{true};
     void _doCloseAnimation(bool isAccept);
+    void _moveToCenter();
 };
 
 #endif // ELACONTENTDIALOGPRIVATE_H

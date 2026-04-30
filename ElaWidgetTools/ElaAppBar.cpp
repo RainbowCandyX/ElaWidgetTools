@@ -381,31 +381,6 @@ void ElaAppBar::setRouteForwardButtonEnable(bool isEnable)
     d->_routeForwardButton->setEnabled(isEnable);
 }
 
-void ElaAppBar::closeWindow()
-{
-    Q_D(ElaAppBar);
-    QPropertyAnimation* closeOpacityAnimation = new QPropertyAnimation(window(), "windowOpacity");
-    connect(closeOpacityAnimation, &QPropertyAnimation::finished, this, [=]() {
-        window()->close();
-    });
-    closeOpacityAnimation->setStartValue(1);
-    closeOpacityAnimation->setEndValue(0);
-    closeOpacityAnimation->setEasingCurve(QEasingCurve::InOutSine);
-    closeOpacityAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-    if (window()->isMaximized() || window()->isFullScreen() || d->_pIsFixedSize)
-    {
-        return;
-    }
-    QPropertyAnimation* geometryAnimation = new QPropertyAnimation(window(), "geometry");
-    QRect geometry = window()->geometry();
-    geometryAnimation->setStartValue(geometry);
-    qreal targetWidth = (geometry.width() - d->_lastMinTrackWidth) * 0.7 + d->_lastMinTrackWidth;
-    qreal targetHeight = (geometry.height() - window()->minimumHeight()) * 0.7 + window()->minimumHeight();
-    geometryAnimation->setEndValue(QRectF(geometry.center().x() - targetWidth / 2, geometry.center().y() - targetHeight / 2, targetWidth, targetHeight));
-    geometryAnimation->setEasingCurve(QEasingCurve::InOutSine);
-    geometryAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-}
-
 #ifdef Q_OS_WIN
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, qintptr* result)

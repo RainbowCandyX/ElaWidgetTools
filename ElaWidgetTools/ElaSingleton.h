@@ -3,6 +3,7 @@
 
 #include <QMutex>
 
+#ifndef Q_SINGLETON_CREATE_H
 template <typename T>
 class Singleton
 {
@@ -55,5 +56,5 @@ public:                             \
         }                              \
         return _instance;              \
     }
-
+#endif
 #endif // ELASINGLETON_H

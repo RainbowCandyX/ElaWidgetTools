@@ -16,6 +16,7 @@ void ElaRadioButtonPrivate::onThemeChanged(ElaThemeType::ThemeMode themeMode)
     Q_Q(ElaRadioButton);
     _themeMode = themeMode;
     QPalette palette = q->palette();
+    palette.setColor(QPalette::Text, ElaThemeColor(_themeMode, BasicText));
     palette.setColor(QPalette::WindowText, ElaThemeColor(themeMode, BasicText));
     q->setPalette(palette);
 }

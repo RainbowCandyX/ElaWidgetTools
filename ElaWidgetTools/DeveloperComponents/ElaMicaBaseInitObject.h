@@ -1,6 +1,7 @@
 #ifndef ELAMICABASEINITOBJECT_H
 #define ELAMICABASEINITOBJECT_H
 
+#include <QImage>
 #include <QObject>
 class ElaApplicationPrivate;
 class ElaMicaBaseInitObject : public QObject

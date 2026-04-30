@@ -12,10 +12,13 @@ class ELA_EXPORT ElaToolBar : public QToolBar
 public:
     explicit ElaToolBar(QWidget* parent = nullptr);
     explicit ElaToolBar(const QString& title, QWidget* parent = nullptr);
-    ~ElaToolBar();
+    ~ElaToolBar() override;
 
     void setToolBarSpacing(int spacing);
     int getToolBarSpacing() const;
+
+    void setToolButtonSize(const QSize& size);
+    const QSize& getToolButtonSize() const;
 
     QAction* addElaIconAction(ElaIconType::IconName icon, const QString& text);
     QAction* addElaIconAction(ElaIconType::IconName icon, const QString& text, const QKeySequence& shortcut);

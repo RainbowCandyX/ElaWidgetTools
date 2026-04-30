@@ -107,15 +107,8 @@ void ElaFooterDelegate::navigationNodeStateChange(QVariantMap data)
 
 void ElaFooterDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    QStyleOptionViewItem viewOption(option);
-    initStyleOption(&viewOption, index);
     ElaFooterModel* model = dynamic_cast<ElaFooterModel*>(const_cast<QAbstractItemModel*>(index.model()));
     ElaNavigationNode* node = index.data(Qt::UserRole).value<ElaNavigationNode*>();
-    if (option.state.testFlag(QStyle::State_HasFocus))
-    {
-        viewOption.state &= ~QStyle::State_HasFocus;
-    }
-    QStyledItemDelegate::paint(painter, viewOption, index);
     // 背景绘制
     QRect itemRect = option.rect;
     painter->save();
@@ -150,7 +143,7 @@ void ElaFooterDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
         if (index == _pPressIndex)
         {
             // 点击时颜色
-            painter->fillPath(path, ElaThemeColor(_themeMode, BasicSelectedHoverAlpha));
+            painter->fillPath(path, ElaThemeColor(_themeMode, BasicPressAlpha));
         }
         else
         {
@@ -185,8 +178,7 @@ void ElaFooterDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
         painter->restore();
     }
 
-    int keyPoints = node->getKeyPoints();
-    if (keyPoints)
+    if (int keyPoints = node->getKeyPoints())
     {
         // KeyPoints
         painter->save();
@@ -265,8 +257,5 @@ bool ElaFooterDelegate::_compareItemY(ElaNavigationNode* node1, ElaNavigationNod
     {
         return true;
     }
-    else
-    {
-        return false;
-    }
+    return false;
 }

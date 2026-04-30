@@ -40,9 +40,11 @@ ElaContentDialog::ElaContentDialog(QWidget* parent)
 #endif
     d->_leftButton = new ElaPushButton("cancel", this);
     connect(d->_leftButton, &ElaPushButton::clicked, this, [=]() {
-        Q_EMIT leftButtonClicked();
         onLeftButtonClicked();
         d->_doCloseAnimation(false);
+        QTimer::singleShot(0, nullptr, [=]() {
+            Q_EMIT leftButtonClicked();
+        });
     });
     d->_leftButton->setMinimumSize(0, 0);
     d->_leftButton->setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
@@ -50,8 +52,10 @@ ElaContentDialog::ElaContentDialog(QWidget* parent)
     d->_leftButton->setBorderRadius(6);
     d->_middleButton = new ElaPushButton("minimum", this);
     connect(d->_middleButton, &ElaPushButton::clicked, this, [=]() {
-        Q_EMIT middleButtonClicked();
         onMiddleButtonClicked();
+        QTimer::singleShot(0, nullptr, [=]() {
+            Q_EMIT middleButtonClicked();
+        });
     });
     d->_middleButton->setMinimumSize(0, 0);
     d->_middleButton->setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
@@ -59,9 +63,11 @@ ElaContentDialog::ElaContentDialog(QWidget* parent)
     d->_middleButton->setBorderRadius(6);
     d->_rightButton = new ElaPushButton("exit", this);
     connect(d->_rightButton, &ElaPushButton::clicked, this, [=]() {
-        Q_EMIT rightButtonClicked();
         onRightButtonClicked();
         d->_doCloseAnimation(true);
+        QTimer::singleShot(0, nullptr, [=]() {
+            Q_EMIT rightButtonClicked();
+        });
     });
     d->_rightButton->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
     d->_rightButton->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
@@ -225,6 +231,7 @@ void ElaContentDialog::showEvent(QShowEvent* event)
     d->_maskWidget->raise();
     d->_maskWidget->setFixedSize(parentWidget()->size());
     d->_maskWidget->doMaskAnimation(90);
+    d->_moveToCenter();
     QDialog::showEvent(event);
 }
 
@@ -246,5 +253,18 @@ void ElaContentDialog::paintEvent(QPaintEvent* event)
 
 void ElaContentDialog::keyPressEvent(QKeyEvent* event)
 {
+    Q_D(ElaContentDialog);
+    switch (event->key())
+    {
+    case Qt::Key_Escape:
+    {
+        d->_doCloseAnimation(false);
+        break;
+    }
+    default:
+    {
+        break;
+    }
+    }
     event->accept();
 }

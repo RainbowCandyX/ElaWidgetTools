@@ -11,7 +11,7 @@ class ElaTreeViewStyle : public QProxyStyle
     Q_PROPERTY_CREATE(int, HeaderMargin)
 public:
     explicit ElaTreeViewStyle(QStyle* style = nullptr);
-    ~ElaTreeViewStyle();
+    ~ElaTreeViewStyle() override;
     void drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget = nullptr) const override;
     void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget = nullptr) const override;
     QSize sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const override;

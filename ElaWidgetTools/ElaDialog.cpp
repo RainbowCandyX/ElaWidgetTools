@@ -145,7 +145,7 @@ void ElaDialog::paintEvent(QPaintEvent* event)
         painter.save();
         painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
         painter.setPen(Qt::NoPen);
-        painter.setBrush(ElaThemeColor(d->_themeMode, WindowBase));
+        painter.setBrush(ElaThemeColor(d->_themeMode, DialogBase));
         painter.drawRect(rect());
         painter.restore();
     }

@@ -184,6 +184,25 @@ int ElaToolBarStyle::pixelMetric(PixelMetric metric, const QStyleOption* option,
     return QProxyStyle::pixelMetric(metric, option, widget);
 }
 
+QSize ElaToolBarStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const
+{
+    if (_pToolButtonSize.isValid())
+    {
+        switch (type)
+        {
+        case QStyle::CT_ToolButton:
+        {
+            return _pToolButtonSize;
+        }
+        default:
+        {
+            break;
+        }
+        }
+    }
+    return QProxyStyle::sizeFromContents(type, option, size, widget);
+}
+
 void ElaToolBarStyle::_drawIndicator(QPainter* painter, const QStyleOptionToolButton* bopt, const QWidget* widget) const
 {
     if (bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))

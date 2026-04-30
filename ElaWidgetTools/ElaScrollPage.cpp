@@ -140,17 +140,17 @@ void ElaScrollPage::navigation(int widgetIndex, bool isLogRoute)
     }
     d->_switchCentralStackIndex(widgetIndex, d->_navigationTargetIndex);
     d->_navigationTargetIndex = widgetIndex;
-    QString pagetTitle = d->_centralWidgetMap.key(widgetIndex);
+    QString pageTitle = d->_centralWidgetMap.key(widgetIndex);
     if (isLogRoute)
     {
         QVariantMap routeData = QVariantMap();
         routeData.insert("ElaScrollPageCheckSumKey", "Navigation");
         QStringList breadcrumbList = d->_breadcrumbBar->getBreadcrumbList();
         routeData.insert("ElaBackPageTitle", breadcrumbList.last());
-        routeData.insert("ElaForwardPageTitle", pagetTitle);
+        routeData.insert("ElaForwardPageTitle", pageTitle);
         ElaNavigationRouter::getInstance()->navigationRoute(d, "onNavigationRoute", routeData);
     }
-    d->_breadcrumbBar->appendBreadcrumb(pagetTitle);
+    d->_breadcrumbBar->appendBreadcrumb(pageTitle);
 }
 
 void ElaScrollPage::setPageTitleSpacing(int spacing)

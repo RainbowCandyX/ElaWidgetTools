@@ -46,8 +46,6 @@ private:
     QPixmap* _lightWindowPix;
     QPixmap* _darkWindowPix;
 
-    bool _isWindowClosing{false};
-
     bool _isInitFinished{false};
     ElaEvent* _focusEvent{nullptr};
     ElaNavigationBar* _navigationBar{nullptr};

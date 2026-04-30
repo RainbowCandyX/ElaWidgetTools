@@ -12,11 +12,11 @@ ElaThemePrivate::~ElaThemePrivate()
 void ElaThemePrivate::_initThemeColor()
 {
     //ElaScrollBar
-    _lightThemeColorList[ElaThemeType::ScrollBarHandle] = QColor(0xA0, 0xA0, 0xA0);
+    _lightThemeColorList[ElaThemeType::ScrollBarHandle] = QColor(0x8A, 0x8A, 0x8A);
     _darkThemeColorList[ElaThemeType::ScrollBarHandle] = QColor(0x9F, 0x9F, 0x9F);
 
     //ElaToggleSwitch
-    _lightThemeColorList[ElaThemeType::ToggleSwitchNoToggledCenter] = QColor(0x5A, 0x5A, 0x5A);
+    _lightThemeColorList[ElaThemeType::ToggleSwitchNoToggledCenter] = QColor(0x6A, 0x6A, 0x6A);
     _darkThemeColorList[ElaThemeType::ToggleSwitchNoToggledCenter] = QColor(0xD0, 0xD0, 0xD0);
 
     // 主题颜色
@@ -29,25 +29,25 @@ void ElaThemePrivate::_initThemeColor()
 
     // 通用颜色
     // 普通窗体
-    _lightThemeColorList[ElaThemeType::WindowBase] = QColor(0xF3, 0xF3, 0xF3);
+    _lightThemeColorList[ElaThemeType::WindowBase] = QColor(0xEC, 0xEC, 0xEC);
     _darkThemeColorList[ElaThemeType::WindowBase] = QColor(0x20, 0x20, 0x20);
-    _lightThemeColorList[ElaThemeType::WindowCentralStackBase] = QColor(0xFF, 0xFF, 0xFF, 80);
+    _lightThemeColorList[ElaThemeType::WindowCentralStackBase] = QColor(0xF8, 0xF8, 0xF8, 90);
     _darkThemeColorList[ElaThemeType::WindowCentralStackBase] = QColor(0x3E, 0x3E, 0x3E, 60);
 
     // 浮动窗体
-    _lightThemeColorList[ElaThemeType::PopupBorder] = QColor(0xD6, 0xD6, 0xD6);
+    _lightThemeColorList[ElaThemeType::PopupBorder] = QColor(0xC8, 0xC8, 0xC8);
     _darkThemeColorList[ElaThemeType::PopupBorder] = QColor(0x47, 0x47, 0x47);
-    _lightThemeColorList[ElaThemeType::PopupBorderHover] = QColor(0xCC, 0xCC, 0xCC);
+    _lightThemeColorList[ElaThemeType::PopupBorderHover] = QColor(0xBC, 0xBC, 0xBC);
     _darkThemeColorList[ElaThemeType::PopupBorderHover] = QColor(0x54, 0x54, 0x54);
-    _lightThemeColorList[ElaThemeType::PopupBase] = QColor(0xFA, 0xFA, 0xFA);
+    _lightThemeColorList[ElaThemeType::PopupBase] = QColor(0xF6, 0xF6, 0xF6);
     _darkThemeColorList[ElaThemeType::PopupBase] = QColor(0x2C, 0x2C, 0x2C);
-    _lightThemeColorList[ElaThemeType::PopupHover] = QColor(0xF0, 0xF0, 0xF0);
+    _lightThemeColorList[ElaThemeType::PopupHover] = QColor(0xEE, 0xEE, 0xEE);
     _darkThemeColorList[ElaThemeType::PopupHover] = QColor(0x38, 0x38, 0x38);
 
     // Dialog窗体
-    _lightThemeColorList[ElaThemeType::DialogBase] = Qt::white;
+    _lightThemeColorList[ElaThemeType::DialogBase] = QColor(0xF7, 0xF7, 0xF7);
     _darkThemeColorList[ElaThemeType::DialogBase] = QColor(0x1F, 0x1F, 0x1F);
-    _lightThemeColorList[ElaThemeType::DialogLayoutArea] = QColor(0xF3, 0xF3, 0xF3);
+    _lightThemeColorList[ElaThemeType::DialogLayoutArea] = QColor(0xED, 0xED, 0xED);
     _darkThemeColorList[ElaThemeType::DialogLayoutArea] = QColor(0x20, 0x20, 0x20);
 
     // 基础颜色
@@ -65,11 +65,11 @@ void ElaThemePrivate::_initThemeColor()
     _darkThemeColorList[ElaThemeType::BasicTextPress] = QColor(0xBB, 0xBB, 0xBF);
     _lightThemeColorList[ElaThemeType::BasicTextCategory] = QColor(0x5C, 0x5C, 0x5F);
     _darkThemeColorList[ElaThemeType::BasicTextCategory] = QColor(0xCC, 0xCC, 0xCE);
-    _lightThemeColorList[ElaThemeType::BasicBorder] = QColor(0xE5, 0xE5, 0xE5);
+    _lightThemeColorList[ElaThemeType::BasicBorder] = QColor(0xD6, 0xD6, 0xD6);
     _darkThemeColorList[ElaThemeType::BasicBorder] = QColor(0x4B, 0x4B, 0x4B);
-    _lightThemeColorList[ElaThemeType::BasicBorderDeep] = QColor(0xA8, 0xA8, 0xA8);
+    _lightThemeColorList[ElaThemeType::BasicBorderDeep] = QColor(0x9A, 0x9A, 0x9A);
     _darkThemeColorList[ElaThemeType::BasicBorderDeep] = QColor(0x5C, 0x5C, 0x5C);
-    _lightThemeColorList[ElaThemeType::BasicBorderHover] = QColor(0xDA, 0xDA, 0xDA);
+    _lightThemeColorList[ElaThemeType::BasicBorderHover] = QColor(0xC8, 0xC8, 0xC8);
     _darkThemeColorList[ElaThemeType::BasicBorderHover] = QColor(0x57, 0x57, 0x57);
     _lightThemeColorList[ElaThemeType::BasicBase] = QColor(0xFD, 0xFD, 0xFD);
     _darkThemeColorList[ElaThemeType::BasicBase] = QColor(0x34, 0x34, 0x34);
@@ -95,17 +95,17 @@ void ElaThemePrivate::_initThemeColor()
     // 基础透明
     _lightThemeColorList[ElaThemeType::BasicAlternating] = QColor(0xEF, 0xEF, 0xEF, 160);
     _darkThemeColorList[ElaThemeType::BasicAlternating] = QColor(0x45, 0x45, 0x45, 125);
-    _lightThemeColorList[ElaThemeType::BasicBaseAlpha] = QColor(0xFF, 0xFF, 0xFF, 160);
+    _lightThemeColorList[ElaThemeType::BasicBaseAlpha] = QColor(0xFA, 0xFA, 0xFA, 160);
     _darkThemeColorList[ElaThemeType::BasicBaseAlpha] = QColor(0x2D, 0x2D, 0x2D, 95);
-    _lightThemeColorList[ElaThemeType::BasicBaseDeepAlpha] = QColor(0xCC, 0xCC, 0xCC, 160);
+    _lightThemeColorList[ElaThemeType::BasicBaseDeepAlpha] = QColor(0xC8, 0xC8, 0xC8, 160);
     _darkThemeColorList[ElaThemeType::BasicBaseDeepAlpha] = QColor(0x72, 0x72, 0x72, 95);
-    _lightThemeColorList[ElaThemeType::BasicHoverAlpha] = QColor(0xCC, 0xCC, 0xCC, 70);
+    _lightThemeColorList[ElaThemeType::BasicHoverAlpha] = QColor(0xCE, 0xCE, 0xCE, 110);
     _darkThemeColorList[ElaThemeType::BasicHoverAlpha] = QColor(0x4B, 0x4B, 0x4B, 75);
-    _lightThemeColorList[ElaThemeType::BasicPressAlpha] = QColor(0xCC, 0xCC, 0xCC, 40);
+    _lightThemeColorList[ElaThemeType::BasicPressAlpha] = QColor(0xD0, 0xD0, 0xD0, 80);
     _darkThemeColorList[ElaThemeType::BasicPressAlpha] = QColor(0x4B, 0x4B, 0x4B, 55);
-    _lightThemeColorList[ElaThemeType::BasicSelectedAlpha] = QColor(0xCC, 0xCC, 0xCC, 70);
+    _lightThemeColorList[ElaThemeType::BasicSelectedAlpha] = QColor(0xCE, 0xCE, 0xCE, 110);
     _darkThemeColorList[ElaThemeType::BasicSelectedAlpha] = QColor(0x4B, 0x4B, 0x4B, 75);
-    _lightThemeColorList[ElaThemeType::BasicSelectedHoverAlpha] = QColor(0xCC, 0xCC, 0xCC, 40);
+    _lightThemeColorList[ElaThemeType::BasicSelectedHoverAlpha] = QColor(0xD0, 0xD0, 0xD0, 80);
     _darkThemeColorList[ElaThemeType::BasicSelectedHoverAlpha] = QColor(0x4B, 0x4B, 0x4B, 55);
 
     // 状态颜色

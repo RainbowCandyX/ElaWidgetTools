@@ -16,6 +16,7 @@ void ElaKeyBinderPrivate::onThemeChanged(ElaThemeType::ThemeMode themeMode)
     Q_Q(ElaKeyBinder);
     _themeMode = themeMode;
     QPalette palette = q->palette();
+    palette.setColor(QPalette::Text, ElaThemeColor(_themeMode, BasicText));
     palette.setColor(QPalette::WindowText, ElaThemeColor(_themeMode, BasicText));
     q->setPalette(palette);
 }

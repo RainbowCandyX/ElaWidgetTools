@@ -90,7 +90,9 @@ public:
     void setWindowMovieRate(qreal rate);
     qreal getWindowMovieRate() const;
 
-    void closeWindow();
+    void tabifyDockWidget(QDockWidget* targetDockWidget, QDockWidget* dockWidget);
+    void tabifyDockWidget(Qt::DockWidgetArea area, const QString& targetDockTitle, QDockWidget* dockWidget);
+
 Q_SIGNALS:
     Q_SIGNAL void userInfoCardClicked();
     Q_SIGNAL void closeButtonClicked();
@@ -107,6 +109,10 @@ protected:
 #ifdef Q_OS_MACOS
     virtual void mousePressEvent(QMouseEvent* event) override;
 #endif
+
+private:
+    QWidget* centralWidget() const;
+    void setCentralWidget(QWidget* widget);
 };
 
 #endif // ELAWINDOW_H

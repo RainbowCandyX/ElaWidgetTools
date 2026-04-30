@@ -87,13 +87,13 @@ void ElaSuggestBoxPrivate::onSearchEditTextEdit(const QString& searchText)
 void ElaSuggestBoxPrivate::onSearchViewClicked(const QModelIndex& index)
 {
     Q_Q(ElaSuggestBox);
-    _searchEdit->clear();
     _searchView->clearSelection();
     if (!index.isValid())
     {
         return;
     }
     ElaSuggestion* suggest = _searchModel->getSearchSuggestion(index.row());
+    _searchEdit->setText(suggest->getSuggestText());
     ElaSuggestBox::SuggestData data(suggest->getElaIcon(), suggest->getSuggestText(), suggest->getSuggestData());
     data.setSuggestKey(suggest->getSuggestKey());
     Q_EMIT q->suggestionClicked(data);

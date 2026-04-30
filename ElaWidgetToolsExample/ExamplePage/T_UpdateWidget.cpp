@@ -11,11 +11,11 @@ T_UpdateWidget::T_UpdateWidget(QWidget* parent)
     mainLayout->setSizeConstraint(QLayout::SetMaximumSize);
     mainLayout->setContentsMargins(5, 10, 5, 5);
     mainLayout->setSpacing(4);
-    ElaText* updateTitle = new ElaText("2026-1-3更新", 15, this);
-    ElaText* update1 = new ElaText("1、ElaNavigationBar模式切换优化", 13, this);
-    ElaText* update2 = new ElaText("2、ElaMessageBar性能及稳定性优化", 13, this);
-    ElaText* update3 = new ElaText("3、ElaWindow-Movie模式切换响应问题修复", 13, this);
-    ElaText* update4 = new ElaText("4、ElaToolButton双屏下拉菜单显示问题修正", 13, this);
+    ElaText* updateTitle = new ElaText("2026-4-30更新", 15, this);
+    ElaText* update1 = new ElaText("1、ElaAppBar无边框优化, 修正了Close窗口后再次打开失去原生动画的问题", 13, this);
+    ElaText* update2 = new ElaText("2、为ElaWindow添加了Dock的便利API", 13, this);
+    ElaText* update3 = new ElaText("3、组件整体绘制风格和效果优化", 13, this);
+    ElaText* update4 = new ElaText("4、为部分组件添加了Disable等状态效果", 13, this);
     ElaText* update5 = new ElaText("5、QQ交流群: 850243692", 13, this);
     update1->setIsWrapAnywhere(true);
     update2->setIsWrapAnywhere(true);

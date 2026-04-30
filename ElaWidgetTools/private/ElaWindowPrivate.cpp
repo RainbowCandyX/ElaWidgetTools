@@ -323,7 +323,7 @@ void ElaWindowPrivate::_resetWindowLayout(bool isAnimation)
 void ElaWindowPrivate::_doNavigationDisplayModeChange()
 {
     Q_Q(ElaWindow);
-    if (_isWindowClosing || !_isNavigationEnable || !_isInitFinished)
+    if (!_isNavigationEnable || !_isInitFinished)
     {
         return;
     }
