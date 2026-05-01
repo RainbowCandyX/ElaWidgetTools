@@ -14,6 +14,7 @@
 #include <QGuiApplication>
 #include <QLabel>
 #include <QMenu>
+#include <QPointer>
 #include <QPropertyAnimation>
 #include <QScreen>
 #include <QVBoxLayout>
@@ -51,12 +52,16 @@ void ElaAppBarPrivate::onCloseButtonClicked()
 	Q_Q(ElaAppBar);
 	if (_pIsDefaultClosed)
 	{
-		const auto window = q->window();
-		window->close();
-		QApplication::processEvents();
-		if (const auto windowHandle = window->windowHandle())
+		QPointer<QWidget> windowGuard = q->window();
+		QPointer<QWindow> handleGuard = windowGuard ? windowGuard->windowHandle() : nullptr;
+		if (windowGuard)
 		{
-			windowHandle->close();
+			windowGuard->close();
+		}
+		QApplication::processEvents();
+		if (handleGuard)
+		{
+			handleGuard->close();
 		}
 	}
 	else
