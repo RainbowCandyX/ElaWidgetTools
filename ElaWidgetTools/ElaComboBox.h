@@ -21,6 +21,10 @@ protected:
     virtual void showPopup() override;
     virtual void hidePopup() override;
     virtual void paintEvent(QPaintEvent* event) override;
+
+private:
+    friend class ElaComboBoxPrivate;
+    void _resetIndicatorAnimations();
 };
 
 #endif // ELACOMBOBOX_H

@@ -148,3 +148,14 @@ void ElaPlainTextEdit::paintEvent(QPaintEvent* event)
     }
     QPlainTextEdit::paintEvent(event);
 }
+
+void ElaPlainTextEdit::resizeEvent(QResizeEvent* event)
+{
+    Q_D(ElaPlainTextEdit);
+    QPlainTextEdit::resizeEvent(event);
+    if (d->_style->getExpandMarkWidth() > 0)
+    {
+        d->_style->setExpandMarkWidth(width() / 2 - 3);
+        update();
+    }
+}

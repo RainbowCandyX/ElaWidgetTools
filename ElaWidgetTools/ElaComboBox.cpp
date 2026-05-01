@@ -60,6 +60,7 @@ ElaComboBox::ElaComboBox(QWidget *parent)
 		container->setAttribute(Qt::WA_TranslucentBackground);
 		container->setObjectName("ElaComboBoxContainer");
 		container->setStyle(d->_comboBoxStyle);
+		container->installEventFilter(d);
 		QLayout *layout = container->layout();
 		while (layout->count())
 		{
@@ -200,9 +201,36 @@ void ElaComboBox::showPopup()
 	}
 }
 
+void ElaComboBox::_resetIndicatorAnimations()
+{
+	Q_D(ElaComboBox);
+	if (qFuzzyIsNull(d->_comboBoxStyle->getExpandIconRotate()) && d->_comboBoxStyle->getExpandMarkWidth() == 0)
+	{
+		return;
+	}
+	QPropertyAnimation *rotateAnimation = new QPropertyAnimation(d->_comboBoxStyle, "pExpandIconRotate");
+	connect(rotateAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant &value)
+	{
+		update();
+	});
+	rotateAnimation->setDuration(300);
+	rotateAnimation->setEasingCurve(QEasingCurve::InOutSine);
+	rotateAnimation->setStartValue(d->_comboBoxStyle->getExpandIconRotate());
+	rotateAnimation->setEndValue(0);
+	rotateAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+	QPropertyAnimation *markAnimation = new QPropertyAnimation(d->_comboBoxStyle, "pExpandMarkWidth");
+	markAnimation->setDuration(300);
+	markAnimation->setEasingCurve(QEasingCurve::InOutSine);
+	markAnimation->setStartValue(d->_comboBoxStyle->getExpandMarkWidth());
+	markAnimation->setEndValue(0);
+	markAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
 void ElaComboBox::hidePopup()
 {
 	Q_D(ElaComboBox);
+	_resetIndicatorAnimations();
+
 	if (d->_isAllowHidePopup)
 	{
 		QWidget *container = this->findChild<QFrame *>();
@@ -241,23 +269,10 @@ void ElaComboBox::hidePopup()
 			fixedSizeAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 			d->_isAllowHidePopup = false;
 		}
-		//指示器动画
-		QPropertyAnimation *rotateAnimation = new QPropertyAnimation(d->_comboBoxStyle, "pExpandIconRotate");
-		connect(rotateAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant &value)
-		{
-			update();
-		});
-		rotateAnimation->setDuration(300);
-		rotateAnimation->setEasingCurve(QEasingCurve::InOutSine);
-		rotateAnimation->setStartValue(d->_comboBoxStyle->getExpandIconRotate());
-		rotateAnimation->setEndValue(0);
-		rotateAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-		QPropertyAnimation *markAnimation = new QPropertyAnimation(d->_comboBoxStyle, "pExpandMarkWidth");
-		markAnimation->setDuration(300);
-		markAnimation->setEasingCurve(QEasingCurve::InOutSine);
-		markAnimation->setStartValue(d->_comboBoxStyle->getExpandMarkWidth());
-		markAnimation->setEndValue(0);
-		markAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+	}
+	else
+	{
+		QComboBox::hidePopup();
 	}
 }
 

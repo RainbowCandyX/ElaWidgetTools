@@ -18,6 +18,14 @@ bool ElaComboBoxPrivate::eventFilter(QObject* watched, QEvent* event)
     {
         _isKeyEvent = false;
     }
+    else if (event->type() == QEvent::Hide)
+    {
+        Q_Q(ElaComboBox);
+        if (watched == q->findChild<QFrame*>())
+        {
+            q->_resetIndicatorAnimations();
+        }
+    }
     return QObject::eventFilter(watched, event);
 }
 

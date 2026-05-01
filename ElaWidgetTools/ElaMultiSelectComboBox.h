@@ -27,6 +27,10 @@ protected:
     void paintEvent(QPaintEvent* e) override;
     void showPopup() override;
     void hidePopup() override;
+
+private:
+    friend class ElaMultiSelectComboBoxPrivate;
+    void _resetIndicatorAnimations();
 };
 
 #endif // ELAMULTISELECTCOMBOBOX_H

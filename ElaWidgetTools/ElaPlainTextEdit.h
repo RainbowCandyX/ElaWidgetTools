@@ -20,6 +20,7 @@ protected:
     virtual void focusOutEvent(QFocusEvent* event) override;
     virtual void contextMenuEvent(QContextMenuEvent* event) override;
     virtual void paintEvent(QPaintEvent* event) override;
+    virtual void resizeEvent(QResizeEvent* event) override;
 };
 
 #endif // ELAPLAINTEXTEDIT_H

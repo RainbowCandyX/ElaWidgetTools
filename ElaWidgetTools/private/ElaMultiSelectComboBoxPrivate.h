@@ -21,6 +21,9 @@ public:
     ~ElaMultiSelectComboBoxPrivate() override;
     Q_SLOT void onItemPressed(const QModelIndex& index);
 
+protected:
+    bool eventFilter(QObject* watched, QEvent* event) override;
+
 private:
     ElaComboBoxStyle* _comboBoxStyle{nullptr};
     ElaComboBoxView* _comboView{nullptr};

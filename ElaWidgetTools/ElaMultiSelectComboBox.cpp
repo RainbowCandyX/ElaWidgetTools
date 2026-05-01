@@ -57,6 +57,7 @@ ElaMultiSelectComboBox::ElaMultiSelectComboBox(QWidget *parent)
 		container->setAttribute(Qt::WA_TranslucentBackground);
 		container->setObjectName("ElaComboBoxContainer");
 		container->setStyle(d->_comboBoxStyle);
+		container->installEventFilter(d);
 		QLayout *layout = container->layout();
 		while (layout->count())
 		{
@@ -322,6 +323,31 @@ void ElaMultiSelectComboBox::showPopup()
 	d->_refreshCurrentIndexs();
 }
 
+void ElaMultiSelectComboBox::_resetIndicatorAnimations()
+{
+	Q_D(ElaMultiSelectComboBox);
+	if (qFuzzyIsNull(d->_pExpandIconRotate) && d->_pExpandMarkWidth == 0)
+	{
+		return;
+	}
+	QPropertyAnimation *rotateAnimation = new QPropertyAnimation(d, "pExpandIconRotate");
+	connect(rotateAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant &value)
+	{
+		update();
+	});
+	rotateAnimation->setDuration(300);
+	rotateAnimation->setEasingCurve(QEasingCurve::InOutSine);
+	rotateAnimation->setStartValue(d->_pExpandIconRotate);
+	rotateAnimation->setEndValue(0);
+	rotateAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+	QPropertyAnimation *markAnimation = new QPropertyAnimation(d, "pExpandMarkWidth");
+	markAnimation->setDuration(300);
+	markAnimation->setEasingCurve(QEasingCurve::InOutSine);
+	markAnimation->setStartValue(d->_pExpandMarkWidth);
+	markAnimation->setEndValue(0);
+	markAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
 void ElaMultiSelectComboBox::hidePopup()
 {
 	Q_D(ElaMultiSelectComboBox);
@@ -377,23 +403,7 @@ void ElaMultiSelectComboBox::hidePopup()
 				fixedSizeAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 				d->_isAllowHidePopup = false;
 			}
-			//指示器动画
-			QPropertyAnimation *rotateAnimation = new QPropertyAnimation(d, "pExpandIconRotate");
-			connect(rotateAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant &value)
-			{
-				update();
-			});
-			rotateAnimation->setDuration(300);
-			rotateAnimation->setEasingCurve(QEasingCurve::InOutSine);
-			rotateAnimation->setStartValue(d->_pExpandIconRotate);
-			rotateAnimation->setEndValue(0);
-			rotateAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-			QPropertyAnimation *markAnimation = new QPropertyAnimation(d, "pExpandMarkWidth");
-			markAnimation->setDuration(300);
-			markAnimation->setEasingCurve(QEasingCurve::InOutSine);
-			markAnimation->setStartValue(d->_pExpandMarkWidth);
-			markAnimation->setEndValue(0);
-			markAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+			_resetIndicatorAnimations();
 		}
 	}
 }

@@ -1,5 +1,7 @@
 #include "ElaMultiSelectComboBoxPrivate.h"
 
+#include <QEvent>
+#include <QFrame>
 #include <QPropertyAnimation>
 
 #include "ElaComboBoxView.h"
@@ -11,6 +13,19 @@ ElaMultiSelectComboBoxPrivate::ElaMultiSelectComboBoxPrivate(QObject* parent)
 
 ElaMultiSelectComboBoxPrivate::~ElaMultiSelectComboBoxPrivate()
 {
+}
+
+bool ElaMultiSelectComboBoxPrivate::eventFilter(QObject* watched, QEvent* event)
+{
+    if (event->type() == QEvent::Hide)
+    {
+        Q_Q(ElaMultiSelectComboBox);
+        if (watched == q->findChild<QFrame*>())
+        {
+            q->_resetIndicatorAnimations();
+        }
+    }
+    return QObject::eventFilter(watched, event);
 }
 
 void ElaMultiSelectComboBoxPrivate::onItemPressed(const QModelIndex& index)
