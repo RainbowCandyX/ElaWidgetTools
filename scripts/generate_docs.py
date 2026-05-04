@@ -141,11 +141,15 @@ def parse_header(filepath: Path) -> ClassInfo | None:
                 fields.append(f + ";")
         info.structs.append(StructInfo(name=struct_name, fields=fields))
 
+    # 由 Q_PROPERTY_CREATE_Q_H / Q_PRIVATE_CREATE_Q_H 宏自动生成的属性变更信号
+    # 命名约定：p<PropName>Changed，仅当对应属性确实存在时才视为宏派生
+    macro_property_signals = {f"p{p.name}Changed" for p in info.properties}
+
     # Signals — from Q_SIGNAL macro
     for sm in RE_SIGNAL.finditer(content):
         sig_name = sm.group(1)
-        if sig_name.startswith("p") and sig_name.endswith("Changed"):
-            continue  # skip property change signals
+        if sig_name in macro_property_signals:
+            continue
         info.signals.append(SignalInfo(name=sig_name, args=sm.group(2).strip()))
 
     # Signals — from Q_SIGNALS block
@@ -154,9 +158,9 @@ def parse_header(filepath: Path) -> ClassInfo | None:
         block = sig_block.group(1)
         for sm in RE_SIGNAL_IN_BLOCK.finditer(block):
             sig_name = sm.group(1)
-            if sig_name.startswith("p") and sig_name.endswith("Changed"):
+            if sig_name in macro_property_signals:
                 continue
-            # avoid duplicates
+            # 去重
             if not any(s.name == sig_name for s in info.signals):
                 info.signals.append(SignalInfo(name=sig_name, args=sm.group(2).strip()))
 

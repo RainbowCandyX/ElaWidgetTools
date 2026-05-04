@@ -18,3 +18,5 @@ cmake-build-*/
 /.vs
 /Install/
 /CMakeSettings.json
+__pycache__/
+*.pyc
