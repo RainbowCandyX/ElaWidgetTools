@@ -250,14 +250,6 @@ cmake --build build --target ElaWidgetTools
 
 本项目基于 [Liniyous/ElaWidgetTools](https://github.com/Liniyous/ElaWidgetTools) 修改而来，感谢原作者的开源贡献。
 
-## 参考范例
-
-以下是一些使用了ElaWidgetTools的优秀开源项目：
-
-[KikoPlay-全功能弹幕播放器](https://github.com/KikoPlayProject/KikoPlay)
-
-[EricTool-工业级多协议数据分析平台](https://www.erictool.online/ )
-
 ## 许可证
 
 ElaWidgetTools 使用 MIT 许可证授权所有类型项目，但要求所有分发的软件中必须保留本项目的MIT授权许可；所有未保留授权分发的商业行为均将被视为侵权行为
