@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QUrl>
+#include <QApplication>
 
 #include "ElaTheme.h"
 #include "private/ElaUploadAreaPrivate.h"

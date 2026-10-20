@@ -262,7 +262,8 @@ void ElaSpotlight::mousePressEvent(QMouseEvent *event)
 	QRectF spotRect = d->_pSpotlightRect;
 	if (spotRect.isValid() && !spotRect.contains(event->pos()))
 	{
-		if (d->_steps.size() <= 1)
+		//if (d->_steps.size() <= 1)
+		if (!d->_tipWidget->rect().contains(d->_tipWidget->mapFromGlobal(event->globalPos())))
 		{
 			finish();
 		}

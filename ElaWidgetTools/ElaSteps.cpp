@@ -14,7 +14,7 @@ ElaSteps::ElaSteps(QWidget *parent)
 	Q_D(ElaSteps);
 	d->q_ptr = this;
 	setObjectName("ElaSteps");
-	setFixedHeight(70);
+	updateSize();
 
 	d->_pCurrentStep = 0;
 	d->_pStepCount = 3;
@@ -42,6 +42,31 @@ QStringList ElaSteps::getStepTitles() const
 {
 	Q_D(const ElaSteps);
 	return d->_stepTitles;
+}
+
+void ElaSteps::setStepOrientation(Qt::Orientation orientation)
+{
+	Q_D(ElaSteps);
+	if (d->_pStepOrientation == orientation)
+		return;
+	d->_pStepOrientation = orientation;
+	updateSize();
+	update();
+}
+
+Qt::Orientation ElaSteps::stepOrientation() const
+{
+	Q_D(const ElaSteps);
+	return d->_pStepOrientation;
+}
+
+void ElaSteps::updateSize()
+{
+	Q_D(ElaSteps);
+	if (d->_pStepOrientation == Qt::Vertical)
+		setFixedHeight(60 + qMax(0, d->_pStepCount - 1) * 52);
+	else
+		setFixedHeight(70);
 }
 
 void ElaSteps::next()
@@ -106,6 +131,74 @@ void ElaSteps::paintEvent(QPaintEvent *event)
 
 	QFont titleFont = this->font();
 	titleFont.setPixelSize(13);
+
+	if (d->_pStepOrientation == Qt::Vertical)
+	{
+		const int circleDiameter = 28;
+		const int circleRadius = circleDiameter / 2;  // 14
+		const int leftX = 22;                          // 圆点中心 x
+		const int firstCenter = 16 + circleRadius;     // 首个圆点中心 y
+		const int rowSpacing = 52;                     // 行间距
+		const int titleX = leftX + circleDiameter + 14;
+		const int titleMaxW = qMax(40, width() - titleX - 16);
+
+		for (int i = 0; i < stepCount; i++)
+		{
+			const qreal cy = firstCenter + i * rowSpacing;
+
+			// 连接竖线
+			if (i < stepCount - 1)
+			{
+				const qreal nextCy = firstCenter + (i + 1) * rowSpacing;
+				if (i < d->_pCurrentStep)
+					painter.setPen(QPen(primaryNormal, 2));
+				else
+					painter.setPen(QPen(basicBorder, 2));
+				painter.drawLine(QPointF(leftX, cy + circleRadius), QPointF(leftX, nextCy - circleRadius));
+			}
+
+			// 圆点
+			const QRectF circleRect(leftX - circleRadius, cy - circleRadius, circleDiameter, circleDiameter);
+			painter.setPen(Qt::NoPen);
+			if (i < d->_pCurrentStep)
+			{
+				painter.setBrush(primaryNormal);
+				painter.drawEllipse(circleRect);
+				painter.setPen(whiteColor);
+				painter.setFont(iconFont);
+				painter.drawText(circleRect, Qt::AlignCenter, QChar((unsigned short)0xea6c));
+			}
+			else if (i == d->_pCurrentStep)
+			{
+				painter.setBrush(primaryNormal);
+				painter.drawEllipse(circleRect);
+				painter.setPen(whiteColor);
+				painter.setFont(numberFont);
+				painter.drawText(circleRect, Qt::AlignCenter, QString::number(i + 1));
+			}
+			else
+			{
+				painter.setBrush(basicBase);
+				painter.drawEllipse(circleRect);
+				painter.setPen(QPen(basicBorder, 1));
+				painter.setBrush(Qt::NoBrush);
+				painter.drawEllipse(circleRect);
+				painter.setPen(basicDetailsText);
+				painter.setFont(numberFont);
+				painter.drawText(circleRect, Qt::AlignCenter, QString::number(i + 1));
+			}
+
+			// 标题：序号圆点中心与文本垂直居中对齐，长文本自动换行
+			if (i < d->_stepTitles.size())
+			{
+				painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
+				painter.setFont(titleFont);
+				const QRectF titleRect(titleX, cy - rowSpacing / 2.0, titleMaxW, rowSpacing);
+				painter.drawText(titleRect, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap, d->_stepTitles[i]);
+			}
+		}
+		return;
+	}
 
 	for (int i = 0; i < stepCount; i++)
 	{

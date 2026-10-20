@@ -6,13 +6,6 @@ endif()
 
 project(ElaFramework VERSION 0.1 LANGUAGES CXX)
 
-set(CMAKE_CONFIGURATION_TYPES "Release;RelWithDebInfo" CACHE STRING "" FORCE)
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
-elseif(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-    message(FATAL_ERROR "Only Release and RelWithDebInfo builds are allowed.")
-endif()
-
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -20,6 +13,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+add_compile_options(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f00)
 
 # 配置 QT 路径，三种方式任选其一（优先级从高到低）：
 #   1) 命令行 -DQT_SDK_DIR=/path/to/Qt

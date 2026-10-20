@@ -58,6 +58,7 @@
 #include <QStandardItemModel>
 #include <QTimer>
 #include <QVBoxLayout>
+#include <QDebug>
 
 T_NewComponents::T_NewComponents(QWidget *parent)
 	: T_BasePage(parent)
@@ -611,7 +612,7 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 
 	ElaPushButton *notifBtn = new ElaPushButton("通知中心", this);
 	notifBtn->setFixedSize(100, 38);
-	connect(notifBtn, &ElaPushButton::clicked, this, [=]()
+	connect(notifBtn, &ElaPushButton::pressed, this, [=]()
 	{
 		if (_notificationCenter->isPanelVisible())
 			_notificationCenter->hidePanel();

@@ -177,6 +177,18 @@ void ElaNavigationBar::setUserInfoCardSubTitle(QString subTitle)
     d->_userCard->setSubTitle(subTitle);
 }
 
+void ElaNavigationBar::setUserInfoCardPixMode(ElaCardPixType::PixMode pixMode)
+{
+    Q_D(ElaNavigationBar);
+    d->_userCard->setCardPixMode(pixMode);
+}
+
+void ElaNavigationBar::setUserInfoCardOrientation(ElaCardOrientation::Orientation orientation)
+{
+    Q_D(ElaNavigationBar);
+    d->_userCard->setCardOrientation(orientation);
+}
+
 ElaNavigationType::NodeResult ElaNavigationBar::addExpanderNode(const QString& expanderTitle, QString& expanderKey, ElaIconType::IconName awesome)
 {
     Q_D(ElaNavigationBar);
@@ -264,6 +276,7 @@ ElaNavigationType::NodeResult ElaNavigationBar::addPageNode(const QString& pageT
         {
             ElaMenu* menu = d->_compactMenuMap.value(originalNode);
             QAction* action = menu->addElaIconAction(node->getAwesome(), node->getNodeTitle());
+            action->setProperty("ElaPageKey", pageKey);
             connect(action, &QAction::triggered, this, [=]() {
                 d->onTreeViewClicked(node->getModelIndex());
             });
@@ -272,6 +285,7 @@ ElaNavigationType::NodeResult ElaNavigationBar::addPageNode(const QString& pageT
         {
             ElaMenu* menu = new ElaMenu(const_cast<ElaNavigationBar*>(this));
             QAction* action = menu->addElaIconAction(node->getAwesome(), node->getNodeTitle());
+            action->setProperty("ElaPageKey", pageKey);
             connect(action, &QAction::triggered, this, [=]() {
                 d_ptr->onTreeViewClicked(node->getModelIndex());
             });
@@ -307,6 +321,7 @@ ElaNavigationType::NodeResult ElaNavigationBar::addPageNode(const QString& pageT
         {
             ElaMenu* menu = d_ptr->_compactMenuMap.value(originalNode);
             QAction* action = menu->addElaIconAction(node->getAwesome(), node->getNodeTitle());
+            action->setProperty("ElaPageKey", pageKey);
             connect(action, &QAction::triggered, this, [=]() {
                 d_ptr->onTreeViewClicked(node->getModelIndex());
             });
@@ -315,6 +330,7 @@ ElaNavigationType::NodeResult ElaNavigationBar::addPageNode(const QString& pageT
         {
             ElaMenu* menu = new ElaMenu(const_cast<ElaNavigationBar*>(this));
             QAction* action = menu->addElaIconAction(node->getAwesome(), node->getNodeTitle());
+            action->setProperty("ElaPageKey", pageKey);
             connect(action, &QAction::triggered, this, [=]() {
                 d_ptr->onTreeViewClicked(node->getModelIndex());
             });
@@ -433,6 +449,21 @@ void ElaNavigationBar::removeNode(QString nodeKey)
         }
         else
         {
+            ElaNavigationNode* originalNode = node->getOriginalNode();
+            if (originalNode && d->_compactMenuMap.contains(originalNode))
+            {
+                ElaMenu* menu = d->_compactMenuMap.value(originalNode);
+                for (QAction* a : menu->actions())
+                {
+                    if (a->property("ElaPageKey").toString() == nodeKey)
+                    {
+                        menu->removeAction(a);
+                        // 延迟删除：避免弹窗正引用该 action 时同步 delete 造成堆损坏
+                        a->deleteLater();
+                        break;
+                    }
+                }
+            }
             QStringList removeKeyList = d->_navigationModel->removeNavigationNode(nodeKey);
             d->_initNodeModelIndex(QModelIndex());
             for (const auto& removeKey: removeKeyList)

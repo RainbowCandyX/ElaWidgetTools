@@ -22,6 +22,7 @@ class ELA_EXPORT ElaInteractiveCard : public QPushButton
     Q_PROPERTY_CREATE_Q_H(QSize, CardPixmapSize);
     Q_PROPERTY_CREATE_Q_H(int, CardPixmapBorderRadius)
     Q_PROPERTY_CREATE_Q_H(ElaCardPixType::PixMode, CardPixMode);
+    Q_PROPERTY_CREATE_Q_H(ElaCardOrientation::Orientation, CardOrientation); // 横向 / 纵向布局
 
 public:
     explicit ElaInteractiveCard(QWidget* parent = nullptr);

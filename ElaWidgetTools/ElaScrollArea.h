@@ -16,6 +16,8 @@ public:
 
     void setIsGrabGesture(bool isEnable, qreal mousePressEventDelay = 0.5);
 
+    void setWidget(QWidget* widget);
+
     void setIsOverShoot(Qt::Orientation orientation, bool isEnable);
     bool getIsOverShoot(Qt::Orientation orientation) const;
 

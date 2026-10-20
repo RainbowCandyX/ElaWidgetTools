@@ -224,6 +224,15 @@ enum PixMode
 Q_ENUM_CREATE(PixMode)
 Q_END_ENUM_CREATE(ElaCardPixType)
 
+Q_BEGIN_ENUM_CREATE(ElaCardOrientation)
+enum Orientation
+{
+    Horizontal = 0x0000, // 图标在左、文字在右（默认，user card 样式）
+    Vertical = 0x0001,   // 图标在上、标题（及副标题）在下，水平居中
+};
+Q_ENUM_CREATE(Orientation)
+Q_END_ENUM_CREATE(ElaCardOrientation)
+
 Q_BEGIN_ENUM_CREATE(ElaGraphicsSceneType)
 enum SceneMode
 {

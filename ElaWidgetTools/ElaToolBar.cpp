@@ -3,6 +3,7 @@
 #include <QLayout>
 #include <QPainter>
 #include <QStyleOption>
+#include <QApplication>
 
 #include "ElaIcon.h"
 #include "ElaTheme.h"
@@ -52,11 +53,13 @@ ElaToolBar::ElaToolBar(const QString& title, QWidget* parent)
 
 ElaToolBar::~ElaToolBar()
 {
-    Q_D(ElaToolBar);
-    QStyle* proxy = d->_toolBarStyle;
-    d->_toolBarStyle = nullptr;
-    setStyle(nullptr);
-    delete proxy;
+    // d->_toolBarStyle 继承自QObject，从style()中获取，所以这里不能delete，交由QT管理
+
+    //Q_D(ElaToolBar);
+    //QStyle* proxy = d->_toolBarStyle;
+    //d->_toolBarStyle = nullptr;
+    //setStyle(nullptr);
+    //delete proxy;
 }
 
 void ElaToolBar::setToolBarSpacing(int spacing)

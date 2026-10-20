@@ -44,6 +44,10 @@ public:
     void setUserInfoCardPixmap(QPixmap pix);
     void setUserInfoCardTitle(QString title);
     void setUserInfoCardSubTitle(QString subTitle);
+    void setUserInfoCardPixMode(ElaCardPixType::PixMode pixMode);
+
+    // 设置导航栏顶部卡片（user card）的布局方向：Horizontal / Vertical
+    void setUserInfoCardOrientation(ElaCardOrientation::Orientation orientation);
     ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey, ElaIconType::IconName awesome = ElaIconType::None) const;
     ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey, const QString& targetExpanderKey, ElaIconType::IconName awesome = ElaIconType::None) const;
     ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, ElaIconType::IconName awesome = ElaIconType::None);

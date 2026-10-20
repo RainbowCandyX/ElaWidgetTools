@@ -77,3 +77,11 @@ bool ElaScrollArea::getIsAnimation(Qt::Orientation orientation) const
         return dynamic_cast<ElaScrollBar*>(this->verticalScrollBar())->getIsAnimation();
     }
 }
+
+void ElaScrollArea::setWidget(QWidget* widget) {
+
+    widget->setObjectName("ElaScrollAreaContent");
+    widget->setStyleSheet("#ElaScrollAreaContent{background-color:transparent}");
+    QScrollArea::setWidget(widget);
+
+}

@@ -20,6 +20,7 @@ public:
 
     QStringList _stepTitles;
     ElaThemeType::ThemeMode _themeMode;
+    Qt::Orientation _pStepOrientation = Qt::Horizontal;
 };
 
 #endif // ELASTEPSPRIVATE_H

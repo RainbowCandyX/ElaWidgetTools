@@ -32,6 +32,7 @@
 #include <QGraphicsView>
 #include <QHBoxLayout>
 #include <QMouseEvent>
+#include <QDebug>
 #ifdef Q_OS_WIN
 #include "ElaApplication.h"
 #include <QTimer>

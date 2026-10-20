@@ -48,6 +48,12 @@ public:
 	QStringList getRoutePaths() const;
 	QVariantMap getRouteMeta(const QString& path) const;
 
+	// 按路由路径展开 / 折叠其在左侧导航栏中对应的展开器节点。
+	// 仅对带子路由（即在导航栏生成展开器的）路径有效，如 "/pairing"；
+	// 路径不存在、或该路径未生成展开器时返回 false。
+	bool setRouteExpanded(const QString& path, bool expanded = true);
+	bool isRouteExpanded(const QString& path) const;
+
 	ElaRouterType::NavigationResult push(const QString& path, const QVariantMap& params = {});
 	ElaRouterType::NavigationResult replace(const QString& path, const QVariantMap& params = {});
 	void back();

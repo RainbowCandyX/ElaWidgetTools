@@ -580,7 +580,7 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 			}
 		});
 
-		connect(imageLabel, &QLabel::customContextMenuRequested, previewWindow, [currentImage, previewWindow](const QPoint &pos)
+		connect(imageLabel, &QLabel::customContextMenuRequested, previewWindow, [&](const QPoint &pos)
 		{
 			ElaMenu *menu = new ElaMenu(previewWindow);
 			QAction *copyAction = menu->addElaIconAction(ElaIconType::Copy, "复制图片");
@@ -743,7 +743,7 @@ void ElaChatBubble::mouseDoubleClickEvent(QMouseEvent *event)
 
 		scrollArea->setContextMenuPolicy(Qt::CustomContextMenu);
 		connect(scrollArea, &QWidget::customContextMenuRequested, previewWindow,
-		        [currentImage, scrollArea](const QPoint &pos)
+		        [&](const QPoint &pos)
 		        {
 			        ElaMenu contextMenu;
 			        QAction *copyAction = contextMenu.addElaIconAction(ElaIconType::Copy, "复制图片");

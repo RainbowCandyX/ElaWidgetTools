@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPropertyAnimation>
+#include <QScreen>
 
 #include "DeveloperComponents/ElaComboBoxView.h"
 #include "DeveloperComponents/ElaMultiSelectComboBoxDelegate.h"
@@ -274,14 +275,39 @@ void ElaMultiSelectComboBox::showPopup()
 			{
 				containerHeight = count() * 35 + 8;
 			}
+
+			QPoint globalPos = mapToGlobal(QPoint(0, 0));
+			QRect screenGeometry = this->screen()->availableGeometry();
+
+			bool showAbove = (globalPos.y() + height() + containerHeight > screenGeometry.bottom()) &&
+				(globalPos.y() - containerHeight >= screenGeometry.top());
+
+			QPoint containerPos;
+			if (showAbove)
+			{
+				containerPos = QPoint(globalPos.x(), globalPos.y() - containerHeight - 3);
+			}
+			else
+			{
+				containerPos = QPoint(globalPos.x(), globalPos.y() + height() + 3);
+			}
+			container->move(containerPos);
+
 			view()->resize(view()->width(), containerHeight - 8);
 			view()->setVisible(true);
 			container->move(mapToGlobal(QPoint(0, height() + 3)));
 			QPropertyAnimation *fixedSizeAnimation = new QPropertyAnimation(container, "maximumHeight");
 			connect(fixedSizeAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant &value)
 			{
-				container->setFixedHeight(value.toUInt());
-			});
+					const int h = value.toInt();
+					container->setFixedHeight(h);
+					if (showAbove)
+					{
+						const int bottomY = containerPos.y() + containerHeight;
+						container->move(containerPos.x(), bottomY - h);
+						view()->setFixedHeight(qMax(h - 8, 0));
+					}
+				});
 			fixedSizeAnimation->setStartValue(1);
 			fixedSizeAnimation->setEndValue(containerHeight);
 			fixedSizeAnimation->setEasingCurve(QEasingCurve::OutCubic);
@@ -295,7 +321,7 @@ void ElaMultiSelectComboBox::showPopup()
 				layout->addWidget(view());
 			});
 			QPoint viewPos = view()->pos();
-			viewPosAnimation->setStartValue(QPoint(viewPos.x(), viewPos.y() - view()->height()));
+			viewPosAnimation->setStartValue(QPoint(viewPos.x(), showAbove ? (viewPos.y() + view()->height()) : (viewPos.y() - view()->height())));
 			viewPosAnimation->setEndValue(viewPos);
 			viewPosAnimation->setEasingCurve(QEasingCurve::OutCubic);
 			viewPosAnimation->setDuration(400);
@@ -374,6 +400,7 @@ void ElaMultiSelectComboBox::hidePopup()
 					layout->takeAt(0);
 				}
 				QPropertyAnimation *viewPosAnimation = new QPropertyAnimation(view(), "pos");
+				QPoint viewPos = view()->pos();
 				connect(viewPosAnimation, &QPropertyAnimation::finished, this, [=]()
 				{
 					layout->addWidget(view());
@@ -381,10 +408,6 @@ void ElaMultiSelectComboBox::hidePopup()
 					QApplication::sendEvent(parentWidget(), &focusEvent);
 					QComboBox::hidePopup();
 					container->setFixedHeight(containerHeight);
-				});
-				QPoint viewPos = view()->pos();
-				connect(viewPosAnimation, &QPropertyAnimation::finished, this, [=]()
-				{
 					view()->move(viewPos);
 				});
 				viewPosAnimation->setStartValue(viewPos);

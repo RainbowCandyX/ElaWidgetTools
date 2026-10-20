@@ -92,6 +92,8 @@ void ElaCentralStackedWidget::setIsHasRadius(bool isHasRadius)
 
 void ElaCentralStackedWidget::doWindowStackSwitch(ElaWindowType::StackSwitchMode stackSwitchMode, int nodeIndex, bool isRouteBack)
 {
+    if (_containerStackedWidget->currentIndex() == nodeIndex)
+        return;
     _stackSwitchMode = stackSwitchMode;
     switch (stackSwitchMode)
     {

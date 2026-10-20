@@ -207,6 +207,10 @@ void ElaTableWidgetStyle::drawControl(ControlElement element, const QStyleOption
                 iconRect.adjust(_horizontalPadding, 0, _horizontalPadding, 0);
                 textRect.adjust(_horizontalPadding, 0, 0, 0);
             }
+            else {
+                iconRect.adjust(_horizontalPadding/2, 0, _horizontalPadding/2, 0);
+                textRect.adjust(_horizontalPadding, 0, 0, 0);
+            }
             if (!vopt->icon.isNull())
             {
                 QIcon::Mode mode = QIcon::Normal;
@@ -281,4 +285,11 @@ int ElaTableWidgetStyle::pixelMetric(PixelMetric metric, const QStyleOption* opt
     }
     }
     return QProxyStyle::pixelMetric(metric, option, widget);
+}
+
+int ElaTableWidgetStyle::styleHint(StyleHint hint, const QStyleOption* option, const QWidget* widget, QStyleHintReturn* returnData) const
+{
+    if (hint == QStyle::SH_Table_GridLineColor)
+        return ElaThemeColor(_themeMode, BasicBorder).rgba();   // 单元格分隔线：divider 灰，随明暗主题
+    return QProxyStyle::styleHint(hint, option, widget, returnData);
 }

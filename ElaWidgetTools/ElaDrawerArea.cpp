@@ -75,6 +75,8 @@ void ElaDrawerArea::removeDrawer(QWidget* widget)
 
 void ElaDrawerArea::expand()
 {
+    if (getIsExpand())
+        return;
     Q_D(ElaDrawerArea);
     d->_drawerHeader->setIsExpand(true);
     d->_drawerHeader->doExpandOrCollapseAnimation();
@@ -84,6 +86,8 @@ void ElaDrawerArea::expand()
 
 void ElaDrawerArea::collapse()
 {
+    if (!getIsExpand())
+        return;
     Q_D(ElaDrawerArea);
     d->_drawerHeader->setIsExpand(false);
     d->_drawerHeader->doExpandOrCollapseAnimation();

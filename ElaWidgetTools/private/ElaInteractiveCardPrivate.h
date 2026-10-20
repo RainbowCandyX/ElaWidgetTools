@@ -22,6 +22,7 @@ class ElaInteractiveCardPrivate : public QObject
     Q_PROPERTY_CREATE_D(QSize, CardPixmapSize);
     Q_PROPERTY_CREATE_D(int, CardPixmapBorderRadius)
     Q_PROPERTY_CREATE_D(ElaCardPixType::PixMode, CardPixMode);
+    Q_PROPERTY_CREATE_D(ElaCardOrientation::Orientation, CardOrientation);
 
 public:
     explicit ElaInteractiveCardPrivate(QObject* parent = nullptr);

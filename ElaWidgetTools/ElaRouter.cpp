@@ -144,6 +144,34 @@ QVariantMap ElaRouter::getRouteMeta(const QString &path) const
 	return {};
 }
 
+bool ElaRouter::setRouteExpanded(const QString &path, bool expanded)
+{
+	ElaRouteNode *node = d_ptr->_pathIndex.value(ElaRouterPrivate::normalizePath(path), nullptr);
+	if (!node || !d_ptr->_window || node->expanderKey.isEmpty())
+	{
+		return false;
+	}
+	if (expanded)
+	{
+		d_ptr->_window->expandNavigationNode(node->expanderKey);
+	}
+	else
+	{
+		d_ptr->_window->collapseNavigationNode(node->expanderKey);
+	}
+	return true;
+}
+
+bool ElaRouter::isRouteExpanded(const QString &path) const
+{
+	const ElaRouteNode *node = d_ptr->_pathIndex.value(ElaRouterPrivate::normalizePath(path), nullptr);
+	if (!node || !d_ptr->_window || node->expanderKey.isEmpty())
+	{
+		return false;
+	}
+	return d_ptr->_window->getNavigationNodeIsExpanded(node->expanderKey);
+}
+
 ElaRouterType::NavigationResult ElaRouter::push(const QString &path, const QVariantMap &params)
 {
 	Q_D(ElaRouter);

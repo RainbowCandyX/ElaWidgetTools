@@ -93,18 +93,26 @@ void ElaNotificationCenter::showPanel(QWidget *anchor)
 		d->_slideAnimation->stop();
 		delete d->_slideAnimation;
 	}
-	d->_slideAnimation = new QPropertyAnimation(this, "pos");
+
+
+	d->_slideAnimation = new QPropertyAnimation(this, "maximumWidth");
+	connect(d->_slideAnimation, &QPropertyAnimation::valueChanged,
+		this, [=](const QVariant& value) {
+			const int w = value.toInt();
+			setGeometry(anchorRight - w, posY, w, height());
+			setFixedWidth(w);
+		});
 	d->_slideAnimation->setDuration(250);
 	d->_slideAnimation->setEasingCurve(QEasingCurve::OutCubic);
-	d->_slideAnimation->setStartValue(QPoint(startX, posY));
-	d->_slideAnimation->setEndValue(QPoint(endX, posY));
+	d->_slideAnimation->setStartValue(0);
+	d->_slideAnimation->setEndValue(d->_pPanelWidth);
 	d->_slideAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 	connect(d->_slideAnimation, &QPropertyAnimation::finished, this, [d]()
 	{
 		d->_slideAnimation = nullptr;
+		d->_isVisible = true;
 	});
 
-	d->_isVisible = true;
 	qApp->installEventFilter(d);
 	Q_EMIT panelVisibilityChanged(true);
 }
@@ -117,7 +125,6 @@ void ElaNotificationCenter::hidePanel()
 		return;
 	}
 	qApp->removeEventFilter(d);
-	d->_isVisible = false;
 
 	if (d->_anchorWidget)
 	{
@@ -130,15 +137,22 @@ void ElaNotificationCenter::hidePanel()
 			d->_slideAnimation->stop();
 			delete d->_slideAnimation;
 		}
-		d->_slideAnimation = new QPropertyAnimation(this, "pos");
+		d->_slideAnimation = new QPropertyAnimation(this, "maximumWidth");
+		connect(d->_slideAnimation, &QPropertyAnimation::valueChanged,
+			       this, [=](const QVariant& value) {
+				const int w = value.toInt();
+				setGeometry(anchorRight - w, posY, w, height());
+				setFixedWidth(w);
+			});
 		d->_slideAnimation->setDuration(250);
 		d->_slideAnimation->setEasingCurve(QEasingCurve::OutCubic);
-		d->_slideAnimation->setStartValue(pos());
-		d->_slideAnimation->setEndValue(QPoint(anchorRight, posY));
+		d->_slideAnimation->setStartValue(d->_pPanelWidth);
+		d->_slideAnimation->setEndValue(0);
 		connect(d->_slideAnimation, &QPropertyAnimation::finished, this, [this, d]()
 		{
 			hide();
 			d->_slideAnimation = nullptr;
+			d->_isVisible = false;
 		});
 		d->_slideAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 	}
@@ -356,14 +370,16 @@ ElaNotificationCenterPrivate::~ElaNotificationCenterPrivate()
 bool ElaNotificationCenterPrivate::eventFilter(QObject *watched, QEvent *event)
 {
 	Q_Q(ElaNotificationCenter);
-	if (event->type() == QEvent::MouseButtonPress)
-	{
-		QWidget *clickedWidget = qobject_cast<QWidget *>(watched);
+	switch (event->type()) {
+	case QEvent::MouseButtonPress:
+	case QEvent::Move:
+		QWidget* clickedWidget = qobject_cast<QWidget*>(watched);
 		if (clickedWidget && !q->isAncestorOf(clickedWidget) && clickedWidget != q)
 		{
 			q->hidePanel();
 			return false;
 		}
+		break;
 	}
 	return QObject::eventFilter(watched, event);
 }

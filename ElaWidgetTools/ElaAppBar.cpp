@@ -177,7 +177,9 @@ ElaAppBar::ElaAppBar(QWidget* parent)
     d->_customAreaWidgetList[1] = middleAreaWidget;
     d->_customAreaWidgetList[2] = rightAreaWidget;
     d->_mainLayout->addWidget(leftAreaWidget);
+    d->_mainLayout->addStretch();
     d->_mainLayout->addWidget(middleAreaWidget);
+    d->_mainLayout->addStretch();
     d->_mainLayout->addWidget(rightAreaWidget);
 
     QHBoxLayout* rightLayout = new QHBoxLayout();
@@ -258,7 +260,7 @@ void ElaAppBar::setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* w
     widget->setParent(this);
     int customAreaIndex = (int)customArea - 1;
     d->_mainLayout->removeWidget(d->_customAreaWidgetList[customAreaIndex]);
-    d->_mainLayout->insertWidget(customAreaIndex + 1, widget);
+    d->_mainLayout->insertWidget(customAreaIndex * 2 + 1, widget);
     d->_customAreaWidgetList[customAreaIndex] = widget;
     d->_customAreaHitTestObjectList[customAreaIndex] = hitTestObject;
     d->_customAreaHitTestFunctionNameList[customAreaIndex] = hitTestFunctionName;
