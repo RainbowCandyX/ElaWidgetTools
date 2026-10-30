@@ -33,7 +33,7 @@ ElaAppBar::ElaAppBar(QWidget* parent)
     : QWidget{parent}, d_ptr(new ElaAppBarPrivate())
 {
     Q_D(ElaAppBar);
-    d->_buttonFlags = ElaAppBarType::RouteBackButtonHint | ElaAppBarType::RouteForwardButtonHint | ElaAppBarType::StayTopButtonHint | ElaAppBarType::ThemeChangeButtonHint | ElaAppBarType::MinimizeButtonHint | ElaAppBarType::MaximizeButtonHint | ElaAppBarType::CloseButtonHint;
+    d->_buttonFlags = ElaAppBarType::WindowButtonHint;
     window()->setAttribute(Qt::WA_Mapped);
     d->_pAppBarHeight = 45;
     setFixedHeight(d->_pAppBarHeight);
@@ -344,6 +344,8 @@ void ElaAppBar::setWindowButtonFlags(ElaAppBarType::ButtonFlags buttonFlags)
     d->_buttonFlags = buttonFlags;
     if (d->_buttonFlags.testFlag(ElaAppBarType::NoneButtonHint))
     {
+        d->_iconLabel->setVisible(false);
+        d->_titleLabel->setVisible(false);
         d->_routeBackButton->setVisible(false);
         d->_routeForwardButton->setVisible(false);
         d->_navigationButton->setVisible(false);
@@ -355,6 +357,8 @@ void ElaAppBar::setWindowButtonFlags(ElaAppBarType::ButtonFlags buttonFlags)
     }
     else
     {
+        d->_iconLabel->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::IconLabelHint));
+        d->_titleLabel->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::TitleLabelHint));
         d->_routeBackButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::RouteBackButtonHint));
         d->_routeForwardButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::RouteForwardButtonHint));
         d->_navigationButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::NavigationButtonHint));
