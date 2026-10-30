@@ -33,7 +33,7 @@ ElaContentDialog::ElaContentDialog(QWidget* parent)
     d->_appBar = new ElaAppBar(this);
     d->_appBar->setWindowButtonFlags(ElaAppBarType::NoneButtonHint);
     d->_appBar->setIsFixedSize(true);
-    d->_appBar->setAppBarHeight(0);
+    d->_appBar->setAppBarHeight(10); // 给appbar留10px 响应窗口拖动
 #ifdef Q_OS_WIN
     // 防止意外拉伸
     createWinId();
