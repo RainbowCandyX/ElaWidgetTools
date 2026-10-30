@@ -22,6 +22,7 @@ ElaRibbonBar::ElaRibbonBar(QWidget *parent) : QWidget{parent}, d_ptr(new ElaRibb
 	Q_D(ElaRibbonBar);
 	d->q_ptr = this;
 	d->_pCurrentIndex = 0;
+	d->_pBackgroundTransparent = false;
 
 	setObjectName("ElaRibbonBar");
 	setAttribute(Qt::WA_StyledBackground, false);
@@ -366,6 +367,25 @@ int ElaRibbonBar::getAnimationDuration() const
 	return d->_animationDuration;
 }
 
+void ElaRibbonBar::setBackgroundTransparent(bool backgroundTransparent)
+{
+	Q_D(ElaRibbonBar);
+	if (d->_pBackgroundTransparent == backgroundTransparent)
+	{
+		return;
+	}
+	d->_pBackgroundTransparent = backgroundTransparent;
+	setAttribute(Qt::WA_TranslucentBackground, backgroundTransparent);
+	Q_EMIT pBackgroundTransparentChanged();
+	update();
+}
+
+bool ElaRibbonBar::getBackgroundTransparent() const
+{
+	Q_D(const ElaRibbonBar);
+	return d->_pBackgroundTransparent;
+}
+
 bool ElaRibbonBar::eventFilter(QObject *watched, QEvent *event)
 {
 	Q_D(ElaRibbonBar);
@@ -417,8 +437,11 @@ void ElaRibbonBar::paintEvent(QPaintEvent *event)
 	QPainter painter(this);
 	painter.setRenderHints(QPainter::Antialiasing);
 	painter.setPen(Qt::NoPen);
-	painter.setBrush(ElaThemeColor(d->_themeMode, WindowBase));
-	painter.drawRect(rect());
+	if (!d->_pBackgroundTransparent)
+	{
+		painter.setBrush(ElaThemeColor(d->_themeMode, WindowBase));
+		painter.drawRect(rect());
+	}
 	if (d->_externalTabBar)
 	{
 		painter.setPen(QPen(ElaThemeColor(d->_themeMode, BasicBorder), 1));

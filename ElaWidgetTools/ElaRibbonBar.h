@@ -16,6 +16,7 @@ class ELA_EXPORT ElaRibbonBar : public QWidget
     Q_OBJECT
     Q_Q_CREATE(ElaRibbonBar)
     Q_PROPERTY_CREATE_Q_H(int, CurrentIndex)
+    Q_PROPERTY_CREATE_Q_H(bool, BackgroundTransparent)
 public:
     explicit ElaRibbonBar(QWidget* parent = nullptr);
     ~ElaRibbonBar() override;

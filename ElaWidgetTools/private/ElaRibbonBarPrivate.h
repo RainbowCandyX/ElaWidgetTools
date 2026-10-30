@@ -17,6 +17,7 @@ class ElaRibbonBarPrivate : public QObject
     Q_OBJECT
     Q_D_CREATE(ElaRibbonBar)
     Q_PROPERTY_CREATE_D(int, CurrentIndex)
+    Q_PROPERTY_CREATE_D(bool, BackgroundTransparent)
 public:
     explicit ElaRibbonBarPrivate(QObject* parent = nullptr);
     ~ElaRibbonBarPrivate() override;
