@@ -46,6 +46,8 @@ bool ElaToolTipPrivate::eventFilter(QObject* watched, QEvent* event)
         _updatePos();
         break;
     }
+    case QEvent::ToolTip:
+        return true; // 防止系统默认的tooltip弹出
     default:
     {
         break;

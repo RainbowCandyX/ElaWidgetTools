@@ -1,6 +1,8 @@
 #include "ElaSteps.h"
 
+#include <QMouseEvent>
 #include <QPainter>
+#include <QRectF>
 
 #include "ElaTheme.h"
 #include "private/ElaStepsPrivate.h"
@@ -14,12 +16,14 @@ ElaSteps::ElaSteps(QWidget *parent)
 	Q_D(ElaSteps);
 	d->q_ptr = this;
 	setObjectName("ElaSteps");
+	setMouseTracking(true);
 	updateSize();
 
 	d->_pCurrentStep = 0;
 	d->_pStepCount = 3;
 
 	d->_themeMode = eTheme->getThemeMode();
+	connect(this, &ElaSteps::pCurrentStepChanged, this, [=]() {update();});
 	connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode)
 	{
 		d->_themeMode = themeMode;
@@ -60,6 +64,28 @@ Qt::Orientation ElaSteps::stepOrientation() const
 	return d->_pStepOrientation;
 }
 
+void ElaSteps::setStepClickEnabled(bool enabled)
+{
+	Q_D(ElaSteps);
+	if (d->_pStepClickEnabled == enabled)
+	{
+		return;
+	}
+	d->_pStepClickEnabled = enabled;
+	if (!enabled)
+	{
+		d->_pHoverStep = -1;
+		unsetCursor();
+		update();
+	}
+}
+
+bool ElaSteps::getStepClickEnabled() const
+{
+	Q_D(const ElaSteps);
+	return d->_pStepClickEnabled;
+}
+
 void ElaSteps::updateSize()
 {
 	Q_D(ElaSteps);
@@ -89,6 +115,108 @@ void ElaSteps::previous()
 		update();
 		Q_EMIT currentStepChanged(d->_pCurrentStep);
 	}
+}
+
+int ElaSteps::stepAtPoint(const QPoint &pos) const
+{
+	Q_D(const ElaSteps);
+	const int stepCount = d->_pStepCount;
+	if (stepCount <= 0)
+	{
+		return -1;
+	}
+
+	if (d->_pStepOrientation == Qt::Vertical)
+	{
+		const int circleRadius = 14;
+		const int leftX = 22;
+		const int firstCenter = 30;
+		const int rowSpacing = 52;
+		const int titleX = leftX + 28 + 14;
+		const int titleMaxW = qMax(40, width() - titleX - 16);
+
+		for (int i = 0; i < stepCount; ++i)
+		{
+			const qreal cy = firstCenter + i * rowSpacing;
+			const QRectF circleRect(leftX - circleRadius, cy - circleRadius, 28, 28);
+			const QRectF titleRect(titleX, cy - rowSpacing / 2.0, titleMaxW, rowSpacing);
+			if (circleRect.contains(pos) || titleRect.contains(pos))
+			{
+				return i;
+			}
+		}
+	}
+	else
+	{
+		const int margin = 50;
+		const int circleRadius = 14;
+		const qreal usableWidth = width() - margin * 2;
+		const qreal spacing = (stepCount > 1) ? usableWidth / (stepCount - 1) : 0;
+
+		for (int i = 0; i < stepCount; ++i)
+		{
+			const qreal cx = (stepCount > 1) ? (margin + i * spacing) : (width() / 2.0);
+			const QRectF circleRect(cx - circleRadius, 8, 28, 28);
+			const QRectF titleRect(cx - 60, 42, 120, 20);
+			if (circleRect.contains(pos) || titleRect.contains(pos))
+			{
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
+void ElaSteps::mouseReleaseEvent(QMouseEvent *event)
+{
+	Q_D(ElaSteps);
+	if (!d->_pStepClickEnabled || event->button() != Qt::LeftButton)
+	{
+		QWidget::mouseReleaseEvent(event);
+		return;
+	}
+
+	const int hit = stepAtPoint(event->pos());
+	if (hit >= 0 && hit != d->_pCurrentStep)
+	{
+		d->_pCurrentStep = hit;
+		update();
+		Q_EMIT currentStepChanged(hit);
+		event->accept();
+		return;
+	}
+
+	QWidget::mouseReleaseEvent(event);
+}
+
+void ElaSteps::mouseMoveEvent(QMouseEvent *event)
+{
+	Q_D(ElaSteps);
+	if (!d->_pStepClickEnabled)
+	{
+		QWidget::mouseMoveEvent(event);
+		return;
+	}
+	const int hit = stepAtPoint(event->pos());
+	if (hit != d->_pHoverStep)
+	{
+		d->_pHoverStep = hit;
+		setCursor(hit >= 0 ? Qt::PointingHandCursor : Qt::ArrowCursor);
+		update();
+	}
+	QWidget::mouseMoveEvent(event);
+}
+
+void ElaSteps::leaveEvent(QEvent *event)
+{
+	Q_D(ElaSteps);
+	if (d->_pHoverStep != -1)
+	{
+		d->_pHoverStep = -1;
+		unsetCursor();
+		update();
+	}
+	QWidget::leaveEvent(event);
 }
 
 void ElaSteps::paintEvent(QPaintEvent *event)
@@ -157,6 +285,15 @@ void ElaSteps::paintEvent(QPaintEvent *event)
 				painter.drawLine(QPointF(leftX, cy + circleRadius), QPointF(leftX, nextCy - circleRadius));
 			}
 
+			if (i == d->_pHoverStep)
+			{
+				QColor halo = primaryNormal;
+				halo.setAlpha(45);
+				painter.setPen(Qt::NoPen);
+				painter.setBrush(halo);
+				painter.drawEllipse(QRectF(leftX - circleRadius - 5, cy - circleRadius - 5, circleDiameter + 10, circleDiameter + 10));
+			}
+
 			// 圆点
 			const QRectF circleRect(leftX - circleRadius, cy - circleRadius, circleDiameter, circleDiameter);
 			painter.setPen(Qt::NoPen);
@@ -220,6 +357,15 @@ void ElaSteps::paintEvent(QPaintEvent *event)
 				painter.setPen(QPen(basicBorder, 2));
 			}
 			painter.drawLine(QPointF(lineStartX, lineCenterY), QPointF(lineEndX, lineCenterY));
+		}
+
+		if (i == d->_pHoverStep)
+		{
+			QColor halo = primaryNormal;
+			halo.setAlpha(45);
+			painter.setPen(Qt::NoPen);
+			painter.setBrush(halo);
+			painter.drawEllipse(QRectF(cx - circleRadius - 5, circleY - 5, circleDiameter + 10, circleDiameter + 10));
 		}
 
 		// Draw circle

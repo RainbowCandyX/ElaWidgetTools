@@ -31,6 +31,8 @@ public:
     void setElaIcon(ElaIconType::IconName icon);
     void setElaIcon(ElaIconType::IconName icon, int iconSize);
 
+    void setPrimary(bool primary);
+
     void setHoverEnabled(bool enabled);
     bool isHoverEnabled() const;
 

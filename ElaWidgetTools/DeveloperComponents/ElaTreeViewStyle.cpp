@@ -58,6 +58,11 @@ void ElaTreeViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOptio
 						// 覆盖时颜色
 						painter->fillPath(path, ElaThemeColor(_themeMode, BasicHoverAlpha));
 					}
+					else if (vopt->features.testFlag(QStyleOptionViewItem::Alternate))
+					{
+						// 隔行底色
+						painter->fillPath(path, ElaThemeColor(_themeMode, BasicAlternating));
+					}
 				}
 				painter->restore();
 			}

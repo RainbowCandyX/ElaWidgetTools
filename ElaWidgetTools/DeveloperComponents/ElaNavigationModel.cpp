@@ -21,26 +21,9 @@ ElaNavigationModel::~ElaNavigationModel()
 
 void ElaNavigationModel::setIsMaximalMode(bool isMaximal)
 {
-    auto rootNodes = _rootNode->getChildrenNodes();
-    for (int i = 0; i < rootNodes.count(); i++)
-    {
-        auto childNode = rootNodes[i];
-        if (childNode->getIsCategoryNode())
-        {
-            if (!isMaximal)
-            {
-                beginRemoveRows({}, i, i);
-                _isMaximalMode = isMaximal;
-                endRemoveRows();
-            }
-            else
-            {
-                beginInsertRows({}, i, i);
-                _isMaximalMode = isMaximal;
-                endInsertRows();
-            }
-        }
-    }
+    Q_EMIT layoutAboutToBeChanged();
+    _isMaximalMode = isMaximal;
+    Q_EMIT layoutChanged();
 }
 
 bool ElaNavigationModel::getIsMaximalMode()
@@ -100,6 +83,28 @@ QModelIndex ElaNavigationModel::index(int row, int column, const QModelIndex& pa
         return childNode->getModelIndex();
     }
     return {};
+}
+
+QModelIndex ElaNavigationModel::index(ElaNavigationNode* node) const
+{
+    if (node == nullptr)
+    {
+        return {};
+    }
+    ElaNavigationNode* parentNode = node->getParentNode();
+    if (parentNode == nullptr)
+    {
+        return {};
+    }
+    const QList<ElaNavigationNode*>& children = _isMaximalMode
+        ? parentNode->getChildrenNodes()
+        : parentNode->getExceptCategoryNodes();
+    const int row = children.indexOf(node);
+    if (row < 0)
+    {
+        return {};
+    }
+    return createIndex(row, 0, node);
 }
 
 int ElaNavigationModel::rowCount(const QModelIndex& parent) const

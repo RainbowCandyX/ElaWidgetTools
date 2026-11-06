@@ -493,20 +493,24 @@ void ElaNavigationBarPrivate::_handleNavigationExpandState(bool isSave)
 {
     if (isSave)
     {
-        // 保存展开状态 收起根节点所有子树
+        // 离开 Maximal：记录已展开的根节点并收起。仅操作节点自身的展开标记，
+        // 不再复用 onTreeViewClicked（它会读被 mode 切换打乱的视图展开态、Compact 下还会弹菜单）。
         _lastExpandedNodesList = _navigationModel->getRootExpandedNodes();
         for (auto node: _lastExpandedNodesList)
         {
-            onTreeViewClicked(node->getModelIndex(), false);
+            node->setIsExpanded(false);
+            _navigationView->collapse(_navigationModel->index(node));
         }
     }
     else
     {
-        // 修正动画覆盖
+        // 回到 Maximal：用节点自身标记恢复展开，按当前 mode 现算 index，
+        // 不依赖被 mode 切换改写/失效的缓存 model index。
         _navigationView->resize(_pNavigationBarWidth - 5, _navigationView->height());
         for (auto node: _lastExpandedNodesList)
         {
-            onTreeViewClicked(node->getModelIndex(), false);
+            node->setIsExpanded(true);
+            _navigationView->expand(_navigationModel->index(node));
         }
     }
 }

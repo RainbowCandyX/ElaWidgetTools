@@ -21,6 +21,8 @@ public:
     QStringList _stepTitles;
     ElaThemeType::ThemeMode _themeMode;
     Qt::Orientation _pStepOrientation = Qt::Horizontal;
+    int _pHoverStep = -1;
+    bool _pStepClickEnabled = true;
 };
 
 #endif // ELASTEPSPRIVATE_H

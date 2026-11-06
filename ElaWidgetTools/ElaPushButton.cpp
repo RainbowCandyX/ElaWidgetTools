@@ -20,14 +20,7 @@ ElaPushButton::ElaPushButton(QWidget* parent)
     d->q_ptr = this;
     d->_pBorderRadius = 3;
     d->_themeMode = eTheme->getThemeMode();
-    d->_pLightDefaultColor = ElaThemeColor(ElaThemeType::Light, BasicBase);
-    d->_pDarkDefaultColor = ElaThemeColor(ElaThemeType::Dark, BasicBase);
-    d->_pLightHoverColor = ElaThemeColor(ElaThemeType::Light, BasicHover);
-    d->_pDarkHoverColor = ElaThemeColor(ElaThemeType::Dark, BasicHover);
-    d->_pLightPressColor = ElaThemeColor(ElaThemeType::Light, BasicPress);
-    d->_pDarkPressColor = ElaThemeColor(ElaThemeType::Dark, BasicPress);
-    d->_lightTextColor = ElaThemeColor(ElaThemeType::Light, BasicText);
-    d->_darkTextColor = ElaThemeColor(ElaThemeType::Dark, BasicText);
+    setPrimary(false);
     setMouseTracking(true);
     setFixedHeight(38);
     QFont font = this->font();
@@ -90,6 +83,32 @@ void ElaPushButton::setElaIcon(ElaIconType::IconName icon, int iconSize)
     d->_hasIcon = (icon != ElaIconType::None);
     update();
 }
+
+void ElaPushButton::setPrimary(bool isPrimary) 
+{
+    Q_D(ElaPushButton);
+    if (isPrimary) {
+        d->_pLightDefaultColor = ElaThemeColor(ElaThemeType::Light, PrimaryNormal);
+        d->_pDarkDefaultColor = ElaThemeColor(ElaThemeType::Dark, PrimaryNormal);
+        d->_pLightHoverColor = ElaThemeColor(ElaThemeType::Light, PrimaryHover);
+        d->_pDarkHoverColor = ElaThemeColor(ElaThemeType::Dark, PrimaryHover);
+        d->_pLightPressColor = ElaThemeColor(ElaThemeType::Light, PrimaryPress);
+        d->_pDarkPressColor = ElaThemeColor(ElaThemeType::Dark, PrimaryPress);
+        d->_lightTextColor = ElaThemeColor(ElaThemeType::Dark, BasicText);
+        d->_darkTextColor = ElaThemeColor(ElaThemeType::Light, BasicText);
+    }
+    else {
+        d->_pLightDefaultColor = ElaThemeColor(ElaThemeType::Light, BasicBase);
+        d->_pDarkDefaultColor = ElaThemeColor(ElaThemeType::Dark, BasicBase);
+        d->_pLightHoverColor = ElaThemeColor(ElaThemeType::Light, BasicHover);
+        d->_pDarkHoverColor = ElaThemeColor(ElaThemeType::Dark, BasicHover);
+        d->_pLightPressColor = ElaThemeColor(ElaThemeType::Light, BasicPress);
+        d->_pDarkPressColor = ElaThemeColor(ElaThemeType::Dark, BasicPress);
+        d->_lightTextColor = ElaThemeColor(ElaThemeType::Light, BasicText);
+        d->_darkTextColor = ElaThemeColor(ElaThemeType::Dark, BasicText);
+    }
+}
+
 
 void ElaPushButton::setHoverEnabled(bool enabled)
 {

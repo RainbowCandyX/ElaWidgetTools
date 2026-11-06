@@ -105,7 +105,6 @@ Q_END_ENUM_CREATE(ElaThemeType)
 Q_BEGIN_ENUM_CREATE(ElaAppBarType)
 enum ButtonType
 {
-    NoneButtonHint = 0x0000,
     RouteBackButtonHint = 0x0001,
     RouteForwardButtonHint = 0x0002,
     NavigationButtonHint = 0x0004,
@@ -114,6 +113,13 @@ enum ButtonType
     MinimizeButtonHint = 0x00020,
     MaximizeButtonHint = 0x0040,
     CloseButtonHint = 0x0080,
+    IconLabelHint = 0x0100,
+    TitleLabelHint = 0x0200,
+
+    NoneButtonHint = 0x0000, // 无按钮
+    DialogButtonHint = StayTopButtonHint | MinimizeButtonHint | MaximizeButtonHint | CloseButtonHint | IconLabelHint | TitleLabelHint,     // Dialog 标准配置
+    WindowButtonHint = RouteBackButtonHint | RouteForwardButtonHint | StayTopButtonHint | ThemeChangeButtonHint | MinimizeButtonHint | MaximizeButtonHint | CloseButtonHint | IconLabelHint | TitleLabelHint, // Window 标准配置
+    AllButtonHint = RouteBackButtonHint | RouteForwardButtonHint | NavigationButtonHint | StayTopButtonHint | ThemeChangeButtonHint | MinimizeButtonHint | MaximizeButtonHint | CloseButtonHint | IconLabelHint | TitleLabelHint, // 所有按钮
 };
 Q_ENUM_CREATE(ButtonType)
 Q_DECLARE_FLAGS(ButtonFlags, ButtonType)
