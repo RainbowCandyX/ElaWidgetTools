@@ -20,7 +20,7 @@ Q_PROPERTY_CREATE_Q_CPP(ElaPopconfirm, QString, CancelButtonText)
 Q_PROPERTY_CREATE_Q_CPP(ElaPopconfirm, ElaIconType::IconName, Icon)
 Q_PROPERTY_CREATE_Q_CPP(ElaPopconfirm, bool, IsLightDismiss)
 
-ElaPopconfirm::ElaPopconfirm(QWidget *parent) : QWidget{nullptr}, d_ptr(new ElaPopconfirmPrivate())
+ElaPopconfirm::ElaPopconfirm(QWidget *parent) : QWidget(parent), d_ptr(new ElaPopconfirmPrivate())
 {
 	Q_D(ElaPopconfirm);
 	d->q_ptr = this;
