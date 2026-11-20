@@ -55,8 +55,10 @@ int T_ListViewModel::rowCount(const QModelIndex& parent) const
 
 QVariant T_ListViewModel::data(const QModelIndex& index, int role) const
 {
-    if (role == Qt::DisplayRole)
+    switch (role)
     {
+    case Qt::DisplayRole:
+    case Qt::ToolTipRole:
         return _dataList[index.row()];
     }
     return QVariant();

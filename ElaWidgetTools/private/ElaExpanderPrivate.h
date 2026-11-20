@@ -28,7 +28,6 @@ private:
     QWidget* _headerCustomWidget{nullptr};
     QWidget* _contentContainer{nullptr};
     QVBoxLayout* _contentLayout{nullptr};
-    QVBoxLayout* _mainLayout{nullptr};
     QWidget* _headerWidget{nullptr};
     QVariantAnimation* _expandAnimation{nullptr};
     int _headerHeight{48};
@@ -36,6 +35,8 @@ private:
     ElaThemeType::ThemeMode _themeMode;
     void _toggleExpand();
     void _startExpandAnimation(bool expand);
+    void _updateContentHeight();
+    void _updateGeometry();
 };
 
 #endif // ELAEXPANDERPRIVATE_H

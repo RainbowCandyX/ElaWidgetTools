@@ -11,6 +11,7 @@ class ELA_EXPORT ElaTabBar : public QTabBar
     Q_OBJECT
     Q_Q_CREATE(ElaTabBar)
     Q_PROPERTY_CREATE_Q_H(QSize, TabSize)
+    Q_PROPERTY_CREATE_Q_H(bool, TabAddButtonVisible)
 public:
     explicit ElaTabBar(QWidget* parent = nullptr);
     ~ElaTabBar() override;
@@ -19,6 +20,7 @@ Q_SIGNALS:
     Q_SIGNAL void tabDragEnter(QMimeData* mimeData);
     Q_SIGNAL void tabDragLeave(QMimeData* mimeData);
     Q_SIGNAL void tabDragDrop(QMimeData* mimeData);
+    Q_SIGNAL void tabAddRequested();
 
 protected:
     QSize sizeHint() const;

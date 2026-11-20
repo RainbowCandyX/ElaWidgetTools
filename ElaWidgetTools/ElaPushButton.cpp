@@ -143,24 +143,53 @@ void ElaPushButton::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing | QPainter::TextAntialiasing);
     // 高性能阴影
-    eTheme->drawEffectShadow(&painter, rect(), d->_shadowBorderWidth, d->_pBorderRadius);
+    const bool isFlat = this->isFlat();
+    if (!isFlat)
+    {
+        eTheme->drawEffectShadow(&painter, rect(), d->_shadowBorderWidth, d->_pBorderRadius);
+    }
 
     // 背景绘制
     painter.save();
-    QRect foregroundRect(d->_shadowBorderWidth, d->_shadowBorderWidth, width() - 2 * (d->_shadowBorderWidth), height() - 2 * d->_shadowBorderWidth);
-    if (d->_themeMode == ElaThemeType::Light)
+    const int borderWidth = isFlat ? 0 : d->_shadowBorderWidth;
+    QRect foregroundRect(borderWidth, borderWidth, width() - 2 * borderWidth, height() - 2 * borderWidth);
+    const bool isHovered = d->_isHoverEnabled && underMouse();
+    QColor backgroundColor;
+    bool hasBackground = true;
+    if (isEnabled())
     {
-        painter.setPen(ElaThemeColor(ElaThemeType::Light, BasicBorder));
-        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pLightPressColor : ((d->_isHoverEnabled && underMouse()) ? d->_pLightHoverColor : d->_pLightDefaultColor) : ElaThemeColor(d->_themeMode, BasicDisable));
+        if (d->_themeMode == ElaThemeType::Light)
+        {
+            backgroundColor = d->_isPressed ? d->_pLightPressColor : isHovered ? d->_pLightHoverColor : d->_pLightDefaultColor;
+        }
+        else
+        {
+            backgroundColor = d->_isPressed ? d->_pDarkPressColor : isHovered ? d->_pDarkHoverColor : d->_pDarkDefaultColor;
+        }
+        // 扁平模式仅在悬停或按下时绘制背景
+        hasBackground = !isFlat || d->_isPressed || isHovered;
     }
     else
     {
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pDarkPressColor : ((d->_isHoverEnabled && underMouse()) ? d->_pDarkHoverColor : d->_pDarkDefaultColor) : ElaThemeColor(d->_themeMode, BasicDisable));
+        // 扁平模式禁用时不绘制背景
+        hasBackground = !isFlat;
+        backgroundColor = ElaThemeColor(d->_themeMode, BasicDisable);
     }
-    painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
+    if (hasBackground)
+    {
+        if (!isFlat && d->_themeMode == ElaThemeType::Light)
+        {
+            painter.setPen(ElaThemeColor(ElaThemeType::Light, BasicBorder));
+        }
+        else
+        {
+            painter.setPen(Qt::NoPen);
+        }
+        painter.setBrush(backgroundColor);
+        painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
+    }
     // 底边线绘制
-    if (!d->_isPressed)
+    if (!isFlat && !d->_isPressed)
     {
         painter.setPen(ElaThemeColor(d->_themeMode, BasicBaseLine));
         painter.drawLine(foregroundRect.x() + d->_pBorderRadius, height() - d->_shadowBorderWidth, foregroundRect.width(), height() - d->_shadowBorderWidth);

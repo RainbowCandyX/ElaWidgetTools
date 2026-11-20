@@ -11,6 +11,7 @@ class ElaMessageButton;
 class ElaCheckBox;
 class ElaSpinBox;
 class ElaSlider;
+class ElaDateTimeEdit;
 class ElaRadioButton;
 class ElaProgressBar;
 class ElaProgressRing;
@@ -37,6 +38,7 @@ private:
     ElaCheckBox* _checkBox{nullptr};
     ElaSpinBox* _spinBox{nullptr};
     ElaSlider* _slider{nullptr};
+	ElaDateTimeEdit* _dateTimeEdit{nullptr};
     ElaRadioButton* _radioButton{nullptr};
     ElaProgressBar* _progressBar{nullptr};
     ElaProgressRing* _progressRing{nullptr};

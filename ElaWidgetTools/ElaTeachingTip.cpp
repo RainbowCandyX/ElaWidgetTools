@@ -137,9 +137,8 @@ void ElaTeachingTipPrivate::_doShowAnimation()
 }
 
 ElaTeachingTip::ElaTeachingTip(QWidget *parent)
-	: QWidget{nullptr}, d_ptr(new ElaTeachingTipPrivate())
+	: QWidget(parent), d_ptr(new ElaTeachingTipPrivate())
 {
-	Q_UNUSED(parent);
 	Q_D(ElaTeachingTip);
 	d->q_ptr = this;
 	d->_pBorderRadius = 8;
@@ -463,7 +462,7 @@ void ElaTeachingTip::paintEvent(QPaintEvent *event)
 bool ElaTeachingTip::eventFilter(QObject *watched, QEvent *event)
 {
 	Q_D(ElaTeachingTip);
-	if (watched == d->_target)
+	if (watched == d->_target || (d->_target && watched == d->_target->window()))
 	{
 		if (event->type() == QEvent::Move || event->type() == QEvent::Resize)
 		{

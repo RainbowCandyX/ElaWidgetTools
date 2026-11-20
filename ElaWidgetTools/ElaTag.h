@@ -1,6 +1,7 @@
 #ifndef ELATAG_H
 #define ELATAG_H
 
+#include <QColor>
 #include <QWidget>
 
 #include "ElaDef.h"
@@ -22,7 +23,8 @@ public:
         Primary,
         Success,
         Warning,
-        Danger
+        Danger,
+        Custom
     };
     Q_ENUM(TagColor)
 
@@ -31,6 +33,7 @@ public:
     ~ElaTag() override;
 
     void setTagColor(TagColor color);
+    void setTagColor(QColor color);
     TagColor getTagColor() const;
 
 Q_SIGNALS:

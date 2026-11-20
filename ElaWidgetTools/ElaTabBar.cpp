@@ -5,6 +5,7 @@
 #include <QMimeData>
 #include <QMouseEvent>
 
+#include "ElaIconButton.h"
 #include "ElaTabBarPrivate.h"
 #include "ElaTabBarStyle.h"
 #include "private/qtabbar_p.h"
@@ -24,6 +25,12 @@ ElaTabBar::ElaTabBar(QWidget *parent)
 	d->_style = new ElaTabBarStyle(style());
 	setStyle(d->_style);
 	d->_tabBarPrivate = dynamic_cast<QTabBarPrivate *>(this->QTabBar::d_ptr.data());
+
+	d->_pTabAddButtonVisible = true;
+	d->_tabAddButton = new ElaIconButton(ElaIconType::Plus, 16, 30, 30, this);
+	d->_tabAddButton->setObjectName("ElaTabBarAddButton");
+	d->_tabAddButton->setBorderRadius(6);
+	connect(d->_tabAddButton, &ElaIconButton::clicked, this, &ElaTabBar::tabAddRequested);
 }
 
 ElaTabBar::~ElaTabBar()
@@ -42,6 +49,20 @@ QSize ElaTabBar::getTabSize() const
 {
 	Q_D(const ElaTabBar);
 	return d->_style->getTabSize();
+}
+
+void ElaTabBar::setTabAddButtonVisible(bool visible)
+{
+	Q_D(ElaTabBar);
+	d->_pTabAddButtonVisible = visible;
+	d->_tabAddButton->setVisible(visible);
+	update();
+	Q_EMIT pTabAddButtonVisibleChanged();
+}
+
+bool ElaTabBar::getTabAddButtonVisible() const
+{
+	return d_ptr->_pTabAddButtonVisible;
 }
 
 QSize ElaTabBar::sizeHint() const
@@ -204,14 +225,22 @@ void ElaTabBar::paintEvent(QPaintEvent *event)
 {
 	Q_D(ElaTabBar);
 	QSize tabSize = d->_style->getTabSize();
+	const int tabWidth = tabSize.width();
+	const int tabHeight = tabSize.height();
+	const int buttonWidth = d->_tabAddButton->width();
+	const int buttonHeight = d->_tabAddButton->height();
 	for (int i = 0; i < d->_tabBarPrivate->tabList.size(); i++)
 	{
 #if (QT_VERSION > QT_VERSION_CHECK(6, 0, 0))
-		d->_tabBarPrivate->tabList[i]->rect = QRect(tabSize.width() * i, d->_tabBarPrivate->tabList[i]->rect.y(), tabSize.width(), tabSize.height());
+		d->_tabBarPrivate->tabList[i]->rect = QRect(tabWidth * i, d->_tabBarPrivate->tabList[i]->rect.y(), tabWidth, tabHeight);
 #else
-		d->_tabBarPrivate->tabList[i].rect = QRect(tabSize.width() * i, d->_tabBarPrivate->tabList[i].rect.y(), tabSize.width(), tabSize.height());
+		d->_tabBarPrivate->tabList[i].rect = QRect(tabWidth * i, d->_tabBarPrivate->tabList[i].rect.y(), tabWidth, tabHeight);
 #endif
 	}
 	d->_tabBarPrivate->layoutWidgets();
+	if (d->_pTabAddButtonVisible)
+	{
+		d->_tabAddButton->setGeometry(tabWidth * d->_tabBarPrivate->tabList.size(), (tabHeight - buttonHeight) / 2, buttonWidth, buttonHeight);
+	}
 	QTabBar::paintEvent(event);
 }

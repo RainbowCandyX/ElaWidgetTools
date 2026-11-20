@@ -12,12 +12,15 @@ class ELA_EXPORT ElaCommandBar : public QWidget
     Q_OBJECT
     Q_Q_CREATE(ElaCommandBar)
     Q_PROPERTY_CREATE_Q_H(int, ButtonSize)
+    Q_PROPERTY_CREATE_Q_H(int, ItemSpacing)
 public:
     struct CommandItem
     {
         ElaIconType::IconName icon = ElaIconType::None;
         QString text;
         bool isSeparator = false;
+        bool isCheckable = false;
+        bool isChecked = false;
     };
 
     explicit ElaCommandBar(QWidget* parent = nullptr);
@@ -27,8 +30,14 @@ public:
     void addSeparator();
     void clearItems();
 
+    void setItemCheckable(int index, bool checkable);
+    void setItemChecked(int index, bool checked);
+    bool isItemCheckable(int index) const;
+    bool isItemChecked(int index) const;
+
 Q_SIGNALS:
     Q_SIGNAL void itemClicked(int index);
+    Q_SIGNAL void itemCheckedChanged(int index, bool checked);
 
 protected:
     virtual void paintEvent(QPaintEvent* event) override;

@@ -6,6 +6,7 @@
 #include "ElaListView.h"
 #include "ElaScrollBar.h"
 #include "ElaText.h"
+#include "ElaItemViewToolTip.h"
 #include "T_ListViewModel.h"
 T_ListView::T_ListView(QWidget* parent)
     : T_BasePage(parent)
@@ -23,6 +24,8 @@ T_ListView::T_ListView(QWidget* parent)
     _listView->setFixedHeight(450);
     // _listView->setAlternatingRowColors(true);
     _listView->setModel(new T_ListViewModel(this));
+    ElaItemViewToolTip* listViewToolTip = new ElaItemViewToolTip(_listView);
+    listViewToolTip->setDisplayMsec(-1);
     ElaScrollBar* listViewFloatScrollBar = new ElaScrollBar(_listView->verticalScrollBar(), _listView);
     listViewFloatScrollBar->setIsAnimation(true);
     QHBoxLayout* listViewLayout = new QHBoxLayout();

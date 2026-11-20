@@ -4,6 +4,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
+#include <QResizeEvent>
 #include <QVBoxLayout>
 #include <QVariantAnimation>
 
@@ -33,11 +34,56 @@ void ElaExpanderPrivate::_toggleExpand()
 	Q_EMIT q->expandStateChanged(_isExpanded);
 }
 
+void ElaExpanderPrivate::_updateContentHeight()
+{
+	Q_Q(ElaExpander);
+	const QMargins margins = _contentLayout->contentsMargins();
+	int height = margins.top() + margins.bottom();
+	const int availableWidth = qMax(0, q->width() - margins.left() - margins.right());
+	if (_contentWidget) 
+	{
+		if (_contentWidget->hasHeightForWidth() && availableWidth > 0)
+		{
+			height += qMax(_contentWidget->heightForWidth(availableWidth),
+				_contentWidget->minimumSizeHint().height());
+		}
+		else
+		{
+			height += qMax(_contentWidget->sizeHint().height(),
+				_contentWidget->minimumSizeHint().height());
+		}
+	}
+	if (height < 40)
+	{
+		height = 40;
+	}
+	_contentHeight = height;
+	_contentContainer->setFixedHeight(_contentHeight);
+}
+
+void ElaExpanderPrivate::_updateGeometry()
+{
+	Q_Q(ElaExpander);
+	const int widgetWidth = q->width();
+	const int headerY = (_expandDirection == ElaExpander::Down) ? 0 : q->height() - _headerHeight;
+	const int contentY = (_expandDirection == ElaExpander::Down) ? _headerHeight : headerY - _contentHeight;
+	_headerWidget->setGeometry(0, headerY, widgetWidth, _headerHeight);
+	_contentContainer->setGeometry(0, contentY, widgetWidth, _contentHeight);
+	if (_headerCustomWidget)
+	{
+		_headerCustomWidget->adjustSize();
+		const int customWidth = qMin(_headerCustomWidget->width(), qMax(0, widgetWidth - 55));
+		const int customHeight = qMin(_headerCustomWidget->height(), _headerHeight - 8);
+		_headerCustomWidget->setGeometry(widgetWidth - customWidth - 40, headerY + (_headerHeight - customHeight) / 2, customWidth, customHeight);
+	}
+}
+
 void ElaExpanderPrivate::_startExpandAnimation(bool expand)
 {
 	Q_Q(ElaExpander);
 	if (!_contentWidget)
 	{
+		q->setFixedHeight(_headerHeight);
 		return;
 	}
 	if (!_expandAnimation)
@@ -48,30 +94,33 @@ void ElaExpanderPrivate::_startExpandAnimation(bool expand)
 		{
 			q->setFixedHeight(value.toInt());
 		});
+		connect(_expandAnimation, &QVariantAnimation::finished, q, [=]()
+		{
+			if (!_isExpanded)
+			{
+				_contentContainer->hide();
+			}
+			q->update();
+		});
 	}
 	_expandAnimation->stop();
 	_expandAnimation->setDuration(_pAnimationDuration);
+	_updateContentHeight();
 
-	// Ensure content widget is laid out so sizeHint is valid
-	_contentWidget->adjustSize();
-	_contentHeight = _contentWidget->sizeHint().height() + _contentLayout->contentsMargins().top() + _contentLayout->contentsMargins().bottom();
-	if (_contentHeight < 40)
-	{
-		_contentHeight = 40;
-	}
 	int collapsedHeight = _headerHeight;
 	int expandedHeight = _headerHeight + _contentHeight;
-
+	_expandAnimation->setStartValue(q->height());
 	if (expand)
 	{
 		_contentContainer->show();
-		_expandAnimation->setStartValue(collapsedHeight);
 		_expandAnimation->setEndValue(expandedHeight);
 	}
 	else
 	{
-		_contentContainer->hide();
-		_expandAnimation->setStartValue(q->height());
+		if (_expandDirection == ElaExpander::Up)
+		{
+			_contentContainer->hide();
+		}
 		_expandAnimation->setEndValue(collapsedHeight);
 	}
 	_expandAnimation->start();
@@ -91,10 +140,6 @@ ElaExpander::ElaExpander(QWidget *parent)
 	setMouseTracking(true);
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-	d->_mainLayout = new QVBoxLayout(this);
-	d->_mainLayout->setContentsMargins(0, 0, 0, 0);
-	d->_mainLayout->setSpacing(0);
-
 	// Header area (painted via paintEvent, not a separate widget)
 	d->_headerWidget = new QWidget(this);
 	d->_headerWidget->setFixedHeight(d->_headerHeight);
@@ -106,10 +151,9 @@ ElaExpander::ElaExpander(QWidget *parent)
 	d->_contentLayout->setContentsMargins(15, 5, 15, 5);
 	d->_contentContainer->hide();
 
-	d->_mainLayout->addWidget(d->_headerWidget);
-	d->_mainLayout->addWidget(d->_contentContainer);
-
 	setFixedHeight(d->_headerHeight);
+	d->_updateContentHeight();
+	d->_updateGeometry();
 
 	d->_themeMode = eTheme->getThemeMode();
 	connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode)
@@ -134,20 +178,6 @@ void ElaExpander::setExpandDirection(ExpandDirection direction)
 {
 	Q_D(ElaExpander);
 	d->_expandDirection = direction;
-	// Rebuild layout order
-	d->_mainLayout->removeWidget(d->_headerWidget);
-	d->_mainLayout->removeWidget(d->_contentContainer);
-	if (direction == Up)
-	{
-		d->_mainLayout->addWidget(d->_contentContainer);
-		d->_mainLayout->addWidget(d->_headerWidget);
-	}
-	else
-	{
-		d->_mainLayout->addWidget(d->_headerWidget);
-		d->_mainLayout->addWidget(d->_contentContainer);
-	}
-	update();
 }
 
 ElaExpander::ExpandDirection ElaExpander::getExpandDirection() const
@@ -158,16 +188,38 @@ ElaExpander::ExpandDirection ElaExpander::getExpandDirection() const
 void ElaExpander::setContentWidget(QWidget *widget)
 {
 	Q_D(ElaExpander);
+	if (d->_contentWidget == widget)
+	{
+		return;
+	}
 	if (d->_contentWidget)
 	{
 		d->_contentLayout->removeWidget(d->_contentWidget);
+		d->_contentWidget->setParent(nullptr);
 		d->_contentWidget->deleteLater();
 	}
 	d->_contentWidget = widget;
 	if (widget)
 	{
 		d->_contentLayout->addWidget(widget);
+		widget->show();
 	}
+	d->_updateContentHeight();
+	if (d->_isExpanded)
+	{
+		if (d->_expandAnimation)
+		{
+			d->_expandAnimation->stop();
+		}
+		setFixedHeight(d->_headerHeight + d->_contentHeight);
+		d->_contentContainer->setVisible(widget != nullptr);
+	}
+	else
+	{
+		d->_contentContainer->hide();
+	}
+	d->_updateGeometry();
+	update();
 }
 
 QWidget *ElaExpander::getContentWidget() const
@@ -178,18 +230,23 @@ QWidget *ElaExpander::getContentWidget() const
 void ElaExpander::setHeaderWidget(QWidget *widget)
 {
 	Q_D(ElaExpander);
+	if (d->_headerCustomWidget == widget)
+	{
+		return;
+	}
 	if (d->_headerCustomWidget)
 	{
+		d->_headerCustomWidget->setParent(nullptr);
 		d->_headerCustomWidget->deleteLater();
 	}
 	d->_headerCustomWidget = widget;
 	if (widget)
 	{
-		widget->setParent(d->_headerWidget);
-		widget->setAttribute(Qt::WA_TransparentForMouseEvents);
-		widget->move(d->_headerHeight, 0);
-		widget->setFixedHeight(d->_headerHeight);
+		widget->setParent(this);
+		widget->show();
+		widget->raise();
 	}
+	d->_updateGeometry();
 	update();
 }
 
@@ -207,6 +264,12 @@ bool ElaExpander::getIsExpanded() const
 	return d_ptr->_isExpanded;
 }
 
+void ElaExpander::resizeToContent()
+{
+	Q_D(ElaExpander);
+	d->_startExpandAnimation(d->_isExpanded);
+}
+
 void ElaExpander::paintEvent(QPaintEvent *event)
 {
 	Q_UNUSED(event);
@@ -216,7 +279,7 @@ void ElaExpander::paintEvent(QPaintEvent *event)
 
 	// Background
 	painter.setPen(QPen(ElaThemeColor(d->_themeMode, BasicBorder), 1));
-	painter.setBrush(ElaThemeColor(d->_themeMode, BasicBase));
+	painter.setBrush(ElaThemeColor(d->_themeMode, BasicBaseAlpha));
 	painter.drawRoundedRect(QRectF(0.5, 0.5, width() - 1, height() - 1), d->_pBorderRadius, d->_pBorderRadius);
 
 	// Header separator line when expanded
@@ -229,6 +292,11 @@ void ElaExpander::paintEvent(QPaintEvent *event)
 
 	// Header area
 	int headerY = (d->_expandDirection == Down) ? 0 : height() - d->_headerHeight;
+	int rightMargin = 40;
+	if (d->_headerCustomWidget)
+	{
+		rightMargin += d->_headerCustomWidget->width() + 8;
+	}
 
 	// Header icon
 	int textStartX = 15;
@@ -251,7 +319,7 @@ void ElaExpander::paintEvent(QPaintEvent *event)
 		titleFont.setBold(true);
 		painter.setFont(titleFont);
 		painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
-		QRect titleRect(textStartX, headerY, width() - textStartX - 40, d->_headerHeight);
+		QRect titleRect(textStartX, headerY, qMax(0, width() - textStartX - rightMargin), d->_headerHeight);
 		painter.drawText(titleRect, Qt::AlignVCenter | Qt::AlignLeft, d->_pTitle);
 
 		// SubTitle
@@ -263,7 +331,7 @@ void ElaExpander::paintEvent(QPaintEvent *event)
 			subFont.setPixelSize(12);
 			painter.setFont(subFont);
 			painter.setPen(ElaThemeColor(d->_themeMode, BasicDetailsText));
-			QRect subRect(textStartX + titleWidth + 12, headerY, width() - textStartX - titleWidth - 52, d->_headerHeight);
+			QRect subRect(textStartX + titleWidth + 12, headerY, qMax(0, width() - textStartX - titleWidth - rightMargin - 12), d->_headerHeight);
 			painter.drawText(subRect, Qt::AlignVCenter | Qt::AlignLeft, d->_pSubTitle);
 		}
 	}
@@ -316,11 +384,17 @@ void ElaExpander::mouseReleaseEvent(QMouseEvent *event)
 
 bool ElaExpander::event(QEvent *event)
 {
+	Q_D(ElaExpander);
 	switch (event->type())
 	{
 		case QEvent::Enter:
 		case QEvent::Leave:
 			update();
+			break;
+		case QEvent::Show:
+			resizeToContent();
+		case QEvent::Resize:
+			d->_updateGeometry();
 			break;
 		default:
 			break;

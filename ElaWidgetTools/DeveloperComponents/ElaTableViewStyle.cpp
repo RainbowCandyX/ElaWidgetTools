@@ -186,13 +186,45 @@ void ElaTableViewStyle::drawControl(ControlElement element, const QStyleOption* 
             QRect itemRect = option->rect;
             painter->save();
             painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
-            // QRect checkRect = proxy()->subElementRect(SE_ItemViewItemCheckIndicator, vopt, widget);
+            QRect checkRect = proxy()->subElementRect(SE_ItemViewItemCheckIndicator, vopt, widget);
             QRect iconRect = proxy()->subElementRect(SE_ItemViewItemDecoration, vopt, widget);
             QRect textRect = proxy()->subElementRect(SE_ItemViewItemText, vopt, widget);
             if (vopt->index.column() == 0)
             {
                 iconRect.adjust(_horizontalPadding, 0, _horizontalPadding, 0);
                 textRect.adjust(_horizontalPadding, 0, 0, 0);
+            }
+            // 勾选框绘制（与 ElaTreeViewStyle 保持一致）
+            if ((vopt->features & QStyleOptionViewItem::HasCheckIndicator) && checkRect.isValid())
+            {
+                painter->save();
+                if (vopt->checkState == Qt::Checked)
+                {
+                    painter->setPen(Qt::NoPen);
+                    painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
+                    painter->drawRoundedRect(checkRect, 2, 2);
+                    QFont iconFont = QFont("ElaAwesome");
+                    iconFont.setPixelSize(checkRect.width() * 0.85);
+                    painter->setFont(iconFont);
+                    painter->setPen(ElaThemeColor(ElaThemeType::Dark, BasicText));
+                    painter->drawText(checkRect, Qt::AlignCenter, QChar((unsigned short) ElaIconType::Check));
+                }
+                else if (vopt->checkState == Qt::PartiallyChecked)
+                {
+                    painter->setPen(Qt::NoPen);
+                    painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
+                    painter->drawRoundedRect(checkRect, 2, 2);
+                    painter->setPen(ElaThemeColor(ElaThemeType::Dark, BasicText));
+                    QLine checkLine(checkRect.x() + 3, checkRect.center().y(), checkRect.right() - 3, checkRect.center().y());
+                    painter->drawLine(checkLine);
+                }
+                else
+                {
+                    painter->setPen(QPen(ElaThemeColor(_themeMode, BasicBorderDeep), 1.2));
+                    painter->setBrush(Qt::transparent);
+                    painter->drawRoundedRect(checkRect, 2, 2);
+                }
+                painter->restore();
             }
             // 图标绘制
             if (!vopt->icon.isNull())

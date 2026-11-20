@@ -12,6 +12,7 @@ class ElaCommandBarPrivate : public QObject
     Q_OBJECT
     Q_D_CREATE(ElaCommandBar)
     Q_PROPERTY_CREATE_D(int, ButtonSize)
+    Q_PROPERTY_CREATE_D(int, ItemSpacing)
 public:
     explicit ElaCommandBarPrivate(QObject* parent = nullptr);
     ~ElaCommandBarPrivate();

@@ -77,7 +77,7 @@ void ElaDockWidgetTitleBar::paintEvent(QPaintEvent* event)
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(Qt::NoPen);
     painter.setBrush(_dockWidget->isFloating() ? Qt::transparent : ElaThemeColor(_themeMode, BasicBaseAlpha));
-    painter.drawRect(rect());
+    painter.drawRoundedRect(rect(),6,6);
     painter.restore();
 }
 
