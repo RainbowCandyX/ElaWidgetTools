@@ -49,6 +49,7 @@
 #include "ElaFloatButton.h"
 #include "ElaEmojiPicker.h"
 #include "ElaInfoBar.h"
+#include "ElaLoadingMask.h"
 #include "ElaAutoComplete.h"
 #include "ElaTreeSelect.h"
 #include "ElaUploadArea.h"
@@ -1636,6 +1637,28 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	copyLayout->addWidget(copyStatus);
 	copyLayout->addStretch();
 	c->addWidget(copyArea);
+
+	// ========== ElaLoadingMask 示例 ==========
+	ElaPushButton *loadingMaskButton = new ElaPushButton("显示加载遮罩", this);
+	loadingMaskButton->setFixedSize(120, 36);
+	connect(loadingMaskButton, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaLoadingMask *mask = new ElaLoadingMask(this);
+		mask->setText("正在加载，请稍候...");
+		mask->start();
+		QTimer::singleShot(2000, mask, [mask]()
+		{
+			mask->finish();
+		});
+	});
+
+	ElaScrollPageArea *loadingMaskArea = new ElaScrollPageArea(this);
+	QHBoxLayout *loadingMaskLayout = new QHBoxLayout(loadingMaskArea);
+	loadingMaskLayout->addWidget(new ElaText("ElaLoadingMask", 15, this));
+	loadingMaskLayout->addSpacing(10);
+	loadingMaskLayout->addWidget(loadingMaskButton);
+	loadingMaskLayout->addStretch();
+	c->addWidget(loadingMaskArea);
 
 	c->addSpacing(5);
 	c->addLayout(transferHeader);
