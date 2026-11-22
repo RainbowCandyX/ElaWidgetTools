@@ -38,6 +38,8 @@ public:
     void setIsExpanded(bool expanded);
     bool getIsExpanded() const;
 
+    void resizeToContent();
+
 Q_SIGNALS:
     Q_SIGNAL void expandStateChanged(bool expanded);
 

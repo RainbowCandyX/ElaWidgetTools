@@ -53,6 +53,12 @@ QColor ElaTagPrivate::_getBackgroundColor() const
 			c.setAlpha(30);
 			return c;
 		}
+		case ElaTag::Custom:
+		{
+			QColor c = _pCustomTagColor;
+			c.setAlpha(30);
+			return c;
+		}
 	}
 	return ElaThemeColor(_themeMode, BasicBase);
 }
@@ -71,6 +77,8 @@ QColor ElaTagPrivate::_getForegroundColor() const
 			return QColor(0xF7, 0x93, 0x0E);
 		case ElaTag::Danger:
 			return ElaThemeColor(_themeMode, StatusDanger);
+		case ElaTag::Custom:
+			return _pCustomTagColor;
 	}
 	return ElaThemeColor(_themeMode, BasicText);
 }
@@ -89,6 +97,7 @@ ElaTag::ElaTag(QWidget *parent)
 	setFixedHeight(28);
 	setMouseTracking(true);
 	d->_themeMode = eTheme->getThemeMode();
+	d->_pCustomTagColor = ElaThemeColor(d->_themeMode, BasicText);
 	connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode)
 	{
 		d->_themeMode = themeMode;
@@ -142,6 +151,15 @@ ElaTag::TagColor ElaTag::getTagColor() const
 {
 	return d_ptr->_tagColor;
 }
+
+void ElaTag::setTagColor(QColor color)
+{
+	Q_D(ElaTag);
+	d->_pCustomTagColor = color;
+	d->_tagColor = ElaTag::Custom;
+	update();
+}
+
 
 void ElaTag::mousePressEvent(QMouseEvent *event)
 {

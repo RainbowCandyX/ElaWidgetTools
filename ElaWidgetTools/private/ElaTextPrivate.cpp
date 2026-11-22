@@ -16,8 +16,9 @@ void ElaTextPrivate::onThemeChanged(ElaThemeType::ThemeMode themeMode)
 {
     Q_Q(ElaText);
     _themeMode = themeMode;
+    const QColor textColor = _pTextColor.isValid() ? _pTextColor : ElaThemeColor(_themeMode, BasicText);
     QPalette palette = q->palette();
-    palette.setColor(QPalette::Text, ElaThemeColor(_themeMode, BasicText));
-    palette.setColor(QPalette::WindowText, ElaThemeColor(_themeMode, BasicText));
+    palette.setColor(QPalette::Text, textColor);
+    palette.setColor(QPalette::WindowText, textColor);
     q->setPalette(palette);
 }

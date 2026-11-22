@@ -25,6 +25,7 @@ class ElaTabWidgetPrivate : public QObject
     Q_PROPERTY_CREATE_D(bool, IsTabTransparent)
     Q_PROPERTY_CREATE_D(bool, IsContainerAcceptDrops);
     Q_PROPERTY_CREATE_D(QSize, TabSize)
+    Q_PROPERTY_CREATE_D(bool, TabAddButtonVisible)
 public:
     explicit ElaTabWidgetPrivate(QObject* parent = nullptr);
     ~ElaTabWidgetPrivate() override;

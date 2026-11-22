@@ -131,7 +131,7 @@ void ElaTabBarStyle::drawControl(ControlElement element, const QStyleOption* opt
                     painter->setBrush(Qt::transparent);
                 }
                 tabRect.setHeight(tabRect.height() + 10);
-                painter->drawRoundedRect(tabRect, 0, 0);
+                painter->drawRoundedRect(tabRect, topRadius, topRadius);
                 tabRect.setHeight(tabRect.height() - 10);
             }
             painter->restore();

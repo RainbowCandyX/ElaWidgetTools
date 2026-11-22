@@ -10,12 +10,31 @@
 
 Q_PROPERTY_CREATE_Q_CPP(ElaCommandBar, int, ButtonSize)
 
+void ElaCommandBar::setItemSpacing(int spacing)
+{
+	Q_D(ElaCommandBar);
+	if (d->_pItemSpacing == spacing)
+	{
+		return;
+	}
+	d->_pItemSpacing = spacing;
+	Q_EMIT pItemSpacingChanged();
+	updateGeometry();
+	update();
+}
+
+int ElaCommandBar::getItemSpacing() const
+{
+	return d_ptr->_pItemSpacing;
+}
+
 ElaCommandBar::ElaCommandBar(QWidget *parent)
 	: QWidget{parent}, d_ptr(new ElaCommandBarPrivate())
 {
 	Q_D(ElaCommandBar);
 	d->q_ptr = this;
 	d->_pButtonSize = 36;
+	d->_pItemSpacing = 0;
 	setFixedHeight(40);
 	setObjectName("ElaCommandBar");
 	setMouseTracking(true);
@@ -57,6 +76,57 @@ void ElaCommandBar::clearItems()
 	update();
 }
 
+void ElaCommandBar::setItemCheckable(int index, bool checkable)
+{
+	Q_D(ElaCommandBar);
+	if (index < 0 || index >= d->_items.count() || d->_items[index].isSeparator)
+	{
+		return;
+	}
+	if (d->_items[index].isCheckable == checkable)
+	{
+		return;
+	}
+	d->_items[index].isCheckable = checkable;
+	update();
+}
+
+void ElaCommandBar::setItemChecked(int index, bool checked)
+{
+	Q_D(ElaCommandBar);
+	if (index < 0 || index >= d->_items.count() || d->_items[index].isSeparator)
+	{
+		return;
+	}
+	if (d->_items[index].isChecked == checked)
+	{
+		return;
+	}
+	d->_items[index].isChecked = checked;
+	Q_EMIT itemCheckedChanged(index, checked);
+	update();
+}
+
+bool ElaCommandBar::isItemCheckable(int index) const
+{
+	Q_D(const ElaCommandBar);
+	if (index < 0 || index >= d->_items.count())
+	{
+		return false;
+	}
+	return d->_items[index].isCheckable;
+}
+
+bool ElaCommandBar::isItemChecked(int index) const
+{
+	Q_D(const ElaCommandBar);
+	if (index < 0 || index >= d->_items.count())
+	{
+		return false;
+	}
+	return d->_items[index].isChecked;
+}
+
 void ElaCommandBar::paintEvent(QPaintEvent *event)
 {
 	Q_UNUSED(event);
@@ -88,19 +158,34 @@ void ElaCommandBar::paintEvent(QPaintEvent *event)
 		}
 		else
 		{
-			// Hover / Press background
+			const bool isCheckedItem = item.isCheckable && item.isChecked;
+			// 背景优先级：按下 > 悬停 > 勾选
+			QColor bgColor;
+			bool hasBackground = false;
 			if (d->_pressedIndex == i)
 			{
-				painter.setPen(Qt::NoPen);
-				painter.setBrush(ElaThemeColor(d->_themeMode, BasicPress));
-				painter.drawRoundedRect(itemRect, 4, 4);
+				bgColor = ElaThemeColor(d->_themeMode, BasicPressAlpha);
+				hasBackground = true;
 			}
 			else if (d->_hoveredIndex == i)
 			{
+				bgColor = ElaThemeColor(d->_themeMode, BasicHoverAlpha);
+				hasBackground = true;
+			}
+			else if (isCheckedItem)
+			{
+				bgColor = ElaThemeColor(d->_themeMode, PrimaryNormal);
+				bgColor.setAlpha(30);
+				hasBackground = true;
+			}
+			if (hasBackground)
+			{
 				painter.setPen(Qt::NoPen);
-				painter.setBrush(ElaThemeColor(d->_themeMode, BasicHover));
+				painter.setBrush(bgColor);
 				painter.drawRoundedRect(itemRect, 4, 4);
 			}
+
+			const QColor fgColor = isCheckedItem ? ElaThemeColor(d->_themeMode, PrimaryNormal) : ElaThemeColor(d->_themeMode, BasicText);
 
 			int xOffset = itemRect.x();
 
@@ -110,7 +195,7 @@ void ElaCommandBar::paintEvent(QPaintEvent *event)
 				QFont iconFont = QFont("ElaAwesome");
 				iconFont.setPixelSize(16);
 				painter.setFont(iconFont);
-				painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
+				painter.setPen(fgColor);
 				if (item.text.isEmpty())
 				{
 					painter.drawText(itemRect, Qt::AlignCenter, QChar((unsigned short) item.icon));
@@ -129,9 +214,9 @@ void ElaCommandBar::paintEvent(QPaintEvent *event)
 				QFont textFont = this->font();
 				textFont.setPixelSize(12);
 				painter.setFont(textFont);
-				painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
+				painter.setPen(fgColor);
 				int textX = (item.icon != ElaIconType::None) ? xOffset : itemRect.x() + 6;
-				QRect textRect(textX, itemRect.y(), itemRect.right() - textX - 6, itemRect.height());
+				QRect textRect(textX, itemRect.y(), itemRect.x() + itemRect.width() - textX - 6, itemRect.height());
 				painter.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, item.text);
 			}
 		}
@@ -145,13 +230,13 @@ void ElaCommandBar::paintEvent(QPaintEvent *event)
 		if (d->_pressedIndex == overflowIndex)
 		{
 			painter.setPen(Qt::NoPen);
-			painter.setBrush(ElaThemeColor(d->_themeMode, BasicPress));
+			painter.setBrush(ElaThemeColor(d->_themeMode, BasicPressAlpha));
 			painter.drawRoundedRect(overflowRect, 4, 4);
 		}
 		else if (d->_hoveredIndex == overflowIndex)
 		{
 			painter.setPen(Qt::NoPen);
-			painter.setBrush(ElaThemeColor(d->_themeMode, BasicHover));
+			painter.setBrush(ElaThemeColor(d->_themeMode, BasicHoverAlpha));
 			painter.drawRoundedRect(overflowRect, 4, 4);
 		}
 		QFont iconFont = QFont("ElaAwesome");
@@ -238,10 +323,12 @@ void ElaCommandBar::mouseReleaseEvent(QMouseEvent *event)
 					}
 					else
 					{
+						// 勾选项在溢出菜单里用对勾图标代替原图标
+						ElaIconType::IconName actionIcon = (item.isCheckable && item.isChecked) ? ElaIconType::Check : item.icon;
 						QAction *action = nullptr;
-						if (item.icon != ElaIconType::None)
+						if (actionIcon != ElaIconType::None)
 						{
-							action = d->_overflowMenu->addElaIconAction(item.icon, item.text);
+							action = d->_overflowMenu->addElaIconAction(actionIcon, item.text);
 						}
 						else
 						{
@@ -250,6 +337,12 @@ void ElaCommandBar::mouseReleaseEvent(QMouseEvent *event)
 						int index = i;
 						connect(action, &QAction::triggered, this, [=]()
 						{
+							if (index >= 0 && index < d->_items.count() && d->_items[index].isCheckable)
+							{
+								d->_items[index].isChecked = !d->_items[index].isChecked;
+								Q_EMIT itemCheckedChanged(index, d->_items[index].isChecked);
+								update();
+							}
 							Q_EMIT itemClicked(index);
 						});
 					}
@@ -263,7 +356,14 @@ void ElaCommandBar::mouseReleaseEvent(QMouseEvent *event)
 			}
 			else
 			{
-				Q_EMIT itemClicked(d->_pressedIndex);
+				const int index = d->_pressedIndex;
+				if (index >= 0 && index < d->_items.count() && d->_items[index].isCheckable)
+				{
+					d->_items[index].isChecked = !d->_items[index].isChecked;
+					Q_EMIT itemCheckedChanged(index, d->_items[index].isChecked);
+					update();
+				}
+				Q_EMIT itemClicked(index);
 			}
 		}
 		d->_pressedIndex = -1;
@@ -284,9 +384,13 @@ QSize ElaCommandBar::sizeHint() const
 {
 	Q_D(const ElaCommandBar);
 	int totalWidth = 0;
-	for (const auto &item: d->_items)
+	for (int i = 0; i < d->_items.count(); ++i)
 	{
-		totalWidth += d->_getItemWidth(item);
+		totalWidth += d->_getItemWidth(d->_items[i]);
+		if (i != d->_items.count() - 1)
+		{
+			totalWidth += d->_pItemSpacing;
+		}
 	}
 	return QSize(qMax(totalWidth, 50), 40);
 }
@@ -318,7 +422,7 @@ int ElaCommandBarPrivate::_getItemWidth(const ElaCommandBar::CommandItem &item) 
 	QFont textFont = q_ptr->font();
 	textFont.setPixelSize(12);
 	QFontMetrics fm(textFont);
-	w += fm.horizontalAdvance(item.text);
+	w += qMax(fm.horizontalAdvance(item.text), fm.boundingRect(item.text).width());
 	if (w < _pButtonSize)
 	{
 		w = _pButtonSize;
@@ -336,9 +440,13 @@ QList<QRect> ElaCommandBarPrivate::_getVisibleItemRects() const
 
 	// First pass: check if all items fit
 	int totalWidth = 0;
-	for (const auto &item: _items)
+	for (int i = 0; i < _items.count(); ++i)
 	{
-		totalWidth += _getItemWidth(item);
+		totalWidth += _getItemWidth(_items[i]);
+		if (i != _items.count() - 1)
+		{
+			totalWidth += _pItemSpacing;
+		}
 	}
 
 	bool needsOverflow = (totalWidth > availableWidth);
@@ -355,7 +463,7 @@ QList<QRect> ElaCommandBarPrivate::_getVisibleItemRects() const
 		int itemHeight = _items[i].isSeparator ? q_ptr->height() - 16 : _pButtonSize;
 		int itemY = _items[i].isSeparator ? 8 : yOffset;
 		rects.append(QRect(x, itemY, itemWidth, itemHeight));
-		x += itemWidth;
+		x += itemWidth + _pItemSpacing;
 		visibleCount++;
 	}
 

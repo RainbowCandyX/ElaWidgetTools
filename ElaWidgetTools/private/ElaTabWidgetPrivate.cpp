@@ -71,7 +71,7 @@ void ElaTabWidgetPrivate::onTabDragCreate(QMimeData* mimeData)
     else
     {
         floatWidget = new ElaCustomTabWidget(originTabWidget);
-        q->removeTab(index);
+        q->QTabWidget::removeTab(index);
         // 创建新窗口
         ElaTabBar* originCustomTabBar = tabBarObject;
         if (originCustomTabBar && originCustomTabBar->objectName() == "ElaCustomTabBar")
@@ -169,7 +169,7 @@ void ElaTabWidgetPrivate::onTabDragLeave(QMimeData* mimeData)
 
     ElaTabBar* tabBarObject = mimeData->property("ElaTabBarObject").value<ElaTabBar*>();
     mimeData->setProperty("DragWidget", QVariant::fromValue(dragWidget));
-    q->removeTab(index);
+    q->QTabWidget::removeTab(index);
     // 创建新窗口
     if (_customTabBar && _customTabBar != tabBarObject)
     {
@@ -254,7 +254,7 @@ void ElaTabWidgetPrivate::onTabCloseRequested(int index)
         {
             _customTabBar->removeTab(index);
         }
-        q->removeTab(index);
+        q->QTabWidget::removeTab(index);
         if (_allTabWidgetList.contains(closeWidget))
         {
             _allTabWidgetList.removeOne(closeWidget);

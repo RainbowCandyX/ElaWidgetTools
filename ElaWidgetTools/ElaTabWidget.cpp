@@ -16,6 +16,7 @@ ElaTabWidget::ElaTabWidget(QWidget* parent)
     d->q_ptr = this;
     d->_pIsContainerAcceptDrops = false;
     d->_pIsTabTransparent = false;
+    d->_pTabAddButtonVisible = true;
     setObjectName("ElaTabWidget");
     setAcceptDrops(true);
     d->_tabBar = new ElaTabBar(this);
@@ -24,7 +25,9 @@ ElaTabWidget::ElaTabWidget(QWidget* parent)
     connect(d->_tabBar, &ElaTabBar::tabDragEnter, d, &ElaTabWidgetPrivate::onTabDragEnter);
     connect(d->_tabBar, &ElaTabBar::tabDragLeave, d, &ElaTabWidgetPrivate::onTabDragLeave);
     connect(d->_tabBar, &ElaTabBar::tabDragDrop, d, &ElaTabWidgetPrivate::onTabDragDrop);
-    connect(d->_tabBar, &ElaTabBar::tabCloseRequested, d, &ElaTabWidgetPrivate::onTabCloseRequested);
+    // tabCloseRequested 已由 QTabWidget 内部从 tabBar 自动转发，不要重复连接，否则信号会触发两次
+    // connect(d->_tabBar, &ElaTabBar::tabCloseRequested, d, &ElaTabWidget::tabCloseRequested);
+    connect(d->_tabBar, &ElaTabBar::tabAddRequested, this, &ElaTabWidget::tabAddRequested);
 }
 
 ElaTabWidget::~ElaTabWidget()
@@ -45,11 +48,45 @@ QSize ElaTabWidget::getTabSize() const
     return d->_tabBar->getTabSize();
 }
 
+void ElaTabWidget::setTabAddButtonVisible(bool visible)
+{
+    Q_D(ElaTabWidget);
+    d->_pTabAddButtonVisible = visible;
+    d->_tabBar->setTabAddButtonVisible(visible);
+    Q_EMIT pTabAddButtonVisibleChanged();
+}
+
+bool ElaTabWidget::getTabAddButtonVisible() const
+{
+    return d_ptr->_pTabAddButtonVisible;
+}
+
 void ElaTabWidget::setTabPosition(TabPosition position)
 {
     if (position == QTabWidget::North || position == QTabWidget::South)
     {
         QTabWidget::setTabPosition(position);
+    }
+}
+
+ElaTabBar* ElaTabWidget::getElaTabBar()
+{
+    Q_D(ElaTabWidget);
+    return d->_tabBar;
+}
+
+void ElaTabWidget::removeTab(int index)
+{
+    Q_D(ElaTabWidget);
+    d->onTabCloseRequested(index);
+}
+
+void ElaTabWidget::clear()
+{
+    Q_D(ElaTabWidget);
+    while (count() > 0)
+    {
+        d->onTabCloseRequested(0);
     }
 }
 

@@ -7,11 +7,14 @@
 #include <QPixmap>
 class ElaTabBar;
 class ElaTabBarStyle;
+class ElaIconButton;
 class QTabBarPrivate;
 class ElaTabBarPrivate : public QObject
 {
     Q_OBJECT
     Q_D_CREATE(ElaTabBar)
+    Q_PROPERTY_CREATE_D(bool, TabAddButtonVisible)
+
 public:
     explicit ElaTabBarPrivate(QObject* parent = nullptr);
     ~ElaTabBarPrivate() override;
@@ -19,6 +22,7 @@ public:
 private:
     QMimeData* _mimeData{nullptr};
     ElaTabBarStyle* _style{nullptr};
+    ElaIconButton* _tabAddButton{nullptr};
     QTabBarPrivate* _tabBarPrivate{nullptr};
 };
 

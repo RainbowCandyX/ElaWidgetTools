@@ -8,9 +8,11 @@
 #include "ElaPlainTextEdit.h"
 #include "ElaProgressBar.h"
 #include "ElaProgressRing.h"
+#include "ElaPushButton.h"
 #include "ElaRadioButton.h"
 #include "ElaScrollPageArea.h"
 #include "ElaSlider.h"
+#include "ElaDateTimeEdit.h"
 #include "ElaSpinBox.h"
 #include "ElaText.h"
 #include "ElaToggleButton.h"
@@ -65,6 +67,46 @@ T_BaseComponents::T_BaseComponents(QWidget* parent)
     toggleButtonLayout->addWidget(toggleButtonDisableSwitch);
     toggleButtonLayout->addWidget(toggleButtonDisableText);
     toggleButtonLayout->addSpacing(10);
+
+    ElaPushButton* normalPushButton = new ElaPushButton("普通", this);
+    normalPushButton->setFixedWidth(80);
+    ElaPushButton* flatPushButton = new ElaPushButton("Flat", this);
+    flatPushButton->setFixedWidth(80);
+    flatPushButton->setFlat(true);
+    ElaPushButton* iconPushButton = new ElaPushButton("图标", this);
+    iconPushButton->setFixedWidth(90);
+    iconPushButton->setElaIcon(ElaIconType::GearComplex, 16);
+    ElaPushButton* flatIconPushButton = new ElaPushButton("Flat 图标", this);
+    flatIconPushButton->setFixedWidth(110);
+    flatIconPushButton->setElaIcon(ElaIconType::GearComplex, 16);
+    flatIconPushButton->setFlat(true);
+    ElaPushButton* primaryPushButton = new ElaPushButton("Primary", this);
+    primaryPushButton->setFixedWidth(90);
+    primaryPushButton->setPrimary(true);
+    ElaScrollPageArea* pushButtonArea = new ElaScrollPageArea(this);
+    QHBoxLayout* pushButtonLayout = new QHBoxLayout(pushButtonArea);
+    ElaText* pushButtonText = new ElaText("ElaPushButton", this);
+    pushButtonText->setTextPixelSize(15);
+    pushButtonLayout->addWidget(pushButtonText);
+    pushButtonLayout->addWidget(normalPushButton);
+    pushButtonLayout->addWidget(flatPushButton);
+    pushButtonLayout->addWidget(iconPushButton);
+    pushButtonLayout->addWidget(flatIconPushButton);
+    pushButtonLayout->addWidget(primaryPushButton);
+    pushButtonLayout->addStretch();
+    ElaToggleSwitch* pushButtonDisableSwitch = new ElaToggleSwitch(this);
+    ElaText* pushButtonDisableText = new ElaText("禁用", this);
+    pushButtonDisableText->setTextPixelSize(15);
+    connect(pushButtonDisableSwitch, &ElaToggleSwitch::toggled, this, [=](bool checked) {
+        normalPushButton->setDisabled(checked);
+        flatPushButton->setDisabled(checked);
+        iconPushButton->setDisabled(checked);
+        flatIconPushButton->setDisabled(checked);
+        primaryPushButton->setDisabled(checked);
+    });
+    pushButtonLayout->addWidget(pushButtonDisableSwitch);
+    pushButtonLayout->addWidget(pushButtonDisableText);
+    pushButtonLayout->addSpacing(10);
 
     _comboBox = new ElaComboBox(this);
     QStringList comboList{
@@ -225,6 +267,15 @@ T_BaseComponents::T_BaseComponents(QWidget* parent)
     sliderLayout->addWidget(_slider);
     sliderLayout->addStretch();
 
+    _dateTimeEdit = new ElaDateTimeEdit(this);
+    ElaScrollPageArea* dateTimeEditArea = new ElaScrollPageArea(this);
+    QHBoxLayout* dateTimeEditLayout = new QHBoxLayout(dateTimeEditArea);
+    ElaText* dateTimeEditText = new ElaText("ElaDateTimeEdit", this);
+    dateTimeEditText->setTextPixelSize(15);
+    dateTimeEditLayout->addWidget(dateTimeEditText);
+    dateTimeEditLayout->addWidget(_dateTimeEdit);
+    dateTimeEditLayout->addStretch();
+
     _radioButton = new ElaRadioButton("RadioButton", this);
     ElaScrollPageArea* radioButtonArea = new ElaScrollPageArea(this);
     QHBoxLayout* radioButtonLayout = new QHBoxLayout(radioButtonArea);
@@ -321,12 +372,14 @@ T_BaseComponents::T_BaseComponents(QWidget* parent)
     QVBoxLayout* centerLayout = new QVBoxLayout(centralWidget);
     centerLayout->addWidget(toggleSwitchArea);
     centerLayout->addWidget(toggleButtonArea);
+    centerLayout->addWidget(pushButtonArea);
     centerLayout->addWidget(comboBoxArea);
     centerLayout->addWidget(multiSelectComboBoxArea);
     centerLayout->addWidget(messageButtonArea);
     centerLayout->addWidget(checkBoxArea);
     centerLayout->addWidget(spinBoxArea);
     centerLayout->addWidget(sliderArea);
+    centerLayout->addWidget(dateTimeEditArea);
     centerLayout->addWidget(radioButtonArea);
     centerLayout->addWidget(progressBarArea);
     centerLayout->addWidget(progressRingArea);

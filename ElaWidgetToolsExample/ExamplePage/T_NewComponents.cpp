@@ -12,6 +12,7 @@
 #include "ElaLineEdit.h"
 #include "ElaMarkdownViewer.h"
 #include "ElaMenu.h"
+#include "ElaMessageBox.h"
 #include "ElaNumberBox.h"
 #include "ElaPagination.h"
 #include "ElaPasswordBox.h"
@@ -48,6 +49,7 @@
 #include "ElaFloatButton.h"
 #include "ElaEmojiPicker.h"
 #include "ElaInfoBar.h"
+#include "ElaLoadingMask.h"
 #include "ElaAutoComplete.h"
 #include "ElaTreeSelect.h"
 #include "ElaUploadArea.h"
@@ -168,6 +170,14 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	expanderContentLayout->addWidget(proxyPort);
 	_expander->setContentWidget(expanderContent);
 
+	ElaPushButton *expanderHeaderButton = new ElaPushButton("重置", this);
+	expanderHeaderButton->setFixedSize(70, 28);
+	_expander->setHeaderWidget(expanderHeaderButton);
+	connect(expanderHeaderButton, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaToast::success("Header 按钮点击生效", 2000, window());
+	});
+
 	ElaText *expanderUpText = new ElaText("ElaExpander (向上展开)", this);
 	expanderUpText->setTextPixelSize(15);
 	_expanderUp = new ElaExpander("高级设置", this);
@@ -187,6 +197,14 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	expanderUpContentLayout->addLayout(dbgLay);
 	expanderUpContentLayout->addLayout(logLay);
 	_expanderUp->setContentWidget(expanderUpContent);
+
+	ElaPushButton *expanderUpHeaderButton = new ElaPushButton("说明", this);
+	expanderUpHeaderButton->setFixedSize(70, 28);
+	_expanderUp->setHeaderWidget(expanderUpHeaderButton);
+	connect(expanderUpHeaderButton, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaToast::info("向上展开的 Header 按钮", 2000, window());
+	});
 
 	// ========== ElaTeachingTip 示例 ==========
 	_teachingTip = new ElaTeachingTip(this);
@@ -293,6 +311,9 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	ElaTag *dangerTag = new ElaTag(this);
 	dangerTag->setTagText("Danger");
 	dangerTag->setTagColor(ElaTag::Danger);
+	ElaTag *customTag = new ElaTag(this);
+	customTag->setTagText("Custom");
+	customTag->setTagColor(QColor(0x8B, 0x5C, 0xF6));
 
 	ElaScrollPageArea *tagArea = new ElaScrollPageArea(this);
 	QHBoxLayout *tagLayout = new QHBoxLayout(tagArea);
@@ -303,6 +324,7 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	tagLayout->addWidget(successTag);
 	tagLayout->addWidget(warningTag);
 	tagLayout->addWidget(dangerTag);
+	tagLayout->addWidget(customTag);
 	tagLayout->addStretch();
 
 	// Tag 可关闭
@@ -477,6 +499,7 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 
 	// ========== ElaCommandBar 示例 ==========
 	_commandBar = new ElaCommandBar(this);
+	_commandBar->setItemSpacing(4);
 	_commandBar->addItem({ElaIconType::Copy, "复制"});
 	_commandBar->addItem({ElaIconType::Paste, "粘贴"});
 	_commandBar->addItem({ElaIconType::Scissors, "剪切"});
@@ -485,12 +508,68 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	_commandBar->addItem({ElaIconType::ArrowRotateRight, "重做"});
 	_commandBar->addSeparator();
 	_commandBar->addItem({ElaIconType::FloppyDisk, "保存"});
+	_commandBar->addSeparator();
+	_commandBar->addItem({ElaIconType::FloppyDisk, "自动保存", false, true, true});
+	_commandBar->addItem({ElaIconType::TableCells, "显示网格", false, true, false});
+	connect(_commandBar, &ElaCommandBar::itemCheckedChanged, this, [=](int index, bool checked)
+	{
+		ElaToast::info(QString("第 %1 项：%2").arg(index).arg(checked ? "已勾选" : "已取消"), 2000, window());
+	});
 
 	ElaScrollPageArea *cmdArea = new ElaScrollPageArea(this);
 	QHBoxLayout *cmdLayout = new QHBoxLayout(cmdArea);
 	cmdLayout->addWidget(new ElaText("ElaCommandBar", 15, this));
 	cmdLayout->addWidget(_commandBar);
 	cmdLayout->addStretch();
+
+	// ========== ElaMessageBox 示例 ==========
+	ElaPushButton *msgInfoBtn = new ElaPushButton("信息", this);
+	msgInfoBtn->setFixedSize(70, 32);
+	connect(msgInfoBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaMessageBox::information(this, "提示", "配置文件已自动保存到本地。", {"确定"});
+	});
+
+	ElaPushButton *msgWarnBtn = new ElaPushButton("警告", this);
+	msgWarnBtn->setFixedSize(70, 32);
+	connect(msgWarnBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		int ret = ElaMessageBox::warning(this, "删除确认", "确定要删除选中项吗？该操作不可撤销。", {"取消", "确定"});
+		ElaToast::info(QString("返回索引：%1").arg(ret), 2000, window());
+	});
+
+	ElaPushButton *msgCriticalBtn = new ElaPushButton("错误", this);
+	msgCriticalBtn->setFixedSize(70, 32);
+	connect(msgCriticalBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaMessageBox::critical(this, "操作失败", "无法连接到服务器，请检查网络设置后重试。", {"确定"});
+	});
+
+	ElaPushButton *msgQuestionBtn = new ElaPushButton("询问", this);
+	msgQuestionBtn->setFixedSize(70, 32);
+	connect(msgQuestionBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		int ret = ElaMessageBox::question(this, "保存更改", "是否保存当前文档的修改？", {"否", "是"}, 1);
+		ElaToast::info(QString("返回索引：%1").arg(ret), 2000, window());
+	});
+
+	ElaPushButton *msgAboutBtn = new ElaPushButton("关于", this);
+	msgAboutBtn->setFixedSize(70, 32);
+	connect(msgAboutBtn, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaMessageBox::about(this, "关于", "ElaWidgetTools 示例程序  版本 1.0.0");
+	});
+
+	ElaScrollPageArea *msgBoxArea = new ElaScrollPageArea(this);
+	QHBoxLayout *msgBoxLayout = new QHBoxLayout(msgBoxArea);
+	msgBoxLayout->addWidget(new ElaText("ElaMessageBox", 15, this));
+	msgBoxLayout->addSpacing(10);
+	msgBoxLayout->addWidget(msgInfoBtn);
+	msgBoxLayout->addWidget(msgWarnBtn);
+	msgBoxLayout->addWidget(msgCriticalBtn);
+	msgBoxLayout->addWidget(msgQuestionBtn);
+	msgBoxLayout->addWidget(msgAboutBtn);
+	msgBoxLayout->addStretch();
 
 	// ========== ElaPagination 示例 ==========
 	QStackedWidget *pageStack = new QStackedWidget(this);
@@ -1253,6 +1332,7 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	c->addLayout(stepsCtrl);
 	c->addWidget(_steps);
 	c->addWidget(cmdArea);
+	c->addWidget(msgBoxArea);
 	c->addWidget(pgArea);
 	c->addWidget(pageStack);
 	c->addWidget(expanderText);
@@ -1557,6 +1637,28 @@ T_NewComponents::T_NewComponents(QWidget *parent)
 	copyLayout->addWidget(copyStatus);
 	copyLayout->addStretch();
 	c->addWidget(copyArea);
+
+	// ========== ElaLoadingMask 示例 ==========
+	ElaPushButton *loadingMaskButton = new ElaPushButton("显示加载遮罩", this);
+	loadingMaskButton->setFixedSize(120, 36);
+	connect(loadingMaskButton, &ElaPushButton::clicked, this, [=]()
+	{
+		ElaLoadingMask *mask = new ElaLoadingMask(this);
+		mask->setText("正在加载，请稍候...");
+		mask->start();
+		QTimer::singleShot(2000, mask, [mask]()
+		{
+			mask->finish();
+		});
+	});
+
+	ElaScrollPageArea *loadingMaskArea = new ElaScrollPageArea(this);
+	QHBoxLayout *loadingMaskLayout = new QHBoxLayout(loadingMaskArea);
+	loadingMaskLayout->addWidget(new ElaText("ElaLoadingMask", 15, this));
+	loadingMaskLayout->addSpacing(10);
+	loadingMaskLayout->addWidget(loadingMaskButton);
+	loadingMaskLayout->addStretch();
+	c->addWidget(loadingMaskArea);
 
 	c->addSpacing(5);
 	c->addLayout(transferHeader);

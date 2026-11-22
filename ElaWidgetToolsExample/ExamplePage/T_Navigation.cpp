@@ -10,6 +10,7 @@
 #include "ElaScrollPageArea.h"
 #include "ElaTabWidget.h"
 #include "ElaText.h"
+#include "ElaContentDialog.h"
 T_Navigation::T_Navigation(QWidget* parent)
     : T_BasePage(parent)
 {
@@ -80,13 +81,39 @@ T_Navigation::T_Navigation(QWidget* parent)
     page1->setTextPixelSize(32);
     page1->setAlignment(Qt::AlignCenter);
     _tabWidget->addTab(page1, QIcon(":/Resource/Image/Cirno.jpg"), "新标签页");
-    for (int i = 0; i < 5; i++)
-    {
-        ElaText* page = new ElaText(QString("新标签页%1").arg(i), this);
-        page->setTextPixelSize(32);
-        page->setAlignment(Qt::AlignCenter);
-        _tabWidget->addTab(page, QString("新标签页%1").arg(i));
-    }
+    connect(_tabWidget, &ElaTabWidget::tabAddRequested, this, [=]()
+        {
+            int addIndex = _tabWidget->count();
+            ElaText* page = new ElaText(QString("新建标签页%1").arg(addIndex), this);
+            page->setTextPixelSize(32);
+            page->setAlignment(Qt::AlignCenter);
+            _tabWidget->addTab(page, QString("新建标签页%1").arg(addIndex));
+            _tabWidget->setCurrentWidget(page);
+        });
+    connect(_tabWidget, &ElaTabWidget::tabCloseRequested, this, [=](int index)
+        {
+            ElaContentDialog* promptDialog = new ElaContentDialog(window());
+            promptDialog->setMiddleButtonVisible(false);
+            auto* centralWidget = new QWidget(this);
+            QVBoxLayout* centralVLayout = new QVBoxLayout(centralWidget);
+            centralVLayout->setContentsMargins(15, 25, 15, 10);
+            ElaText* title = new ElaText("提示", this);
+            title->setTextStyle(ElaTextType::Title);
+            ElaText* subTitle = new ElaText("确定要关闭标签页吗", this);
+            subTitle->setTextStyle(ElaTextType::Body);
+            centralVLayout->addWidget(title);
+            centralVLayout->addSpacing(2);
+            centralVLayout->addWidget(subTitle);
+            centralVLayout->addStretch();
+			promptDialog->setCentralWidget(centralWidget);
+			promptDialog->setRightButtonText("确定");
+			promptDialog->setLeftButtonText("取消");
+            promptDialog->show();
+            connect(promptDialog, &ElaContentDialog::rightButtonClicked, this, [=]()
+                {
+                    _tabWidget->removeTab(index);
+                    promptDialog->deleteLater();
+				}); });
     QWidget* centralWidget = new QWidget(this);
     centralWidget->setWindowTitle("ElaNavigation");
     QVBoxLayout* centerVLayout = new QVBoxLayout(centralWidget);

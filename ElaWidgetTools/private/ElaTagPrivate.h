@@ -1,6 +1,7 @@
 #ifndef ELATAGPRIVATE_H
 #define ELATAGPRIVATE_H
 
+#include <QColor>
 #include <QObject>
 
 #include "ElaDef.h"
@@ -14,6 +15,7 @@ class ElaTagPrivate : public QObject
     Q_PROPERTY_CREATE_D(bool, IsClosable)
     Q_PROPERTY_CREATE_D(bool, IsCheckable)
     Q_PROPERTY_CREATE_D(bool, IsChecked)
+    Q_PROPERTY_CREATE_D(QColor, CustomTagColor)
 public:
     explicit ElaTagPrivate(QObject* parent = nullptr);
     ~ElaTagPrivate() override;

@@ -16,7 +16,7 @@ Q_PROPERTY_CREATE_Q_CPP(ElaToast, int, BorderRadius)
 Q_PROPERTY_CREATE_Q_CPP(ElaToast, int, DisplayMsec)
 
 ElaToast::ElaToast(ToastType type, const QString &text, int displayMsec, QWidget *parent)
-	: QWidget{nullptr}, d_ptr(new ElaToastPrivate())
+	: QWidget(parent), d_ptr(new ElaToastPrivate())
 {
 	Q_D(ElaToast);
 	d->q_ptr = this;
@@ -25,7 +25,10 @@ ElaToast::ElaToast(ToastType type, const QString &text, int displayMsec, QWidget
 	d->_toastType = type;
 	d->_text = text;
 	setObjectName("ElaToast");
-	setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+	if (!parentWidget())
+	{
+		setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+	}
 	setAttribute(Qt::WA_TranslucentBackground);
 	setAttribute(Qt::WA_DeleteOnClose);
 
@@ -51,8 +54,8 @@ ElaToast::ElaToast(ToastType type, const QString &text, int displayMsec, QWidget
 	if (parent)
 	{
 		QRect parentRect = parent->geometry();
-		int x = parentRect.x() + (parentRect.width() - width()) / 2;
-		int y = parentRect.y() + 60;
+		int x = (parentRect.width() - width()) / 2;
+		int y = 60;
 		targetPos = QPoint(x, y);
 	}
 	else

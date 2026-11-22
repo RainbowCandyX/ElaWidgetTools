@@ -50,7 +50,7 @@ Q_PROPERTY_CREATE_Q_CPP(ElaSnackbar, int, BorderRadius)
 Q_PROPERTY_CREATE_Q_CPP(ElaSnackbar, int, DisplayMsec)
 
 ElaSnackbar::ElaSnackbar(SnackbarType type, const QString &text, const QString &actionText, int displayMsec, QWidget *parent)
-	: QWidget{nullptr}, d_ptr(new ElaSnackbarPrivate())
+	: QWidget(parent), d_ptr(new ElaSnackbarPrivate())
 {
 	Q_D(ElaSnackbar);
 	d->q_ptr = this;
@@ -61,7 +61,10 @@ ElaSnackbar::ElaSnackbar(SnackbarType type, const QString &text, const QString &
 	d->_actionText = actionText;
 
 	setObjectName("ElaSnackbar");
-	setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+	if (!parentWidget())
+	{
+		setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+	}
 	setAttribute(Qt::WA_TranslucentBackground);
 	setAttribute(Qt::WA_DeleteOnClose);
 	setMouseTracking(true);
@@ -98,8 +101,8 @@ ElaSnackbar::ElaSnackbar(SnackbarType type, const QString &text, const QString &
 	if (parent)
 	{
 		QRect parentRect = parent->geometry();
-		s_centerX = parentRect.x() + (parentRect.width() - width()) / 2;
-		s_baseBottomY = parentRect.y() + parentRect.height() - 30;
+		s_centerX = (parentRect.width() - width()) / 2;
+		s_baseBottomY = parentRect.height() - 30;
 	}
 	else
 	{
